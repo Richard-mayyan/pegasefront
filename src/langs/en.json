@@ -1,0 +1,65 @@
+{
+
+    "userMenu": {
+      "upgrade": "Upgrade to Pro",
+      "account": "Account",
+      "billing": "Billing",
+      "notifications": "Notifications",
+      "logout": "Log out"
+    },
+  
+
+    "table": {
+      "view": "View",
+
+      "toggleColumn" : "Hide/Show",
+
+      "toolbar": {
+      "searchPlaceholder": "Filter items...",
+      "status": "Status",
+      "priority": "Priority",
+      "reset": "Reset"
+    },
+    
+      "pagination": {
+      "selectedRows": "{{selected}} of {{total}} row(s) selected.",
+      "rowsPerPage": "Rows per page",
+      "pageInfo": "Page {{current}} of {{total}}",
+      "firstPage": "Go to first page",
+      "prevPage": "Go to previous page",
+      "nextPage": "Go to next page",
+      "lastPage": "Go to last page"
+    },
+      "sort": {
+        "asc": "Asc",
+        "desc": "Desc"
+      },
+      "actions": {
+        "hide": "Hide",
+        "openMenu": "Open menu",
+        "edit": "Edit",
+        "copy": "Make a copy",
+        "favorite": "Favorite",
+        "delete": "Delete"
+      }
+    },
+
+  
+  "sidebar": {
+    "general": "General",
+    "dashboard": "Dashboard",
+    "members": "Members",
+    "subscriptions" : "Subscriptions",
+    "apps": "Apps",
+    "other": "Other",
+    "settings": {
+      "title": "Settings",
+      "profile": "Profile",
+      "account": "Account",
+      "appearance": "Appearance",
+      "notifications": "Notifications",
+      "display": "Display"
+    },
+    "helpCenter": "Help Center"
+  }
+}

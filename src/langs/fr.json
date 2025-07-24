@@ -1,0 +1,61 @@
+{
+
+  "userMenu": {
+    "upgrade": "Passer à Pro",
+    "account": "Compte",
+    "billing": "Facturation",
+    "notifications": "Notifications",
+    "logout": "Se déconnecter"
+  },
+
+  "table": {
+    "view": "Vue",
+    "toggleColumn" : "Cacher/Afficher",
+    "toolbar": {
+      "searchPlaceholder": "Filtrer les éléments...",
+      "status": "Statut",
+      "priority": "Priorité",
+      "reset": "Réinitialiser"
+    },
+    
+    "pagination": {
+      "selectedRows": "{{selected}} sur {{total}} ligne(s) sélectionnée(s).",
+      "rowsPerPage": "Lignes par page",
+      "pageInfo": "Page {{current}} sur {{total}}",
+      "firstPage": "Aller à la première page",
+      "prevPage": "Page précédente",
+      "nextPage": "Page suivante",
+      "lastPage": "Aller à la dernière page"
+    },
+  
+    "sort": {
+      "asc": "Ascendant",
+      "desc": "Descendant"
+    },
+    "actions": {
+      "hide": "Masquer",
+      "openMenu": "Ouvrir le menu",
+      "edit": "Modifier",
+      "copy": "Dupliquer",
+      "favorite": "Favori",
+      "delete": "Supprimer"
+    }
+  },
+  "sidebar": {
+    "general": "Général",
+    "dashboard": "Tableau de bord",
+    "members": "Membres",
+    "subscriptions" : "Souscriptions",
+    "apps": "Applications",
+    "other": "Autres",
+    "settings": {
+      "title": "Paramètres",
+      "profile": "Profil",
+      "account": "Compte",
+      "appearance": "Apparence",
+      "notifications": "Notifications",
+      "display": "Affichage"
+    },
+    "helpCenter": "Centre d'aide"
+  }
+}

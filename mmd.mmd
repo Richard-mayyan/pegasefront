@@ -1,0 +1,21 @@
+```mermaid
+%%{ init : { "theme": "dark" } }%%
+stateDiagram-v2
+[*] --> Loading
+Loading --> Success : Exercices deletion success
+Loading --> Error : Exercices deletion failed
+
+Error --> [*]
+Success --> [*]
+
+state Error {
+  [*] --> Failed
+  Failed : Status = error<br>Error = error message<br>Notification = n + 1 error
+}
+
+state Success {
+  [*] --> Completed
+  Completed : Status = success<br>Error = none<br>Notification = n + 1 success
+}
+
+```
