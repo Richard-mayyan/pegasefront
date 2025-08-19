@@ -1,6 +1,8 @@
 "use client";
 import { useAuth } from "@/components/layouts/AuthProvider";
 import ClientsLayout from "@/components/layouts/clientsLayout";
+import { ROUTES } from "@/lib/constants";
+import { redirect } from "next/navigation";
 import React from "react";
 import { useQuery } from "react-query";
 
@@ -17,6 +19,7 @@ function page({}: Props) {
   //   queryKey: ["getUsers"],
   //   queryFn: () => USE_CASES.members.getUsersUC.execute(),
   // });
+  return redirect(ROUTES.login);
 
   return (
     <ClientsLayout>

@@ -14,8 +14,8 @@ import "../../i18n";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PEGAS",
-  description: "Gestion de la salle de sport",
+  title: "PEGASE",
+  description: "Elearning platform",
 };
 
 export default function RootLayout({
