@@ -2,10 +2,9 @@
 import React from "react";
 // import { DepsProvider } from "./useDeps";
 import { Navbar } from "./navbar";
-import { InMemoryAuthRepository } from "@/logic/infra/repos/InMemoryAuthRepo";
 import Footer from "./footer";
-import { USE_CASES } from "@/logic/infra/di/container";
 import { AuthProvider } from "./AuthProvider";
+import { AppDataProvider } from "./AppDataProvider";
 
 type Props = {
   children: any;
@@ -17,9 +16,11 @@ export default function DepsLayout({ children }: Props) {
   return (
     // <DepsProvider >
     <AuthProvider>
-      {/* <Navbar /> */}
-      {children}
-      {/* <Footer /> */}
+      <AppDataProvider>
+        {/* <Navbar /> */}
+        {children}
+        {/* <Footer /> */}
+      </AppDataProvider>
     </AuthProvider>
     // </DepsProvider>
   );

@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { APP_ENVS } from "@/logic/infra/config/envs";
-import { User } from "@/logic/domain/entities";
+import { User } from "@/logic/domain/entities/User";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -41,8 +41,8 @@ export function getFullName(user: User) {
   return `${user.firstName} ${user.lastName}`;
 }
 
-export function formatPrice(value: number, locale = "bf-BF", currency = "€") {
-  return `${value} Fcfa`;
+export function formatPrice(value: number, locale = "us-US", currency = "$") {
+  return `${value} ${currency}`;
   // return `$${value.toFixed(2)}`;
   // return new Intl.NumberFormat(locale, {
   //   style: "currency",

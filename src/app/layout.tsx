@@ -14,7 +14,7 @@ import "../../i18n";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Kosso X Fit",
+  title: "PEGAS",
   description: "Gestion de la salle de sport",
 };
 

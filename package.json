@@ -76,6 +76,7 @@
     "react-is": "^19.1.0",
     "react-multi-carousel": "^2.8.5",
     "react-query": "^3.39.3",
+    "react-redux": "^9.2.0",
     "recharts": "^2.15.3",
     "sonner": "^2.0.3",
     "tailwind-merge": "^2.5.2",

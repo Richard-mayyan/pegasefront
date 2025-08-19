@@ -1,8 +1,8 @@
-import { User } from "@/logic/domain/entities";
+import { UserEntity } from "@/logic/domain/entities";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface AuthState {
-  user: User | null;
+  user: UserEntity | null;
   loading: boolean;
   error: string | null;
 }
@@ -21,7 +21,7 @@ const authSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    loginSuccess: (state, action: PayloadAction<User>) => {
+    loginSuccess: (state, action: PayloadAction<UserEntity>) => {
       state.user = action.payload;
       state.loading = false;
     },

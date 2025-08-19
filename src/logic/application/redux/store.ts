@@ -1,25 +1,20 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import { authReducer } from "./slices/auth/authSlice";
-import { AuthRepository } from "@/logic/domain/repos/AuthRepo";
-import { authRepo, membersRepo } from "@/logic/infra/di/container";
-import { clientReducer } from "./slices/clients/clientSlice";
-import { MemberRepository } from "@/logic/domain/repos/MembersRepo";
+import { authRepo } from "@/logic/infra/di/container";
+import { IAuthRepo } from "@/logic/domain/repos/AuthRepo";
 
 export interface AppExtraArguments {
-  authRepo: AuthRepository;
-  membersRepo: MemberRepository;
+  authRepo: IAuthRepo;
 }
 
 const extras: AppExtraArguments = {
   authRepo: authRepo,
-  membersRepo: membersRepo,
 };
 
 export const createTestStoreFn = (extras: Partial<AppExtraArguments>) => {
   return configureStore({
     reducer: {
       authReducer,
-      clientReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
@@ -34,7 +29,6 @@ export const appCreateStore = (extras: AppExtraArguments) => {
   return configureStore({
     reducer: {
       authReducer,
-      clientReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({

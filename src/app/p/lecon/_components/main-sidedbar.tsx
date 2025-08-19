@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sidebar,
   SidebarHeader,
@@ -7,41 +9,93 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { Zap, Plus } from "lucide-react";
+import { Plus, Users, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { useAppData } from "@/components/layouts/AppDataProvider";
+import { useState } from "react";
 
 export default function MainSidebar() {
+  const { currentCommunity, communities, setCommunity } = useAppData();
+  const [hoveredCommunity, setHoveredCommunity] = useState<number | null>(null);
+
+  const handleCommunitySelect = (selectedCommunity: any) => {
+    setCommunity(selectedCommunity);
+  };
+
   return (
     <Sidebar
       side="left"
       collapsible="none"
-      className="bg-gray-200 border-r border-gray-300"
+      className="bg-gray-100 border-r border-gray-300 w-20 h-screen"
     >
       <SidebarHeader className="flex flex-col items-center gap-4 py-4">
         <div className="flex items-center gap-2">
-          <Zap className="h-8 w-8 text-teal-600" />
+          {/* Logo Pegasus - cheval ailé */}
+          <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
+            <Image
+              src="/logo.svg"
+              alt="Pegasus Logo"
+              width={20}
+              height={16}
+              className="w-5 h-4"
+            />
+          </div>
         </div>
       </SidebarHeader>
-      <SidebarContent className="flex-1 flex flex-col items-center gap-4 py-4">
+
+      <SidebarContent className="flex-1 flex flex-col items-center gap-3 py-4">
         <SidebarMenu className="w-full flex flex-col items-center gap-2">
-          <SidebarMenuItem className="w-auto">
-            <SidebarMenuButton className="h-16 w-16 rounded-lg bg-white text-gray-700 flex items-center justify-center text-xs font-semibold shadow-sm">
-              Logo C1
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem className="w-auto">
-            <SidebarMenuButton className="h-16 w-16 rounded-lg bg-white text-gray-700 flex items-center justify-center text-xs font-semibold shadow-sm">
-              Logo C2
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {communities && communities.length > 0 ? (
+            communities.map((comm, index) => (
+              <SidebarMenuItem key={comm.id} className="w-auto relative">
+                <SidebarMenuButton
+                  className={`h-12 w-12 rounded-lg border-2 transition-all duration-200 flex items-center justify-center text-xs font-semibold shadow-sm ${
+                    currentCommunity?.id === comm.id
+                      ? "bg-teal-500 border-teal-600 text-white shadow-md"
+                      : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
+                  }`}
+                  onClick={() => handleCommunitySelect(comm)}
+                  onMouseEnter={() => setHoveredCommunity(index)}
+                  onMouseLeave={() => setHoveredCommunity(null)}
+                >
+                  {comm.name.charAt(0).toUpperCase()}
+                  {comm.name.charAt(1)?.toUpperCase() || ""}
+                </SidebarMenuButton>
+
+                {/* Indicateur de sélection */}
+                {currentCommunity?.id === comm.id && (
+                  <div className="absolute -right-1 -top-1 w-3 h-3 bg-teal-500 rounded-full border-2 border-white shadow-sm" />
+                )}
+
+                {/* Tooltip au survol */}
+                {hoveredCommunity === index && (
+                  <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap z-50">
+                    {comm.name}
+                    {comm.description && (
+                      <div className="text-gray-300 text-xs mt-1 max-w-32">
+                        {comm.description}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </SidebarMenuItem>
+            ))
+          ) : (
+            <div className="text-center text-gray-500 text-xs px-2">
+              Aucune communauté
+            </div>
+          )}
         </SidebarMenu>
       </SidebarContent>
+
       <SidebarFooter className="flex flex-col items-center py-4">
         <Button
           size="icon"
-          className="h-16 w-16 rounded-lg bg-white text-gray-700 shadow-sm hover:bg-gray-100"
+          className="h-12 w-12 rounded-lg bg-gray-300 text-gray-700 shadow-sm hover:bg-gray-400"
+          title="Ajouter une communauté"
         >
-          <Plus className="h-6 w-6" />
+          <Plus className="h-5 w-5" />
         </Button>
       </SidebarFooter>
     </Sidebar>

@@ -40,9 +40,6 @@ export default function AddReservationForm() {
       name: "Alexandra Thompson",
       avatar: IMG_URL,
     },
-    { name: "Benjamin Carter", avatar: IMG_URL },
-    { name: "Cassandra Lee", avatar: IMG_URL },
-    { name: "Darius Mitchell", avatar: IMG_URL },
   ];
 
   return (

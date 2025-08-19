@@ -1,21 +1,33 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
-export default function CourseHeader() {
+interface CourseHeaderProps {
+  courseTitle: string;
+  progress: number;
+  totalLessons: number;
+  completedLessons: number;
+}
+
+export default function CourseHeader({
+  courseTitle,
+  progress,
+  totalLessons,
+  completedLessons,
+}: CourseHeaderProps) {
   return (
     <header className="flex items-center justify-between p-4 border-b bg-white">
       <div className="flex flex-col">
-        <h1 className="text-xl font-bold">
-          Apprendre les bases de la Vente en e-commerce
-        </h1>
+        <h1 className="text-xl font-bold">{courseTitle}</h1>
         <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
-          <span>1/13 cours</span>
+          <span>
+            {completedLessons}/{totalLessons} cours
+          </span>
           <Progress
-            value={15}
+            value={progress}
             className="w-24 h-2 rounded-full bg-gray-200 [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-teal-600"
           />
-          <span>15%</span>
+          <span>{progress}%</span>
         </div>
       </div>
       <div className="flex items-center gap-4">

@@ -1,10 +1,6 @@
 import React from "react";
-import ChatEmptyState from "../_components/chat-empty-state";
+import NewChatGroupForm from "../_components/new-chat-group-form";
 
-type Props = {};
-
-function page({}: Props) {
-  return <ChatEmptyState />;
+export default function ChatPage() {
+  return <NewChatGroupForm />;
 }
-
-export default page;

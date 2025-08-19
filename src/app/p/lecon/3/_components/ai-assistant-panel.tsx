@@ -1,14 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { Sparkles, Send, XIcon } from "lucide-react";
+import { Sparkles, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 export default function AIAssistantPanel() {
   return (
-    <aside className="w-80 bg-gray-100 border-l border-gray-200 p-6 flex flex-col items-center text-center">
-      <Button variant={"secondary"} className=" ml-auto">
-        <XIcon className="h-4 w-4 mr-1 text-gray-500" />
-        <span className="">Fermer</span>
-      </Button>
+    <aside className="w-80 bg-gray-100 border-l border-gray-200 p-6 flex flex-col items-center text-center animate-in slide-in-from-right duration-300">
       <div className="bg-teal-600 p-4 rounded-full mb-6">
         <Sparkles className="h-10 w-10 text-white" />
       </div>

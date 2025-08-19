@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/sheet";
 import { useAuth } from "./AuthProvider";
 import LogoutButton from "../global/LogoutButton";
+import { CommunitySelector } from "./CommunitySelector";
 import { ROUTES } from "@/lib/constants";
 
 interface MenuItem {
@@ -152,6 +153,10 @@ const Navbar = ({
                 {logo.title}
               </span>
             </a>
+
+            {/* Sélecteur de communauté (visible seulement si l'utilisateur est connecté) */}
+            {authContext.user && <CommunitySelector className="ml-4" />}
+
             <div className="flex items-center">
               <NavigationMenu>
                 <NavigationMenuList>

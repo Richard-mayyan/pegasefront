@@ -58,9 +58,25 @@ export const IMG_URL_MODEL =
   "https://images.pexels.com/photos/1805411/pexels-photo-1805411.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
 
 const ROUTES = {
-  login: "/sign-in",
+  connection: "/connection/1",
+  forgotPassword: "/connection/2",
+  resetPassword: "/connection/3",
+  resetPasswordSuccess: "/connection/3",
+  resetPasswordSubmission: "/connection/reset-password-submission",
+  options: "/p/profile/1",
+  myCommunity: "/p/communaute/1",
+  membres: "/p/membres/1",
+  lecons: "/p/lecon/2",
+  chat: "/p/chat/2",
+  createCommunity: "/onboarding/1",
+  createCommunitySuccess: "/onboarding/5",
+  codeSent: "/inscriptions/2",
+  accountConfirmed: "/inscriptions/3",
+  coachings: "/p/mescoachings/1",
+  login: "/login",
   home: "/",
-  register: "/sign-up",
+  calendrier: "/p/calendrier/1",
+  register: "/inscriptions/1",
   members: "/admin/members",
   subscriptions: "/admin/subscriptions",
 };
@@ -70,4 +86,5 @@ const manDefaultPP =
 const womanDefaultPP =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN50r5wY4R7H5R2AMZ2ZpcsnNbx7YlcrKtpA&s";
 
+export const ACCESS_TOKEN_KEY = "ACCESS_TOKEN_KEY";
 export { ROUTES, manDefaultPP, womanDefaultPP };

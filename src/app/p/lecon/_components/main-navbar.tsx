@@ -1,56 +1,72 @@
-import { Button } from "@/components/ui/button";
+"use client";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Circle, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ROUTES } from "@/lib/constants";
 
 export default function MainNavbar() {
+  const pathname = usePathname();
+
+  const navItems = [
+    {
+      label: "Chat",
+      href: ROUTES.chat,
+
+      isActive: pathname?.startsWith("/p/chat"),
+    },
+    {
+      label: "Cours",
+      href: ROUTES.lecons,
+      isActive: pathname?.startsWith("/p/lecon"),
+    },
+    {
+      label: "Coachings",
+      href: ROUTES.coachings,
+
+      isActive: pathname?.startsWith("/p/mescoachings"),
+    },
+    // {
+    //   label: "Calendrier",
+    //   href: ROUTES.calendrier,
+    //   isActive: pathname?.startsWith("/p/calendrier"),
+    // },
+    // {
+    //   label: "Membres",
+    //   href: ROUTES.membres,
+    //   isActive: pathname?.startsWith("/p/membres"),
+    // },
+    {
+      label: "Communauté",
+      href: ROUTES.myCommunity,
+      isActive: pathname?.startsWith("/p/myCommunity"),
+    },
+    // {
+    //   label: "Options",
+    //   href: ROUTES.options,
+    //   isActive: pathname?.startsWith("/p/profile"),
+    // },
+  ];
+
   return (
-    <nav className="flex items-center justify-between h-16 px-6 border-b border-gray-200 bg-white">
+    <nav className="flex items-center justify-between h-16 px-6 border-b border-gray-200 bg-white absolute top-0 left-0 right-0 z-[100]">
       <div className="flex items-center gap-6">
-        <Button
-          variant="ghost"
-          className="text-base font-medium text-gray-700 hover:bg-gray-100"
-        >
-          Chat
-        </Button>
-        <Button
-          variant="ghost"
-          className={cn(
-            "text-base font-medium text-teal-600 relative",
-            "after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-teal-600"
-          )}
-        >
-          Leçons
-        </Button>
-        <Button
-          variant="ghost"
-          className="text-base font-medium text-gray-700 hover:bg-gray-100"
-        >
-          Coachings
-        </Button>
-        <Button
-          variant="ghost"
-          className="text-base font-medium text-gray-700 hover:bg-gray-100"
-        >
-          Calendrier
-        </Button>
-        <Button
-          variant="ghost"
-          className="text-base font-medium text-gray-700 hover:bg-gray-100"
-        >
-          Membres
-        </Button>
-        <Button
-          variant="ghost"
-          className="text-base font-medium text-gray-700 hover:bg-gray-100"
-        >
-          Ma classe
-        </Button>
-        <Button
-          variant="ghost"
-          className="text-base font-medium text-gray-700 hover:bg-gray-100"
-        >
-          Options
-        </Button>
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={cn(
+              buttonVariants({ variant: "ghost" }),
+              "text-base font-medium transition-colors",
+              item.isActive
+                ? "text-teal-600 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-teal-600"
+                : "text-gray-700 hover:bg-gray-100"
+            )}
+          >
+            {item.label}
+          </Link>
+        ))}
       </div>
       <div className="flex items-center gap-4">
         <Button
@@ -67,13 +83,15 @@ export default function MainNavbar() {
         >
           <Circle className="h-4 w-4 text-gray-500" />
         </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 rounded-full border border-gray-300"
+        <Link
+          href="/p/profile/1"
+          className={cn(
+            buttonVariants({ variant: "ghost", size: "icon" }),
+            "h-8 w-8 rounded-full border border-gray-300"
+          )}
         >
           <User className="h-4 w-4 text-gray-500" />
-        </Button>
+        </Link>
       </div>
     </nav>
   );

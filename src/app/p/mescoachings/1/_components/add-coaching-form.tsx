@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -16,236 +19,237 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Image from "next/image";
-import {
-  X,
-  Smile,
-  Paperclip,
-  Bold,
-  Italic,
-  Underline,
-  Strikethrough,
-  AlignLeft,
-  Quote,
-  Link,
-  Calendar,
-  Clock,
-} from "lucide-react";
-import { IMG_URL } from "@/lib/constants";
+import { X, Plus } from "lucide-react";
+import { useCoachingsData } from "@/components/layouts/CoachingsDataProvider";
+import { CreateCoachingDto } from "@/logic/domain/repos/CoachingsRepo";
+import { CoachingEntity } from "@/logic/domain/entities";
+import { toast } from "sonner";
 
-export default function AddCoachingForm() {
-  const performanceCategories = [
-    { name: "Explorateur", count: 256 },
-    { name: "Aventurier", count: 125 },
-    { name: "Champions", count: 54 },
-    { name: "Maîtres des Arcanes", count: 12 },
-  ];
-  const members = [
-    {
-      name: "Alexandra Thompson",
-      avatar: IMG_URL,
-    },
-    { name: "Benjamin Carter", avatar: IMG_URL },
-    { name: "Cassandra Lee", avatar: IMG_URL },
-    { name: "Darius Mitchell", avatar: IMG_URL },
-  ];
+interface AddCoachingFormProps {
+  onClose?: () => void;
+  editingCoaching?: CoachingEntity;
+  isEditing?: boolean;
+}
+
+export default function AddCoachingForm({
+  onClose,
+  editingCoaching,
+  isEditing = false,
+}: AddCoachingFormProps) {
+  const { createCoaching, updateCoaching } = useCoachingsData();
+  const [isOpen, setIsOpen] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [formData, setFormData] = useState<CreateCoachingDto>({
+    name: editingCoaching?.name || "",
+    description: editingCoaching?.description || "",
+    link: editingCoaching?.link || "",
+    price: editingCoaching?.price,
+    startAt: editingCoaching?.startAt || new Date().toISOString(),
+    endAt:
+      editingCoaching?.endAt ||
+      new Date(Date.now() + 60 * 60 * 1000).toISOString(), // +1 heure par défaut
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.name.trim()) {
+      toast.error("Veuillez remplir le nom du coaching");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      if (isEditing && editingCoaching?.id) {
+        // Mode édition : mettre à jour le coaching existant
+        await updateCoaching(editingCoaching.id, {
+          name: formData.name,
+          description: formData.description,
+          link: formData.link,
+          price: formData.price,
+          startAt: formData.startAt,
+          endAt: formData.endAt,
+        });
+        toast("Coaching modifié avec succès !");
+      } else {
+        // Mode création : créer un nouveau coaching
+        await createCoaching({
+          ...formData,
+        });
+
+        // Réinitialiser le formulaire seulement en mode création
+        setFormData({
+          name: "",
+          description: "",
+          link: "",
+          price: undefined,
+          startAt: new Date().toISOString(),
+          endAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+        });
+        toast("Coaching créé avec succès !");
+      }
+
+      // Appeler onClose si fourni
+      if (onClose) {
+        onClose();
+      }
+    } catch (error) {
+      console.error("Erreur lors de la création/modification:", error);
+      toast(
+        isEditing
+          ? "Erreur lors de la modification du coaching"
+          : "Erreur lors de la création du coaching"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (field: keyof CreateCoachingDto, value: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    if (onClose) {
+      onClose();
+    }
+  };
+
+  if (!isOpen) {
+    return (
+      <Card
+        className="w-full max-w-md rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-shadow"
+        onClick={() => setIsOpen(true)}
+      >
+        <div className="text-center">
+          <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Plus className="h-8 w-8 text-teal-600" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">
+            Ajouter un coaching
+          </h3>
+          <p className="text-gray-600">
+            Cliquez pour créer un nouveau coaching
+          </p>
+        </div>
+      </Card>
+    );
+  }
+
   return (
-    <Card className="w-full max-w-md rounded-xl shadow-lg p-6">
+    <Card className="w-full max-w-lg rounded-xl shadow-lg p-6">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <CardTitle className="text-xl font-bold">Ajouter un coaching</CardTitle>
-        <Button variant="ghost" size="icon" className="h-6 w-6">
+        <CardTitle className="text-xl font-bold">
+          {isEditing ? "Modifier le coaching" : "Ajouter un coaching"}
+        </CardTitle>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-6 w-6"
+          onClick={handleClose}
+        >
           <X className="h-4 w-4" />
-          <span className="sr-only">Close</span>
         </Button>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="coaching-name" className="sr-only">
-            Nom du coaching
-          </Label>
-          <Input id="coaching-name" placeholder="Nom du coaching" />
-        </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="coaching-description">Description</Label>
-          <div className="border border-gray-200 rounded-lg overflow-hidden">
-            <div className="flex items-center gap-1 p-2 border-b border-gray-200 bg-gray-50">
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Smile className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Paperclip className="h-4 w-4" />
-              </Button>
-              <div className="h-6 w-[1px] bg-gray-200 mx-1" />
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Bold className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Italic className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Underline className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Strikethrough className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <AlignLeft className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Quote className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Link className="h-4 w-4" />
-              </Button>
-            </div>
+      <form onSubmit={handleSubmit}>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="coaching-name">Nom du coaching *</Label>
+            <Input
+              id="coaching-name"
+              placeholder="Nom du coaching"
+              value={formData.name}
+              onChange={(e) => handleInputChange("name", e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="coaching-description">Description</Label>
             <Textarea
               id="coaching-description"
-              placeholder="Tapez..."
-              className="w-full min-h-[100px] border-none focus-visible:ring-0 resize-y"
+              placeholder="Description du coaching..."
+              className="w-full min-h-[100px] resize-y"
+              value={formData.description}
+              onChange={(e) => handleInputChange("description", e.target.value)}
             />
           </div>
-        </div>
 
-        <div className="flex items-center gap-2">
-          <div className="relative flex-1">
-            <Label htmlFor="price" className="sr-only">
-              Prix
-            </Label>
-            <Input id="price" placeholder="Prix" className="pr-8" />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
-              €
-            </span>
-          </div>
-          <Select>
-            <SelectTrigger className="flex-1">
-              <SelectValue placeholder="Paiement Mensuel" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="monthly">Paiement Mensuel</SelectItem>
-              <SelectItem value="one-time">Paiement Unique</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="coaching-date">Date</Label>
-          <div className="relative">
+          <div className="space-y-2">
+            <Label htmlFor="coaching-link">Lien</Label>
             <Input
-              id="coaching-date"
-              type="text"
-              placeholder="12/06/2025"
-              className="pr-10"
+              id="coaching-link"
+              type="url"
+              placeholder="https://example.com"
+              value={formData.link}
+              onChange={(e) => handleInputChange("link", e.target.value)}
             />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7"
-            >
-              <Calendar className="h-4 w-4 text-gray-500" />
-            </Button>
           </div>
-        </div>
 
-        <div className="grid grid-cols-3 gap-2">
           <div className="space-y-2">
-            <Label htmlFor="start-time">Heure de début</Label>
-            <div className="relative">
-              <Input
-                id="start-time"
-                type="text"
-                placeholder="18:00"
-                className="pr-8"
-              />
-              <Clock className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-            </div>
+            <Label htmlFor="coaching-price">Prix (en euros)</Label>
+            <Input
+              id="coaching-price"
+              type="number"
+              placeholder="15 "
+              value={formData.price || ""}
+              onChange={(e) =>
+                handleInputChange(
+                  "price",
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
+            />
+            <p className="text-sm text-gray-500">Entrez le prix</p>
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="end-time">Heure de fin</Label>
-            <div className="relative">
-              <Input
-                id="end-time"
-                type="text"
-                placeholder="18:30"
-                className="pr-8"
-              />
-              <Clock className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-            </div>
+            <Label htmlFor="coaching-start">Date et heure de début</Label>
+            <Input
+              id="coaching-start"
+              type="datetime-local"
+              value={formData.startAt ? formData.startAt.slice(0, 16) : ""}
+              onChange={(e) => handleInputChange("startAt", e.target.value)}
+            />
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="timezone">Timezone</Label>
-            <Select>
-              <SelectTrigger id="timezone">
-                <SelectValue placeholder="Paris" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="paris">Paris</SelectItem>
-                <SelectItem value="london">London</SelectItem>
-                <SelectItem value="new-york">New York</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label htmlFor="coaching-end">Date et heure de fin</Label>
+            <Input
+              id="coaching-end"
+              type="datetime-local"
+              value={formData.endAt ? formData.endAt.slice(0, 16) : ""}
+              onChange={(e) => handleInputChange("endAt", e.target.value)}
+            />
           </div>
-        </div>
+        </CardContent>
 
-        <div className="space-y-2">
-          <Label htmlFor="event-link">Lien de l'événement</Label>
-          <Input
-            id="event-link"
-            placeholder="https://meet.google.com/fsk-oeqb-vtd/authuser"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="coaching-type-select">Type de coaching</Label>
-          <Select>
-            <SelectTrigger id="coaching-type-select" className="w-full">
-              <SelectValue placeholder="Sélectionner en fonction des performances" />
-            </SelectTrigger>
-            <SelectContent>
-              {performanceCategories.map((category, index) => (
-                <SelectItem key={index} value={category.name}>
-                  <div className="flex items-center justify-between w-full">
-                    <span>{category.name}</span>
-                    <span className="text-sm text-muted-foreground">
-                      {category.count} Erudiants
-                    </span>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Select>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Sélectionner les membres" />
-            </SelectTrigger>
-            <SelectContent>
-              {members.map((member, index) => (
-                <SelectItem key={index} value={member.name}>
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src={member.avatar || "/placeholder.svg"}
-                      alt={member.name}
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
-                    {member.name}
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-end gap-2 pt-4">
-        <Button variant="outline">Annuler</Button>
-        <Button className="bg-teal-600 hover:bg-teal-700 text-white">
-          Ajouter le coaching
-        </Button>
-      </CardFooter>
+        <CardFooter className="flex justify-end gap-2 pt-4">
+          <Button type="button" variant="outline" onClick={handleClose}>
+            Annuler
+          </Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-teal-600 hover:bg-teal-700 text-white"
+          >
+            {isSubmitting
+              ? isEditing
+                ? "Modification..."
+                : "Création..."
+              : isEditing
+              ? "Modifier le coaching"
+              : "Ajouter le coaching"}
+          </Button>
+        </CardFooter>
+      </form>
     </Card>
   );
 }

@@ -1,16 +1,38 @@
-import { RegisterPayload } from "@/logic/application/usecases/auth/RegisterUserUC";
-import { User } from "../entities/User";
+import { UserEntity } from "@/logic/domain/entities";
+import { RegisterDto, UserDto } from "@/logic/infra/repos/nodeapi/dtos";
 
-// export interface AuthRepository {
-//   login(email: string, password: string): Promise<User>;
-// }
+export interface LoginResult {
+  access_token: string;
+  user: UserEntity;
+}
 
-export interface AuthRepository {
-  logout(): Promise<boolean>;
-  login(email: string, password: string): Promise<User>;
-  register(user: RegisterPayload): Promise<User>;
-  getCurrentUser(): Promise<User | null>;
-  forgotPassword(email: string): Promise<void>;
-  changePassword(userId: string, newPassword: string): Promise<void>;
-  findByEmail(email: string): Promise<User | null>;
+export interface ConfirmAccountDto {
+  email: string;
+  code: string;
+}
+
+export interface ResendCodeDto {
+  email: string;
+}
+
+export interface ForgotPasswordDto {
+  email: string;
+}
+
+export interface ResetPasswordDto {
+  email: string;
+  code: string;
+  password: string;
+}
+
+export interface IAuthRepo {
+  login(data: { email: string; password: string }): Promise<LoginResult>;
+  // login(data: LoginDto): Promise<UserDto>;
+  register(data: RegisterDto): Promise<UserEntity>;
+  confirmAccountWithCode(data: ConfirmAccountDto): Promise<UserEntity>;
+  resendCode(data: ResendCodeDto): Promise<void>;
+  forgotPassword(data: ForgotPasswordDto): Promise<void>;
+  resetPassword(data: ResetPasswordDto): Promise<void>;
+  getProfile(): Promise<UserEntity>;
+  getCurrentUser(): Promise<UserEntity>;
 }

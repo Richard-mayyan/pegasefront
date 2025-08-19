@@ -1,12 +1,15 @@
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { BookOpen, Calendar } from "lucide-react";
 
 interface CourseCardProps {
   imageUrl: string;
   title: string;
   dateAdded: string;
   progress: number;
+  totalLessons?: number;
+  completedLessons?: number;
 }
 
 export default function CourseCard({
@@ -14,9 +17,11 @@ export default function CourseCard({
   title,
   dateAdded,
   progress,
+  totalLessons = 0,
+  completedLessons = 0,
 }: CourseCardProps) {
   return (
-    <Card className="w-full rounded-xl overflow-hidden shadow-md">
+    <Card className="w-full rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200">
       <div className="relative w-full h-48">
         <Image
           src={imageUrl || "/placeholder.svg"}
@@ -25,16 +30,37 @@ export default function CourseCard({
           objectFit="cover"
           className="rounded-t-xl"
         />
+        {totalLessons > 0 && (
+          <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1">
+            <BookOpen className="w-4 h-4 text-gray-600" />
+            <span className="text-sm font-medium text-gray-700">
+              {totalLessons}
+            </span>
+          </div>
+        )}
       </div>
       <CardContent className="p-4 space-y-3">
-        <h3 className="text-lg font-bold text-gray-800">{title}</h3>
-        <p className="text-sm text-gray-500">Ajouté le : {dateAdded}</p>
-        <div className="flex items-center gap-2">
+        <h3 className="text-lg font-bold text-gray-800 line-clamp-2">
+          {title}
+        </h3>
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Calendar className="w-4 h-4" />
+          <span>Ajouté le : {dateAdded}</span>
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">Progression</span>
+            <span className="font-medium text-gray-700">{progress}%</span>
+          </div>
           <Progress
             value={progress}
-            className="flex-1 h-2 rounded-full bg-gray-200 [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-teal-600"
+            className="h-2 rounded-full bg-gray-200 [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-teal-600"
           />
-          <span className="text-sm font-medium text-gray-700">{progress}%</span>
+          {totalLessons > 0 && (
+            <div className="text-xs text-gray-500 text-center">
+              {completedLessons} sur {totalLessons} leçons terminées
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

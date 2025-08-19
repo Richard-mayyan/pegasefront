@@ -46,9 +46,6 @@ export default function AddEventForm() {
       name: "Alexandra Thompson",
       avatar: IMG_URL,
     },
-    { name: "Benjamin Carter", avatar: IMG_URL },
-    { name: "Cassandra Lee", avatar: IMG_URL },
-    { name: "Darius Mitchell", avatar: IMG_URL },
   ];
 
   return (
@@ -233,7 +230,7 @@ export default function AddEventForm() {
         <div className="space-y-2">
           <Select>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Sélectionner les membres" />
+              <SelectValue placeholder="Sélectionner les eemembres" />
             </SelectTrigger>
             <SelectContent>
               {members.map((member, index) => (
