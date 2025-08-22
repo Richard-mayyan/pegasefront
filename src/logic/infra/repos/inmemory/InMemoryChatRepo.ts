@@ -61,7 +61,6 @@ export class InMemoryChatRepo implements IChatRepo {
         likes: 83,
         createdAt: new Date(Date.now() - 3 * 60 * 1000).toISOString(), // Il y a 3 minutes
         updatedAt: new Date(Date.now() - 3 * 60 * 1000).toISOString(),
-        username: "",
         sender: {
           id: 1,
           name: "John Doe",
@@ -69,7 +68,6 @@ export class InMemoryChatRepo implements IChatRepo {
         },
       },
       {
-        username: "",
         sender: {
           id: 1,
           name: "John Doe",
@@ -161,7 +159,6 @@ export class InMemoryChatRepo implements IChatRepo {
       likes: 0,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      username: "",
       sender: {
         id: 1,
         name: "John Doe",

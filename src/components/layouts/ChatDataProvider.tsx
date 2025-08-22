@@ -51,6 +51,8 @@ export function ChatDataProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
 
+  // Fonction pour organiser les messages avec réponses
+
   // Charger les groupes de chat de la communauté
   useEffect(() => {
     const loadChatGroups = async () => {
@@ -118,7 +120,10 @@ export function ChatDataProvider({ children }: { children: React.ReactNode }) {
             likes: 0,
             createdAt: m.createdAt,
             updatedAt: m.updatedAt,
+            replies: m.replies, // Initialiser les réponses
           })) as MessageEntity[];
+
+          // Organiser les messages avec réponses
           setMessages(mappedMsgs);
 
           // Pas d'entité Chat backend distincte; on peut conserver null
@@ -197,10 +202,10 @@ export function ChatDataProvider({ children }: { children: React.ReactNode }) {
       content: created?.content || content,
       chatGroupId: Number(currentChatGroup.id),
       userId: created?.sender?.id ? Number(created.sender.id) : 0,
-      username:
-        `${created?.sender?.firstName || ""} ${
-          created?.sender?.lastName || ""
-        }`.trim() || "Utilisateur",
+      // username:
+      //   `${created?.sender?.firstName || ""} ${
+      //     created?.sender?.lastName || ""
+      //   }`.trim() || "Utilisateur",
       // replyToId: created?.responseToMessage?.id
       //   ? Number(created.responseToMessage.id)
       //   : undefined,
@@ -209,7 +214,17 @@ export function ChatDataProvider({ children }: { children: React.ReactNode }) {
       // updatedAt: created?.updatedAt,
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    if (replyTo) {
+      const replyToMessage = messages.find((m) => m.id === replyTo);
+      if (replyToMessage) {
+        replyToMessage.replies = [
+          ...(replyToMessage.replies || []),
+          newMessage,
+        ];
+      }
+    } else {
+      setMessages((prev) => [...prev, newMessage]);
+    }
 
     if (currentChat?.id) {
       setCurrentChat({

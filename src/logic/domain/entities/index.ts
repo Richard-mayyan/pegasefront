@@ -6,6 +6,14 @@ export enum ProfileEnum {
   Admin = "admin",
 }
 
+export interface SubscriptionEntity {
+  id: string;
+  status: string;
+  start_date: number;
+  ended_at: number | null;
+  trial_start: number | null;
+  trial_end: number | null;
+}
 // --- UserEntity ---
 export interface UserEntity {
   id?: number;
@@ -15,6 +23,7 @@ export interface UserEntity {
   password?: string;
   profile: ProfileEnum;
   communities?: CommunityEntity[];
+  subscriptions?: SubscriptionEntity[];
 }
 
 // --- CommunityEntity ---
@@ -128,10 +137,10 @@ export interface MessageEntity {
   content: string;
   chatGroupId: number;
   userId: number;
-  username: string;
-  replyToId?: number;
+  replyToId?: number; // ID du message auquel on répond
   likes: number;
   sender: SenderEntity;
+  replies?: MessageEntity[]; // Liste des réponses à ce message (pas aux réponses)
   createdAt?: string;
   updatedAt?: string;
 }

@@ -46,7 +46,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
       firstName: getdefaultValue("firstname"),
       lastName: getdefaultValue("lastname"),
       email: getdefaultValue("richard.bathiebo.7@gmail.com"),
-      password: "Password123@?",
+      password: getdefaultValue("Password123@?"),
     },
     resolver: zodResolver(SignupSchema),
     mode: "onBlur",

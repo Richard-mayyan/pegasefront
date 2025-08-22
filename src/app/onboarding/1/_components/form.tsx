@@ -254,25 +254,25 @@ export default function Form() {
                   ? "border-green-500"
                   : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2`}
-              onClick={() => handleColorChange("green")}
+              onClick={() => handleColorChange("#21C55E")}
             ></button>
             <button
               className={`w-8 h-8 bg-blue-500 rounded-full border-2 ${
                 selectedColor === "blue" ? "border-blue-500" : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
-              onClick={() => handleColorChange("blue")}
+              onClick={() => handleColorChange("#3B82F6")}
             ></button>
             <button
               className={`w-8 h-8 bg-red-500 rounded-full border-2 ${
                 selectedColor === "red" ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2`}
-              onClick={() => handleColorChange("red")}
+              onClick={() => handleColorChange("#EF4344")}
             ></button>
             <button
               className={`w-8 h-8 bg-gray-200 rounded-full border-2 ${
                 selectedColor === "gray" ? "border-gray-500" : "border-gray-300"
               } focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2`}
-              onClick={() => handleColorChange("gray")}
+              onClick={() => handleColorChange("#E5E7EB")}
             ></button>
           </div>
         </div>

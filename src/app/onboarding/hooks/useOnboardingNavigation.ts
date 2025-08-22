@@ -40,6 +40,10 @@ export const useOnboardingNavigation = () => {
     let isValid = false;
 
     switch (currentStep) {
+      case 0:
+        // Pas de validation pour l'étape 0 (souscription)
+        isValid = true;
+        break;
       case 1:
         isValid = validateStep1();
         break;
@@ -63,7 +67,7 @@ export const useOnboardingNavigation = () => {
 
   const goToPreviousStep = (currentStep: number) => {
     const previousStep = currentStep - 1;
-    if (previousStep >= 1) {
+    if (previousStep >= 0) {
       navigateToStep(previousStep);
     }
   };

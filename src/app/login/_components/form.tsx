@@ -34,7 +34,7 @@ export const LoginForm = () => {
   } = useForm<SigninFormValues>({
     defaultValues: {
       email: getdefaultValue("richard.bathiebo.7@gmail.com"),
-      password: "Password123@?",
+      password: getdefaultValue("Password123@?"),
     },
     resolver: zodResolver(SigninSchema),
     mode: "onBlur",

@@ -1,3 +1,4 @@
+import { MessageEntity } from "@/logic/domain/entities";
 import { apiClient } from "./axios";
 
 export type CreateGroupChatDto = {
@@ -12,14 +13,6 @@ export type GroupChat = {
   description?: string;
   createdAt?: string;
   updatedAt?: string;
-};
-
-export type Message = {
-  id: string;
-  content: string;
-  parent?: string;
-  sender?: any;
-  createdAt?: string;
 };
 
 export class NodeChatRepo {
@@ -51,7 +44,7 @@ export class NodeChatRepo {
     return list;
   }
 
-  async listMessages(groupChatId: string): Promise<Message[]> {
+  async listMessages(groupChatId: string): Promise<MessageEntity[]> {
     const res = await apiClient.get(`/group-chats/${groupChatId}/messages`);
 
     const list = res.data?.data || res.data || [];
@@ -69,9 +62,9 @@ export class NodeChatRepo {
     content: string;
     parentId?: string;
     senderId: string;
-  }): Promise<Message> {
+  }): Promise<MessageEntity> {
     const payload: any = { content, sender: senderId, groupChat: groupChatId };
-    if (parentId) payload.responseToMessage = parentId;
+    if (parentId) payload.parent = parentId;
 
     console.log("payload", payload);
     const res = await apiClient.post(

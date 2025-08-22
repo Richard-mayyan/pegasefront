@@ -6,6 +6,7 @@ import ChatMessage from "./chat-message";
 import ChatInputArea from "../../_components/chat-input-area";
 import { useEffect, useRef } from "react";
 import ChatNavbar from "../../_components/chat-navbar";
+import { MessageEntity } from "@/logic/domain/entities";
 
 export default function ChatInterface() {
   const { currentChatGroup, messages, isLoading } = useChatData();
