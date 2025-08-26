@@ -14,7 +14,7 @@ import {
 export class NodeCommunityRepo implements ICommunityRepo {
   private mapResponseToEntity(response: CommunityResponseDto): CommunityEntity {
     return {
-      id: parseInt(response.id),
+      id: response.id,
       name: response.name,
       description: response.description,
       profil: response.profil,

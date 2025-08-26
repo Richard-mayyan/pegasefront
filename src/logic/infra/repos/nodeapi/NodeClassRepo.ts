@@ -12,10 +12,10 @@ import {
 export class NodeClassRepo implements IClassRepo {
   private mapResponseToEntity(response: ClassResponseDto): ClassEntity {
     return {
-      id: parseInt(response.id),
+      id: response.id,
       name: response.name,
       description: response.description,
-      cover: response.cover,
+      cover: response.thumbnail,
       profil: response.profil,
       color: response.color,
       content: response.content,
@@ -54,6 +54,7 @@ export class NodeClassRepo implements IClassRepo {
       if (!selectedCommunityId) {
         throw new Error("Aucune communauté sélectionnée pour créer la classe");
       }
+      console.log("selectedCommunityId", selectedCommunityId);
 
       const form = new FormData();
       form.append("name", data.name);
@@ -65,6 +66,8 @@ export class NodeClassRepo implements IClassRepo {
         form
       );
       const created = this.mapResponseToEntity(response.data.data);
+
+      console.log("created ssss", created);
 
       // Enchaîner la création des chapitres et leçons si fournis
       if (Array.isArray(data.chapters) && data.chapters.length > 0) {

@@ -1,27 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { IMG_URL } from "@/lib/constants";
-import {
-  Send,
-  Plus,
-  Smile,
-  RotateCcw,
-  Bold,
-  Italic,
-  Underline,
-  Strikethrough,
-  Heading,
-  List,
-  Quote,
-  Link,
-  X,
-} from "lucide-react";
+import { Send, Plus, X } from "lucide-react";
 import { useOnboarding } from "../../context/OnboardingContext";
 import { useOnboardingNavigation } from "../../hooks/useOnboardingNavigation";
 import { useState, useRef } from "react";
 import Image from "next/image";
+import { useCreateBlockNote } from "@blocknote/react";
+import "@blocknote/core/style.css";
+
+import { BlockNoteView } from "@blocknote/shadcn";
+import "@blocknote/shadcn/style.css";
+import { fr as frLocale } from "@blocknote/core/locales";
 
 export default function Component() {
   const { data, updateData } = useOnboarding();
@@ -31,18 +21,18 @@ export default function Component() {
   const [coverPhotos, setCoverPhotos] = useState<string[]>(
     data.coverPhotos || []
   );
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentSelection, setCurrentSelection] = useState<{
-    start: number;
-    end: number;
-  } | null>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleDescriptionChange = (value: string) => {
-    setDescription(value);
-    updateData({ description: value });
-  };
+  const editor = useCreateBlockNote({
+    dictionary: frLocale,
+    initialContent: (() => {
+      try {
+        return description ? JSON.parse(description) : undefined;
+      } catch {
+        return undefined;
+      }
+    })(),
+  });
 
   const handleCoverPhotoAdd = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -74,104 +64,6 @@ export default function Component() {
 
   const handleSkip = () => {
     skipStep(2);
-  };
-
-  // Rich text editor functions
-  const getCurrentSelection = () => {
-    if (textareaRef.current) {
-      const start = textareaRef.current.selectionStart;
-      const end = textareaRef.current.selectionEnd;
-      return { start, end };
-    }
-    return null;
-  };
-
-  const applyFormat = (tag: string) => {
-    if (textareaRef.current) {
-      const selection = getCurrentSelection();
-      if (selection) {
-        const { start, end } = selection;
-        const before = description.substring(0, start);
-        const selected = description.substring(start, end);
-        const after = description.substring(end);
-
-        let formattedText = "";
-        switch (tag) {
-          case "bold":
-            formattedText = `${before}<strong>${selected}</strong>${after}`;
-            break;
-          case "italic":
-            formattedText = `${before}<em>${selected}</em>${after}`;
-            break;
-          case "underline":
-            formattedText = `${before}<u>${selected}</u>${after}`;
-            break;
-          case "strikethrough":
-            formattedText = `${before}<s>${selected}</s>${after}`;
-            break;
-          case "heading":
-            formattedText = `${before}<h3>${selected}</h3>${after}`;
-            break;
-          case "list":
-            formattedText = `${before}<ul><li>${selected}</li></ul>${after}`;
-            break;
-          case "quote":
-            formattedText = `${before}<blockquote>${selected}</blockquote>${after}`;
-            break;
-          case "link":
-            const url = prompt("Entrez l'URL du lien:");
-            if (url) {
-              formattedText = `${before}<a href="${url}" target="_blank">${selected}</a>${after}`;
-            } else {
-              return;
-            }
-            break;
-        }
-
-        handleDescriptionChange(formattedText);
-
-        // Restaurer la sélection
-        setTimeout(() => {
-          if (textareaRef.current) {
-            textareaRef.current.focus();
-            textareaRef.current.setSelectionRange(
-              start,
-              start + tag.length + selected.length + tag.length
-            );
-          }
-        }, 0);
-      }
-    }
-  };
-
-  const handleFormatClick = (tag: string) => {
-    if (tag === "link") {
-      applyFormat(tag);
-    } else {
-      const selection = getCurrentSelection();
-      if (selection && selection.start !== selection.end) {
-        applyFormat(tag);
-      } else {
-        // Insérer le tag sans sélection
-        const tagMap: { [key: string]: string } = {
-          bold: "<strong>texte en gras</strong>",
-          italic: "<em>texte en italique</em>",
-          underline: "<u>texte souligné</u>",
-          strikethrough: "<s>texte barré</s>",
-          heading: "<h3>Titre</h3>",
-          list: "<ul><li>Élément de liste</li></ul>",
-          quote: "<blockquote>Citation</blockquote>",
-        };
-
-        if (tagMap[tag]) {
-          const currentPos = textareaRef.current?.selectionStart || 0;
-          const before = description.substring(0, currentPos);
-          const after = description.substring(currentPos);
-          const newText = before + tagMap[tag] + after;
-          handleDescriptionChange(newText);
-        }
-      }
-    }
   };
 
   return (
@@ -267,91 +159,18 @@ export default function Component() {
             Présentez votre communauté
           </h3>
 
-          {/* Rich Text Editor Toolbar */}
+          {/* BlockNote Editor */}
           <div className="border border-gray-200 rounded-lg">
-            <div className="flex items-center space-x-1 p-3 border-b border-gray-200 bg-gray-50">
-              <button
-                className="p-2 hover:bg-gray-200 rounded transition-colors"
-                onClick={() => handleFormatClick("bold")}
-                title="Gras"
-              >
-                <Bold className="w-4 h-4 text-gray-600" />
-              </button>
-              <button
-                className="p-2 hover:bg-gray-200 rounded transition-colors"
-                onClick={() => handleFormatClick("italic")}
-                title="Italique"
-              >
-                <Italic className="w-4 h-4 text-gray-600" />
-              </button>
-              <button
-                className="p-2 hover:bg-gray-200 rounded transition-colors"
-                onClick={() => handleFormatClick("underline")}
-                title="Souligné"
-              >
-                <Underline className="w-4 h-4 text-gray-600" />
-              </button>
-              <button
-                className="p-2 hover:bg-gray-200 rounded transition-colors"
-                onClick={() => handleFormatClick("strikethrough")}
-                title="Barré"
-              >
-                <Strikethrough className="w-4 h-4 text-gray-600" />
-              </button>
-              <div className="w-px h-6 bg-gray-300 mx-1"></div>
-              <button
-                className="p-2 hover:bg-gray-200 rounded transition-colors"
-                onClick={() => handleFormatClick("heading")}
-                title="Titre"
-              >
-                <Heading className="w-4 h-4 text-gray-600" />
-              </button>
-              <div className="w-px h-6 bg-gray-300 mx-1"></div>
-              <button
-                className="p-2 hover:bg-gray-200 rounded transition-colors"
-                onClick={() => handleFormatClick("list")}
-                title="Liste"
-              >
-                <List className="w-4 h-4 text-gray-600" />
-              </button>
-              <button
-                className="p-2 hover:bg-gray-200 rounded transition-colors"
-                onClick={() => handleFormatClick("quote")}
-                title="Citation"
-              >
-                <Quote className="w-4 h-4 text-gray-600" />
-              </button>
-              <div className="w-px h-6 bg-gray-300 mx-1"></div>
-              <button
-                className="p-2 hover:bg-gray-200 rounded transition-colors"
-                onClick={() => handleFormatClick("link")}
-                title="Lien"
-              >
-                <Link className="w-4 h-4 text-gray-600" />
-              </button>
-            </div>
-
-            {/* Text Area */}
-            <Textarea
-              ref={textareaRef}
-              placeholder="Tapez votre description ici... Utilisez les boutons ci-dessus pour formater votre texte."
-              value={description}
-              onChange={(e) => handleDescriptionChange(e.target.value)}
-              className="min-h-32 border-0 resize-none focus:ring-0 text-base"
+            <BlockNoteView
+              editor={editor}
+              theme="light"
+              onChange={() => {
+                const json = JSON.stringify(editor.document);
+                setDescription(json);
+                updateData({ description: json });
+              }}
             />
           </div>
-
-          {/* Preview HTML */}
-          {description && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-              <h4 className="text-sm font-medium text-gray-700 mb-2">
-                Aperçu HTML:
-              </h4>
-              <div className="text-xs text-gray-600 bg-white p-2 rounded border overflow-x-auto">
-                {description}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Navigation Buttons */}

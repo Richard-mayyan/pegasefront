@@ -23,12 +23,12 @@ export default function CourseCard({
   return (
     <Card className="w-full rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200">
       <div className="relative w-full h-48">
-        <Image
+        <img
           src={imageUrl || "/placeholder.svg"}
           alt={title}
-          layout="fill"
-          objectFit="cover"
-          className="rounded-t-xl"
+          // layout="fill"
+          // objectFit="cover"
+          className="rounded-t-xl w-full h-full object-cover"
         />
         {totalLessons > 0 && (
           <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1">

@@ -139,7 +139,7 @@ export interface ClassResponseDto {
   id: string;
   name: string;
   description?: string;
-  cover?: string;
+  thumbnail?: string;
   profil?: string;
   color?: string;
   content?: string;

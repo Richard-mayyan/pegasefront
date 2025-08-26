@@ -125,10 +125,10 @@ export default function PlanSelection({
                     ? "Gratuit"
                     : `${formatPrice(plan.price / 100)} `}
                 </span>
-                {plan.price > 0 && (
+                {/* {plan.price > 0 && (
                   <span className="text-gray-600">/ par mois</span>
                   //   <span className="text-gray-600">/{plan.interval}</span>
-                )}
+                )} */}
               </div>
 
               {/* <p className="text-black">
@@ -170,7 +170,7 @@ export default function PlanSelection({
           <p className="text-teal-600 text-sm mt-1">
             {selectedPlan.price === 0
               ? "Vous pourrez commencer immédiatement"
-              : `Prix : ${formatPrice(selectedPlan.price)}/ par mois`}
+              : `Prix : ${formatPrice(selectedPlan.price / 100)}/ par mois`}
           </p>
         </div>
       )}

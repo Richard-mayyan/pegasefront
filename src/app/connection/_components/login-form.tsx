@@ -20,10 +20,12 @@ import { useRouter } from "next/navigation";
 import { ACCESS_TOKEN_KEY, ROUTES } from "@/lib/constants";
 import { getdefaultValue } from "@/lib/utils";
 import Image from "next/image";
+import { useAuth } from "@/components/layouts/AuthProvider";
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { user, setUser } = useAuth();
 
   const {
     register,
@@ -49,7 +51,8 @@ export default function LoginForm() {
       toast.success("Connexion réussie !");
       localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
       reset();
-      router.replace(ROUTES.createCommunity);
+      window.location.href = ROUTES.createCommunity;
+      // router.replace(ROUTES.createCommunity);
     },
     onError(error, variables, context) {
       console.log(error);

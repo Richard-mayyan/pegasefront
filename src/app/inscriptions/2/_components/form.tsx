@@ -12,9 +12,12 @@ import {
 } from "@/logic/domain/repos/AuthRepo";
 import { ROUTES } from "@/lib/constants";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 export default function Form() {
-  const [email, setEmail] = useState("");
+  const searchParams = useSearchParams();
+  const emailParam = searchParams.get("email");
+  const [email, setEmail] = useState(emailParam || "");
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isResending, setIsResending] = useState(false);

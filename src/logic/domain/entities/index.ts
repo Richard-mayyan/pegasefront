@@ -51,7 +51,7 @@ export interface CommunityEntity {
 
 // --- ClassEntity ---
 export interface ClassEntity {
-  id?: number;
+  id?: any;
   name: string;
   description?: string;
   cover?: string;

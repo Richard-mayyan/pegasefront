@@ -2,7 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Send } from "lucide-react";
+import {
+  Send,
+  MessageSquare,
+  Users,
+  Video,
+  MessageCircle,
+  UserCheck,
+} from "lucide-react";
 import { useOnboarding } from "../../context/OnboardingContext";
 import { useMutation } from "react-query";
 import { communityRepo } from "@/logic/infra/di/container";
@@ -54,7 +61,7 @@ export default function Component() {
 
       // Rediriger vers la page onboarding/4
       setTimeout(() => {
-        router.push("/onboarding/4");
+        window.location.href = "/onboarding/4";
       }, 1500);
     },
     onError: (error: any) => {
@@ -114,17 +121,10 @@ export default function Component() {
           <div className="bg-gray-50 rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gray-300 rounded flex items-center justify-center">
-                  <div className="grid grid-cols-3 gap-0.5">
-                    {[...Array(9)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="w-1 h-1 bg-gray-600 rounded-full"
-                      ></div>
-                    ))}
-                  </div>
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <MessageSquare className="w-5 h-5 text-blue-600" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <h3 className="font-semibold text-gray-900">
                     Discussion en communauté
                   </h3>
@@ -135,15 +135,17 @@ export default function Component() {
                   </p>
                 </div>
               </div>
-              <Switch
-                checked={settings.communityDiscussion}
-                onCheckedChange={(checked) =>
-                  updateData({
-                    settings: { ...settings, communityDiscussion: checked },
-                  })
-                }
-                className="data-[state=checked]:bg-teal-600"
-              />
+              <div className="flex-shrink-0 ml-4">
+                <Switch
+                  checked={settings.communityDiscussion}
+                  onCheckedChange={(checked) =>
+                    updateData({
+                      settings: { ...settings, communityDiscussion: checked },
+                    })
+                  }
+                  className="data-[state=checked]:bg-teal-600"
+                />
+              </div>
             </div>
           </div>
 
@@ -151,17 +153,10 @@ export default function Component() {
           <div className="bg-gray-50 rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gray-300 rounded flex items-center justify-center">
-                  <div className="grid grid-cols-3 gap-0.5">
-                    {[...Array(9)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="w-1 h-1 bg-gray-600 rounded-full"
-                      ></div>
-                    ))}
-                  </div>
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <Users className="w-5 h-5 text-green-600" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <h3 className="font-semibold text-gray-900">
                     La liste de mes Etudiants est visible par les membres de ma
                     classse
@@ -173,39 +168,49 @@ export default function Component() {
                   </p>
                 </div>
               </div>
-              <Switch
-                checked={settings.studentListVisibility}
-                onCheckedChange={(checked) =>
-                  updateData({
-                    settings: { ...settings, studentListVisibility: checked },
-                  })
-                }
-                className="data-[state=checked]:bg-teal-600"
-              />
+              <div className="flex-shrink-0 ml-4">
+                <Switch
+                  checked={settings.studentListVisibility}
+                  onCheckedChange={(checked) =>
+                    updateData({
+                      settings: { ...settings, studentListVisibility: checked },
+                    })
+                  }
+                  className="data-[state=checked]:bg-teal-600"
+                />
+              </div>
             </div>
           </div>
 
           {/* Option 3: Meeting de groupe */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-black rounded flex items-center justify-center">
-                <div className="w-4 h-4 bg-white rounded-sm"></div>
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <Video className="w-5 h-5 text-purple-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-900">
+                    Meeting de groupe
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Activez les réunions de groupe pour permettre à vos
+                    étudiants de se connecter en visioconférence.
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">
-                  Meeting de groupe
-                </h3>
+              <div className="flex-shrink-0 ml-4">
+                <Switch
+                  checked={settings.groupMeeting}
+                  onCheckedChange={(checked) =>
+                    updateData({
+                      settings: { ...settings, groupMeeting: checked },
+                    })
+                  }
+                  className="data-[state=checked]:bg-teal-600"
+                />
               </div>
             </div>
-            <Switch
-              checked={settings.groupMeeting}
-              onCheckedChange={(checked) =>
-                updateData({
-                  settings: { ...settings, groupMeeting: checked },
-                })
-              }
-              className="data-[state=checked]:bg-teal-600"
-            />
           </div>
         </div>
 

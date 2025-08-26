@@ -1,5 +1,6 @@
 import React from "react";
 import Signup from "./_components/form";
+import { useSearchParams } from "next/navigation";
 
 type Props = {};
 

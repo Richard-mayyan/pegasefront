@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Send, Plus, Trash2, Edit2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation } from "react-query";
@@ -17,6 +17,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle";
+import { Upload, File, Info, X } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+interface Resource {
+  type: "link" | "document" | "information";
+  content: string;
+  title: string;
+}
 
 interface LessonData {
   title: string;
@@ -58,6 +73,31 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
   const [tempChapterTitle, setTempChapterTitle] = useState("");
   const [className, setClassName] = useState("");
   const [classDescription, setClassDescription] = useState("");
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleThumbnailChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setThumbnail(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setThumbnailPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeThumbnail = () => {
+    setThumbnail(null);
+    setThumbnailPreview("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -75,8 +115,14 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
           toast.error("Veuillez sélectionner une communauté");
           throw new Error("Community not found");
         }
+
+        console.log("currentCommunity", currentCommunity);
+
         // Créer la classe avec tous les chapitres et leçons
-        const classData: CreateClassDto & { communityId: string } = {
+        const classData: CreateClassDto & {
+          communityId: string;
+          thumbnailFile?: File | null;
+        } = {
           communityId: currentCommunity?.id || "",
           name: className.trim(),
           description: classDescription.trim(),
@@ -84,6 +130,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
           profil: "default",
           color: "red",
           content: "",
+          thumbnailFile: thumbnail,
           chapters: chapters.map((chapter: any) => ({
             name: chapter.name,
             active: true,
@@ -99,6 +146,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
         };
 
         const savedClass = await classRepo.create(classData);
+        return;
 
         // Ajouter à la liste globale des classes
         addClass(savedClass);
@@ -109,6 +157,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
       return { class: null };
     },
     onSuccess: (result: any) => {
+      return;
       toast.success("Classe créée avec succès !");
       console.log("Classe sauvegardée:", result);
 
@@ -116,10 +165,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
       onClose();
       resetForm();
 
-      // Forcer la mise à jour du composant parent
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      window.location.reload();
     },
     onError: (error: any) => {
       toast.error("Erreur lors de la création de la classe");
@@ -138,6 +184,8 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
     setShowLessonForm(false);
     setEditingLesson(null);
     setTempChapterTitle("");
+    setThumbnail(null);
+    setThumbnailPreview("");
   };
 
   const handleAddChapter = () => {
@@ -270,8 +318,8 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
     };
   };
 
-  // Composant simple pour le formulaire de leçon (version simplifiée)
-  const SimpleLessonForm = ({
+  // Composant complet pour le formulaire de leçon
+  const CompleteLessonForm = ({
     onClose,
     onSave,
     initialData,
@@ -279,10 +327,28 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
   }: any) => {
     const [title, setTitle] = useState(initialData?.title || "");
     const [type, setType] = useState<"video" | "text">(
-      initialData?.type || "text"
+      initialData?.type || "video"
     );
     const [videoLink, setVideoLink] = useState(initialData?.videoLink || "");
-    const [content, setContent] = useState("");
+    const [transcribeVideo, setTranscribeVideo] = useState(
+      initialData?.transcribeVideo || false
+    );
+    const [textContent, setTextContent] = useState(
+      initialData?.textContent || ""
+    );
+    const [resources, setResources] = useState<Resource[]>(
+      initialData?.resources || []
+    );
+    const [showResourceForm, setShowResourceForm] = useState(false);
+    const [newResource, setNewResource] = useState<{
+      type: "link" | "document" | "information";
+      content: string;
+      title: string;
+    }>({
+      type: "link",
+      content: "",
+      title: "",
+    });
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
@@ -290,19 +356,63 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
         title,
         type,
         videoLink: type === "video" ? videoLink : undefined,
-        transcribeVideo: false,
-        resources: [],
-        content,
+        transcribeVideo,
+        textContent: type === "text" ? textContent : undefined,
+        resources,
+        content: {
+          videoLink: type === "video" ? videoLink : undefined,
+          transcribeVideo,
+          textContent: type === "text" ? textContent : undefined,
+          resources,
+        },
       });
+    };
+
+    const addResource = () => {
+      if (newResource.content.trim() && newResource.title.trim()) {
+        setResources([...resources, { ...newResource }]);
+        setNewResource({ type: "link", content: "", title: "" });
+        setShowResourceForm(false);
+      }
+    };
+
+    const removeResource = (index: number) => {
+      setResources(resources.filter((_, i) => i !== index));
+    };
+
+    const getResourceIcon = (resourceType: string) => {
+      switch (resourceType) {
+        case "link":
+          return <Upload className="h-4 w-4 text-blue-600" />;
+        case "document":
+          return <File className="h-4 w-4 text-green-600" />;
+        case "information":
+          return <Info className="h-4 w-4 text-purple-600" />;
+        default:
+          return null;
+      }
+    };
+
+    const getResourceTypeLabel = (resourceType: string) => {
+      switch (resourceType) {
+        case "link":
+          return "Lien";
+        case "document":
+          return "Document";
+        case "information":
+          return "Information";
+        default:
+          return resourceType;
+      }
     };
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
           <h3 className="text-lg font-semibold mb-4">
             {isEditing ? "Modifier la leçon" : "Nouvelle leçon"}
           </h3>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium mb-1">Titre</label>
               <Input
@@ -312,17 +422,34 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
                 required
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Type</label>
-              <select
-                value={type}
-                onChange={(e) => setType(e.target.value as "video" | "text")}
-                className="w-full border rounded-md p-2"
+
+            <ToggleGroup
+              value={type}
+              onValueChange={(value: string | string[]) => {
+                if (typeof value === "string" && value) {
+                  setType(value as "video" | "text");
+                }
+              }}
+              className="grid grid-cols-2 gap-4"
+            >
+              <ToggleGroupItem
+                value="video"
+                aria-label="Toggle video"
+                className="h-24 w-full bg-teal-600 text-white flex flex-col items-center justify-center gap-2 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
               >
-                <option value="text">Texte</option>
-                <option value="video">Vidéo</option>
-              </select>
-            </div>
+                <Upload className="h-6 w-6" />
+                Vidéo
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="text"
+                aria-label="Toggle text"
+                className="h-24 w-full flex flex-col items-center justify-center gap-2 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+              >
+                <File className="h-6 w-6" />
+                Texte
+              </ToggleGroupItem>
+            </ToggleGroup>
+
             {type === "video" && (
               <div>
                 <label className="block text-sm font-medium mb-1">
@@ -335,15 +462,176 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
                 />
               </div>
             )}
-            <div>
-              <label className="block text-sm font-medium mb-1">Contenu</label>
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Contenu de la leçon"
-                className="w-full border rounded-md p-2 h-20"
-              />
+
+            {type === "text" && (
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Contenu du cours
+                </label>
+                <Textarea
+                  value={textContent}
+                  onChange={(e) => setTextContent(e.target.value)}
+                  placeholder="Tapez le contenu de votre cours ici..."
+                  className="min-h-[120px]"
+                />
+              </div>
+            )}
+
+            {type === "video" && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Edit2 className="h-5 w-5 text-muted-foreground" />
+                  <label htmlFor="transcribe-video">Transcrire la Vidéo</label>
+                </div>
+                <Switch
+                  id="transcribe-video"
+                  checked={transcribeVideo}
+                  onCheckedChange={setTranscribeVideo}
+                />
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <label className="block text-sm font-medium">Ressources</label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowResourceForm(true)}
+                  className="h-8 px-3"
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  Ajouter
+                </Button>
+              </div>
+
+              {showResourceForm && (
+                <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-2">
+                      <label className="text-sm">Type de ressource</label>
+                      <Select
+                        value={newResource.type}
+                        onValueChange={(value) =>
+                          setNewResource({ ...newResource, type: value as any })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="link">Lien</SelectItem>
+                          <SelectItem value="document">Document</SelectItem>
+                          <SelectItem value="information">
+                            Information
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm">Titre</label>
+                      <Input
+                        placeholder="Titre de la ressource"
+                        value={newResource.title}
+                        onChange={(e) =>
+                          setNewResource({
+                            ...newResource,
+                            title: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm">Contenu</label>
+                    <Input
+                      placeholder={
+                        newResource.type === "link"
+                          ? "https://..."
+                          : newResource.type === "document"
+                          ? "Nom du document"
+                          : "Information"
+                      }
+                      value={newResource.content}
+                      onChange={(e) =>
+                        setNewResource({
+                          ...newResource,
+                          content: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={addResource}
+                      disabled={
+                        !newResource.content.trim() || !newResource.title.trim()
+                      }
+                      className="flex-1"
+                    >
+                      Ajouter
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setShowResourceForm(false);
+                        setNewResource({
+                          type: "link",
+                          content: "",
+                          title: "",
+                        });
+                      }}
+                    >
+                      Annuler
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-2">
+                {resources.map((resource, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <div className="flex items-center gap-3">
+                      {getResourceIcon(resource.type)}
+                      <div>
+                        <div className="font-medium text-sm">
+                          {resource.title}
+                        </div>
+                        <div className="text-xs text-gray-600">
+                          {resource.content}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {getResourceTypeLabel(resource.type)}
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeResource(index)}
+                      className="h-6 w-6 p-0 text-red-500 hover:text-red-600"
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ))}
+                {resources.length === 0 && (
+                  <div className="text-center py-4 text-gray-500 text-sm">
+                    Aucune ressource ajoutée
+                  </div>
+                )}
+              </div>
             </div>
+
             <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={onClose}>
                 Annuler
@@ -360,7 +648,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto z-[200]">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">
             5. Ajouter une classe
@@ -390,6 +678,54 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
                 onChange={(e) => setClassDescription(e.target.value)}
                 className="min-h-[90px]"
               />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                Thumbnail de la classe
+              </label>
+              <div className="flex items-center space-x-4">
+                {thumbnailPreview ? (
+                  <div className="relative">
+                    <img
+                      src={thumbnailPreview}
+                      alt="Thumbnail preview"
+                      className="w-20 h-20 object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeThumbnail}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                    <Upload className="w-6 h-6 text-gray-400" />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleThumbnailChange}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Choisir une image
+                  </Button>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Formats acceptés: JPG, PNG, GIF (max 5MB)
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -555,7 +891,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
 
         {/* Lesson Form Popup */}
         {showLessonForm && (
-          <SimpleLessonForm
+          <CompleteLessonForm
             onClose={() => {
               setShowLessonForm(false);
               setEditingLesson(null);

@@ -32,7 +32,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
   selectedProfile,
   onBack,
 }) => {
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const {
@@ -64,7 +64,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
     onSuccess(data, variables, context) {
       toast.success("Compte créé avec succès !");
       reset();
-      router.replace(ROUTES.codeSent);
+      router.replace(`${ROUTES.codeSent}?email=${variables.email}`);
     },
     onError(error, variables, context) {
       console.log(error);
@@ -166,9 +166,9 @@ export const SignupForm: React.FC<SignupFormProps> = ({
             variant={"roam"}
             type="submit"
             className="w-full rounded-lg h-12"
-            disabled={loading}
+            disabled={mutation.isLoading}
           >
-            {loading ? (
+            {mutation.isLoading ? (
               <Loader className="animate-spin h-5 w-5" />
             ) : (
               <>

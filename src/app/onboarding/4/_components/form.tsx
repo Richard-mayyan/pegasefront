@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Send, Plus, Trash2, Edit2 } from "lucide-react";
+import { Send, Plus, Trash2, Edit2, X, Upload } from "lucide-react";
 import { useOnboarding } from "../../context/OnboardingContext";
 import { useOnboardingNavigation } from "../../hooks/useOnboardingNavigation";
 import { useState, useRef } from "react";
@@ -23,7 +23,12 @@ interface LessonData {
   type: "video" | "text";
   videoLink?: string;
   transcribeVideo: boolean;
-  resources: string[];
+  textContent?: string;
+  resources: Array<{
+    type: "link" | "document" | "information";
+    content: string;
+    title: string;
+  }>;
 }
 
 export default function Component() {
@@ -43,6 +48,31 @@ export default function Component() {
   const [tempChapterTitle, setTempChapterTitle] = useState("");
   const [className, setClassName] = useState("");
   const [classDescription, setClassDescription] = useState("");
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleThumbnailChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setThumbnail(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setThumbnailPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeThumbnail = () => {
+    setThumbnail(null);
+    setThumbnailPreview("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -72,6 +102,7 @@ export default function Component() {
           profil: "default",
           color: data.color || "red",
           content: "",
+          thumbnailFile: thumbnail,
           // Passer les chapitres au repo pour enchaîner la création côté API
           chapters: data.chapters.map((chapter: any) => ({
             name: chapter.name,
@@ -295,6 +326,54 @@ export default function Component() {
                 onChange={(e) => setClassDescription(e.target.value)}
                 className="min-h-[90px]"
               />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                Thumbnail de la classe
+              </label>
+              <div className="flex items-center space-x-4">
+                {thumbnailPreview ? (
+                  <div className="relative">
+                    <img
+                      src={thumbnailPreview}
+                      alt="Thumbnail preview"
+                      className="w-20 h-20 object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeThumbnail}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                    <Upload className="w-6 h-6 text-gray-400" />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleThumbnailChange}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Choisir une image
+                  </Button>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Formats acceptés: JPG, PNG, GIF (max 5MB)
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 

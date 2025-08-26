@@ -5,6 +5,7 @@ import { useAppData } from "@/components/layouts/AppDataProvider";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import AddCourseForm from "./add-course-form";
+import { getPlaceholderImage, IMG_URL } from "@/lib/constants";
 
 export default function CourseGrid() {
   const {
@@ -77,9 +78,7 @@ export default function CourseGrid() {
     const progress = totalLessons > 0 ? 0 : 0;
     return {
       id: cls.id,
-      imageUrl:
-        cls.cover ||
-        "https://images.pexels.com/photos/6923373/pexels-photo-6923373.jpeg",
+      imageUrl: cls.cover || getPlaceholderImage("Cours"),
       title: cls.name,
       dateAdded: new Date(cls.createdAt || new Date()).toLocaleDateString(
         "fr-FR",
