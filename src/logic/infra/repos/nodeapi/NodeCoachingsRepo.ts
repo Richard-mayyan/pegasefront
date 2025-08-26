@@ -12,7 +12,7 @@ export class NodeCoachingsRepo implements ICoachingsRepo {
   // Gestion des coachings
   async createCoaching(data: CreateCoachingDto): Promise<CoachingEntity> {
     try {
-      const response = await apiClient.post("/coachings", {
+      const response = await apiClient.post("/user/coachings", {
         name: data.name,
         description: data.description,
         link: data.link,
@@ -32,7 +32,7 @@ export class NodeCoachingsRepo implements ICoachingsRepo {
 
   async findAllCoachings(): Promise<CoachingEntity[]> {
     try {
-      const response = await apiClient.get("/coachings");
+      const response = await apiClient.get("/user/coachings");
       const coachings = response.data.data || response.data || [];
       return coachings.map(this.mapCoachingResponseToEntity);
     } catch (error) {

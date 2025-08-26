@@ -11,13 +11,34 @@ import CommunityDetailsStats from "./community-details-stats";
 import EditCommunityModal from "./edit-community-modal";
 import { toast } from "sonner";
 import { communityRepo } from "@/logic/infra/di/container";
+import { useParams } from "next/navigation";
 
 export default function CommunityDetailsPage() {
-  const [activeTab, setActiveTab] = useState("about"); // 'about', 'stats', 'metrics'
-  const { currentCommunity, classes, isLoadingCommunities } = useAppData();
+  const [activeTab, setActiveTab] = useState("metrics"); // 'about', 'stats', 'metrics'
+  const { classes, isLoadingCommunities } = useAppData();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const [currentClass, setCurrentClass] = useState<ClassEntity | null>(null);
+  const [community, setCommunity] = useState<CommunityEntity | null>(null);
+  const [loading, setLoading] = useState(true);
+  const params = useParams<{ id: string }>();
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        if (params?.id) {
+          const data = await communityRepo.findOne(params.id);
+          setCommunity(data);
+          console.log("data", data);
+        }
+      } catch (e) {
+        toast.error("Impossible de récupérer la communauté");
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [params?.id]);
 
   useEffect(() => {
     if (classes && classes.length > 0) {
@@ -25,7 +46,7 @@ export default function CommunityDetailsPage() {
     } else {
       setCurrentClass(null);
     }
-  }, [currentCommunity, classes]);
+  }, [classes]);
 
   const getTabClass = (tabName: string) =>
     cn(
@@ -39,20 +60,19 @@ export default function CommunityDetailsPage() {
     setIsEditModalOpen(true);
   };
 
-  const handleSaveCommunity = async (
-    updatedCommunity: Partial<CommunityEntity>
-  ) => {
-    if (!currentCommunity?.id) {
+  const handleSaveCommunity = async (updatedCommunity: Partial<any>) => {
+    if (!community?.id) {
       toast.error("Impossible de modifier la communauté");
       return;
     }
 
     try {
-      // Utiliser directement communityRepo pour la mise à jour
-      await communityRepo.update(currentCommunity.id, updatedCommunity);
+      await communityRepo.update(community.id, {
+        ...(updatedCommunity as any),
+      });
+      const refreshed = await communityRepo.findOne(community.id);
+      setCommunity(refreshed);
       toast.success("Communauté mise à jour avec succès");
-      // Recharger les données de la communauté
-      // Note: Dans un vrai projet, il faudrait rafraîchir l'état local
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error);
       toast.error("Erreur lors de la mise à jour de la communauté");
@@ -61,25 +81,22 @@ export default function CommunityDetailsPage() {
   };
 
   const handleDeleteCommunity = async () => {
-    if (!currentCommunity?.id) {
+    if (!community?.id) {
       toast.error("Impossible de supprimer la communauté");
       return;
     }
 
     try {
-      // Utiliser directement communityRepo pour la suppression
-      await communityRepo.delete(currentCommunity.id);
+      await communityRepo.delete(community.id);
       toast.success("Communauté supprimée avec succès");
-      // Rediriger vers la page des communautés ou afficher un message
-      // Note: Dans un vrai projet, il faudrait rediriger l'utilisateur
     } catch (error) {
       console.error("Erreur lors de la suppression:", error);
       toast.error("Erreur lors de la suppression de la communauté");
     }
   };
 
-  // Si les données sont en cours de chargement
-  if (isLoadingCommunities) {
+  // Chargement
+  if (isLoadingCommunities || loading) {
     return (
       <div className="min-h-screen bg-gray-100 p-8">
         <div className="max-w-4xl mx-auto">
@@ -92,16 +109,16 @@ export default function CommunityDetailsPage() {
   }
 
   // Si aucune communauté ou classe n'est disponible
-  if (!currentCommunity || !currentClass) {
+  if (!community || !currentClass) {
     return (
       <div className="min-h-screen bg-gray-100 p-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center">
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
-              Aucune communauté disponible
+              Communauté introuvable
             </h3>
             <p className="text-gray-500">
-              Veuillez sélectionner une communauté
+              Vérifiez l'URL ou réessayez plus tard.
             </p>
           </div>
         </div>
@@ -112,34 +129,6 @@ export default function CommunityDetailsPage() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header avec informations de la communauté */}
-        <div className="mb-8 p-6 bg-white rounded-lg shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800">
-                {currentCommunity.name}
-              </h1>
-              <p className="text-gray-600">
-                {classes.length} classe{classes.length > 1 ? "s" : ""}{" "}
-                disponible{classes.length > 1 ? "s" : ""}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-500">Communauté créée le</p>
-              <p className="text-sm text-gray-700">
-                {currentCommunity.createdAt
-                  ? new Date(currentCommunity.createdAt).toLocaleDateString(
-                      "fr-FR"
-                    )
-                  : "Non définie"}
-              </p>
-            </div>
-          </div>
-          {currentCommunity.description && (
-            <p className="text-gray-700">{currentCommunity.description}</p>
-          )}
-        </div>
-
         {/* Tab Navigation */}
         <div className="flex gap-2 mb-8 w-fit mx-auto">
           <Button
@@ -162,10 +151,33 @@ export default function CommunityDetailsPage() {
           </Button>
         </div>
 
+        {/* Header avec informations de la communauté */}
+        <div className="mb-8 p-6 bg-white rounded-lg shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">
+                {community.name}
+              </h1>
+              <p className="text-gray-600">
+                {classes.length} classe{classes.length > 1 ? "s" : ""}{" "}
+                disponible{classes.length > 1 ? "s" : ""}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-gray-500">Communauté créée le</p>
+              <p className="text-sm text-gray-700">
+                {community.createdAt
+                  ? new Date(community.createdAt).toLocaleDateString("fr-FR")
+                  : "Non définie"}
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Content based on active tab */}
         {activeTab === "about" && (
           <CommunityDetailsAbout
-            community={currentCommunity}
+            community={community}
             classData={currentClass}
             onEdit={handleEditCommunity}
             onDelete={handleDeleteCommunity}
@@ -173,21 +185,18 @@ export default function CommunityDetailsPage() {
         )}
         {activeTab === "stats" && (
           <CommunityDetailsStats
-            community={currentCommunity}
+            community={community}
             classData={currentClass}
           />
         )}
         {activeTab === "metrics" && (
-          <MembersMetrics
-            community={currentCommunity}
-            classData={currentClass}
-          />
+          <MembersMetrics community={community} classData={currentClass} />
         )}
       </div>
 
       {/* Modal d'édition de la communauté */}
       <EditCommunityModal
-        community={currentCommunity}
+        community={community}
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSave={handleSaveCommunity}

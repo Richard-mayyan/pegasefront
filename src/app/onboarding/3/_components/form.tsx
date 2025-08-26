@@ -36,7 +36,7 @@ export default function Component() {
         cover: data.cover || "",
         profil: data.profil || "default",
         logo: data.logo || "",
-        coverPhotos: data.coverPhotos || [],
+        images: data.images || [],
         color: data.color || "red",
         typography: data.typography || "manrope",
         settings: data.settings || {

@@ -18,9 +18,7 @@ export default function Component() {
   const { goToNextStep, goToPreviousStep, skipStep } =
     useOnboardingNavigation();
   const [description, setDescription] = useState(data.description || "");
-  const [coverPhotos, setCoverPhotos] = useState<string[]>(
-    data.coverPhotos || []
-  );
+  const [images, setCoverPhotos] = useState<string[]>(data.images || []);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useCreateBlockNote({
@@ -36,22 +34,22 @@ export default function Component() {
 
   const handleCoverPhotoAdd = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && coverPhotos.length < 5) {
+    if (file && images.length < 5) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
-        const newCoverPhotos = [...coverPhotos, result];
+        const newCoverPhotos = [...images, result];
         setCoverPhotos(newCoverPhotos);
-        updateData({ coverPhotos: newCoverPhotos });
+        updateData({ images: newCoverPhotos });
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleCoverPhotoRemove = (index: number) => {
-    const newCoverPhotos = coverPhotos.filter((_, i) => i !== index);
+    const newCoverPhotos = images.filter((_, i) => i !== index);
     setCoverPhotos(newCoverPhotos);
-    updateData({ coverPhotos: newCoverPhotos });
+    updateData({ images: newCoverPhotos });
   };
 
   const handleNext = () => {
@@ -102,10 +100,10 @@ export default function Component() {
           </div>
 
           {/* Image principale */}
-          {coverPhotos.length > 0 ? (
+          {images.length > 0 ? (
             <div className="w-full h-64 bg-gray-200 rounded-lg overflow-hidden">
               <img
-                src={coverPhotos[0]}
+                src={images[0]}
                 alt="Photo principale de couverture"
                 className="w-full h-full object-cover"
               />
@@ -118,7 +116,7 @@ export default function Component() {
 
           {/* Galerie de photos */}
           <div className="flex space-x-3">
-            {coverPhotos.map((photo, index) => (
+            {images.map((photo, index) => (
               <div key={index} className="relative">
                 <div className="w-20 h-16 bg-gray-200 rounded-lg overflow-hidden">
                   <img
@@ -135,7 +133,7 @@ export default function Component() {
                 </button>
               </div>
             ))}
-            {coverPhotos.length < 5 && (
+            {images.length < 5 && (
               <button
                 className="w-20 h-16 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
                 onClick={() => fileInputRef.current?.click()}

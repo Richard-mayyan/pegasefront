@@ -61,6 +61,24 @@ export const IMG_URL2 =
 export const IMG_URL_MODEL =
   "https://images.pexels.com/photos/1805411/pexels-photo-1805411.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
 
+// Global typography options to reuse across Select components
+// value should match your CSS/font loading keys (e.g., Tailwind font-family or loaded webfonts)
+export const TYPOGRAPHY_OPTIONS = [
+  { label: "Inter", value: "inter" },
+  { label: "Manrope", value: "manrope" },
+  { label: "Roboto", value: "roboto" },
+  { label: "Poppins", value: "poppins" },
+  { label: "Lato", value: "lato" },
+  { label: "Montserrat", value: "montserrat" },
+  { label: "Open Sans", value: "open-sans" },
+  { label: "Raleway", value: "raleway" },
+  { label: "Nunito", value: "nunito" },
+  { label: "Work Sans", value: "work-sans" },
+  { label: "Playfair Display", value: "playfair-display" },
+  { label: "Merriweather", value: "merriweather" },
+  { label: "Source Serif Pro", value: "source-serif-pro" },
+];
+
 const ROUTES = {
   onboarding0: "/onboarding/0",
   onboarding1: "/onboarding/1",
@@ -74,7 +92,9 @@ const ROUTES = {
   resetPasswordSuccess: "/connection/3",
   resetPasswordSubmission: "/connection/reset-password-submission",
   options: "/p/profile/1",
+  coachProfile: "/p/profile",
   myCommunity: "/p/communaute/1",
+  goToMyCommunity: (id: string) => `/p/communaute/${id}`,
   membres: "/p/membres/1",
   lecons: "/p/lecon/2",
   chat: "/p/chat/2",

@@ -4,6 +4,8 @@ import { Pencil, Settings, Plus, Trash2 } from "lucide-react";
 import { IMG_URL } from "@/lib/constants";
 import { CommunityEntity, ClassEntity } from "@/logic/domain/entities";
 import { useState } from "react";
+import { useCreateBlockNote } from "@blocknote/react";
+import { BlockNoteView } from "@blocknote/shadcn";
 
 interface CommunityDetailsAboutProps {
   community: CommunityEntity;
@@ -26,6 +28,18 @@ export default function CommunityDetailsAbout({
       setShowDeleteConfirm(false);
     }
   };
+
+  const descriptionEditor = useCreateBlockNote({
+    initialContent: (() => {
+      try {
+        return community?.description
+          ? JSON.parse(community?.description)
+          : undefined;
+      } catch {
+        return undefined;
+      }
+    })(),
+  });
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-sm">
@@ -51,19 +65,18 @@ export default function CommunityDetailsAbout({
 
       {/* Main Image - Utilise la première coverPhoto ou cover par défaut */}
       <div className="relative w-full h-80 rounded-xl overflow-hidden mb-4">
-        <Image
-          src={community.coverPhotos?.[0] || IMG_URL}
+        <img
+          className="w-full h-full object-cover"
+          src={community.images?.[0]?.url || IMG_URL}
           alt={`Image de couverture de ${community.name}`}
-          layout="fill"
-          objectFit="cover"
         />
       </div>
 
-      {/* Thumbnail Gallery - Affiche les coverPhotos de la communauté */}
+      {/* Thumbnail Gallery - Affiche les images de la communauté */}
       <div className="grid grid-cols-5 gap-4 mb-8">
-        {/* Afficher les coverPhotos existantes */}
-        {community.coverPhotos && community.coverPhotos.length > 0 ? (
-          community.coverPhotos.map((photo, index) => (
+        {/* Afficher les images existantes */}
+        {community.images && community.images.length > 0 ? (
+          community.images.map((photo: any, index: number) => (
             <div
               key={index}
               className="relative w-full h-24 rounded-lg overflow-hidden"
@@ -77,7 +90,7 @@ export default function CommunityDetailsAbout({
             </div>
           ))
         ) : (
-          // Fallback si pas de coverPhotos
+          // Fallback si pas de images
           <></>
         )}
 
@@ -90,15 +103,15 @@ export default function CommunityDetailsAbout({
 
       {/* Description */}
       <div className="prose prose-sm max-w-none text-gray-700">
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">
-            À propos de la communauté
-          </h3>
-          <p className="text-gray-700">
-            {community.description ||
-              "Aucune description disponible pour cette communauté."}
-          </p>
-        </div>
+        {community.description && (
+          <div className="prose max-w-none">
+            <BlockNoteView
+              editor={descriptionEditor}
+              theme="light"
+              editable={false}
+            />
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>

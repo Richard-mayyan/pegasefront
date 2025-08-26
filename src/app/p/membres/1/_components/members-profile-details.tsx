@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { IMG_URL } from "@/lib/constants";
-import AreaChartComponent from "@/app/p/communaute/1/_components/area-chart-component";
+import AreaChartComponent from "@/app/p/communaute/[id]/_components/area-chart-component";
 import { Progress } from "@/components/ui/progress";
 
 export default function MemberProfileDetails() {

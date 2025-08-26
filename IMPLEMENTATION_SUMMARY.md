@@ -102,7 +102,7 @@ interface CreateClassDto {
 ### 1. Entité CommunityEntity (src/logic/domain/entities/index.ts)
 
 - ✅ Ajout de la propriété `logo?: string` pour le logo de la communauté
-- ✅ Ajout de la propriété `coverPhotos?: string[]` pour un tableau de photos de couverture (max 5)
+- ✅ Ajout de la propriété `images?: string[]` pour un tableau de photos de couverture (max 5)
 - ✅ Ajout de la propriété `settings` avec les paramètres de configuration :
   - `communityDiscussion: boolean`
   - `studentListVisibility: boolean`
@@ -110,7 +110,7 @@ interface CreateClassDto {
 
 ### 2. Interface CreateCommunityDto (src/logic/domain/repos/CommunityRepo.tsx)
 
-- ✅ Ajout des nouvelles propriétés `logo`, `coverPhotos` et `settings`
+- ✅ Ajout des nouvelles propriétés `logo`, `images` et `settings`
 - ✅ Mise à jour de l'interface UpdateCommunityDto avec les mêmes propriétés
 
 ### 3. Contexte d'onboarding (src/app/onboarding/context/OnboardingContext.tsx)
@@ -125,7 +125,7 @@ interface CreateClassDto {
 
 - ✅ Implémentation de la sélection de logo avec prévisualisation et suppression
 - ✅ Implémentation de la sélection de couverture avec prévisualisation et suppression
-- ✅ La première photo de couverture sélectionnée est automatiquement ajoutée à la liste `coverPhotos`
+- ✅ La première photo de couverture sélectionnée est automatiquement ajoutée à la liste `images`
 - ✅ Couleur rouge sélectionnée par défaut
 - ✅ Typographie Manrope sélectionnée par défaut
 - ✅ Gestion des fichiers avec FileReader pour la conversion en base64

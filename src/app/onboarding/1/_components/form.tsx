@@ -64,13 +64,10 @@ export default function Form() {
         const result = e.target?.result as string;
         setCoverPreview(result);
         // Ajouter la première photo de couverture à la liste
-        const newCoverPhotos = [result, ...(data.coverPhotos || [])].slice(
-          0,
-          5
-        );
+        const newCoverPhotos = [result, ...(data.images || [])].slice(0, 5);
         updateData({
           cover: result,
-          coverPhotos: newCoverPhotos,
+          images: newCoverPhotos,
         });
       };
       reader.readAsDataURL(file);

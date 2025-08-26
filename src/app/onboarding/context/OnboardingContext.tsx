@@ -12,7 +12,7 @@ interface OnboardingData {
   cover: string;
   profil: string;
   logo: string;
-  coverPhotos: string[]; // Tableau de photos de couverture (max 5)
+  images: string[]; // Tableau de photos de couverture (max 5)
   color: string;
   typography: string;
 
@@ -51,7 +51,7 @@ const defaultData: OnboardingData = {
   cover: "",
   profil: "",
   logo: "",
-  coverPhotos: [],
+  images: [],
   color: "red", // Rouge par défaut
   typography: "manrope", // Manrope par défaut
   chapters: [],
@@ -88,7 +88,7 @@ export const OnboardingProvider: React.FC<{ children: ReactNode }> = ({
       cover: data.cover,
       profil: data.profil,
       logo: data.logo,
-      coverPhotos: data.coverPhotos,
+      images: data.images,
       color: data.color,
       typography: data.typography,
       settings: data.settings,

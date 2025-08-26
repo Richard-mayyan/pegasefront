@@ -1,19 +1,38 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { X, Upload, Trash2 } from "lucide-react";
-import { CommunityEntity } from "@/logic/domain/entities";
+import {
+  CommunityEntity,
+  CommunityEntityWithoutImages,
+} from "@/logic/domain/entities";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { TYPOGRAPHY_OPTIONS } from "@/lib/constants";
+import { apiClient } from "@/logic/infra/repos/nodeapi/axios";
 
 interface EditCommunityModalProps {
   community: CommunityEntity;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (updatedCommunity: Partial<CommunityEntity>) => Promise<void>;
+  onSave: (
+    updatedCommunity: Partial<CommunityEntityWithoutImages>
+  ) => Promise<void>;
+}
+
+interface ImageData {
+  resourceId?: string;
+  url: string;
 }
 
 export default function EditCommunityModal({
@@ -28,10 +47,11 @@ export default function EditCommunityModal({
     color: community.color,
     typography: community.typography,
   });
-  const [coverPhotos, setCoverPhotos] = useState<string[]>(
-    community.coverPhotos || []
+  const [images, setCoverPhotos] = useState<ImageData[]>(
+    community.images || []
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -41,7 +61,7 @@ export default function EditCommunityModal({
         color: community.color,
         typography: community.typography,
       });
-      setCoverPhotos(community.coverPhotos || []);
+      setCoverPhotos(community.images || []);
     }
   }, [isOpen, community]);
 
@@ -53,18 +73,58 @@ export default function EditCommunityModal({
   };
 
   const handleAddCoverPhoto = () => {
-    // Simuler l'ajout d'une photo (dans un vrai projet, ceci ouvrirait un sélecteur de fichier)
-    const newPhoto = prompt("Entrez l'URL de la photo de couverture:");
-    if (newPhoto && newPhoto.trim()) {
-      if (coverPhotos.length >= 5) {
-        toast.error("Maximum 5 photos de couverture autorisées");
-        return;
-      }
-      setCoverPhotos((prev) => [...prev, newPhoto.trim()]);
+    if (images.length >= 5) {
+      toast.error("Maximum 5 photos de couverture autorisées");
+      return;
     }
+    fileInputRef.current?.click();
   };
 
-  const handleRemoveCoverPhoto = (index: number) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const remainingSlots = 5 - images.length;
+    const toRead = Array.from(files).slice(0, remainingSlots);
+
+    toRead.forEach((file) => {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Veuillez sélectionner une image valide");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        setCoverPhotos((prev) => [...prev, { url: base64 }]);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // reset input so selecting the same file again triggers change
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleRemoveCoverPhoto = async (index: number) => {
+    const imageToRemove = images[index];
+
+    console.log("imageToRemove", imageToRemove);
+
+    // Si l'image a un resourceId, la supprimer côté serveur
+    if (imageToRemove.resourceId) {
+      try {
+        // Appeler l'API pour supprimer l'image
+        await apiClient(`/resources/${imageToRemove.resourceId}`, {
+          method: "DELETE",
+        });
+        setCoverPhotos((prev) => prev.filter((_, i) => i !== index));
+        toast.success("Image supprimée");
+      } catch (error) {
+        console.error("Erreur lors de la suppression de l'image:", error);
+        toast.error("Erreur lors de la suppression de l'image");
+      }
+    }
+
+    // Supprimer l'image de l'état local
     setCoverPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -80,7 +140,7 @@ export default function EditCommunityModal({
       setIsSubmitting(true);
       await onSave({
         ...formData,
-        coverPhotos,
+        images: images.map((image) => image.url),
       });
       toast.success("Communauté mise à jour avec succès");
       onClose();
@@ -160,23 +220,32 @@ export default function EditCommunityModal({
           {/* Typographie */}
           <div className="space-y-2 mb-6">
             <Label htmlFor="community-typography">Typographie</Label>
-            <Input
-              id="community-typography"
+            <Select
               value={formData.typography || ""}
-              onChange={(e) => handleInputChange("typography", e.target.value)}
-              placeholder="Police de caractères (ex: Arial, Roboto)"
-            />
+              onValueChange={(value) => handleInputChange("typography", value)}
+            >
+              <SelectTrigger id="community-typography">
+                <SelectValue placeholder="Choisir une typographie" />
+              </SelectTrigger>
+              <SelectContent>
+                {TYPOGRAPHY_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Photos de couverture */}
           <div className="space-y-3 mb-6">
             <Label>Photos de couverture (max 5)</Label>
             <div className="grid grid-cols-5 gap-3">
-              {coverPhotos.map((photo, index) => (
+              {images.map((photo, index) => (
                 <div key={index} className="relative group">
                   <div className="w-full h-24 rounded-lg overflow-hidden bg-gray-100">
                     <img
-                      src={photo}
+                      src={photo.url}
                       alt={`Photo ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
@@ -192,7 +261,7 @@ export default function EditCommunityModal({
                   </Button>
                 </div>
               ))}
-              {coverPhotos.length < 5 && (
+              {images.length < 5 && (
                 <Button
                   type="button"
                   variant="outline"
@@ -204,9 +273,17 @@ export default function EditCommunityModal({
                 </Button>
               )}
             </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={handleFileChange}
+            />
             <p className="text-sm text-gray-500">
-              Cliquez sur "Ajouter" pour ajouter une nouvelle photo de
-              couverture
+              Vous pouvez téléverser jusqu'à 5 images. Les nouvelles images
+              remplacent celles existantes lors de l'enregistrement.
             </p>
           </div>
 

@@ -8,7 +8,7 @@ export interface CreateCommunityDto {
   cover?: string;
   profil?: string;
   logo?: string;
-  coverPhotos?: string[];
+  images?: string[];
   color?: string;
   typography: string;
   settings?: {
@@ -27,7 +27,7 @@ export interface UpdateCommunityDto {
   cover?: string;
   profil?: string;
   logo?: string;
-  coverPhotos?: string[];
+  images?: string[];
   color?: string;
   typography?: string;
   settings?: {

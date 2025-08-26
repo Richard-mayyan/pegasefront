@@ -159,7 +159,7 @@ export class NodeClassRepo implements IClassRepo {
 
   async update(id: string, data: UpdateClassDto): Promise<ClassEntity> {
     try {
-      const response = await apiClient.put<ClassSingleResponseDto>(
+      const response = await apiClient.patch<ClassSingleResponseDto>(
         `/classes/${id}`,
         data
       );

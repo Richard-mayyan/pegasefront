@@ -19,7 +19,7 @@ export class NodeCommunityRepo implements ICommunityRepo {
       description: response.description,
       profil: response.profil,
       logo: response.logo,
-      coverPhotos: response.coverPhotos,
+      images: response.images,
       color: response.color,
       typography: response.typography,
       settings: response.settings,
@@ -72,8 +72,8 @@ export class NodeCommunityRepo implements ICommunityRepo {
       }
 
       // Gérer les images de couverture (convertir base64 en Files si nécessaire)
-      if (data.coverPhotos && data.coverPhotos.length > 0) {
-        data.coverPhotos.forEach((photo, index) => {
+      if (data.images && data.images.length > 0) {
+        data.images.forEach((photo, index) => {
           if (photo.startsWith("data:")) {
             // Convertir base64 en File
             const imageFile = this.base64ToFile(photo, `cover-${index}.png`);
@@ -98,7 +98,7 @@ export class NodeCommunityRepo implements ICommunityRepo {
       console.log("Envoi de la requête avec FormData:", {
         name: data.name,
         hasLogo: !!data.logo,
-        coverPhotosCount: data.coverPhotos?.length || 0,
+        coverPhotosCount: data.images?.length || 0,
         hasCover: !!data.cover,
       });
 
@@ -177,9 +177,37 @@ export class NodeCommunityRepo implements ICommunityRepo {
 
   async update(id: string, data: UpdateCommunityDto): Promise<CommunityEntity> {
     try {
-      const response = await apiClient.put<CommunitySingleResponseDto>(
+      const formData = new FormData();
+
+      // // Ajouter les champs texte
+      // Object.keys(data).forEach((key) => {
+      //   if (
+      //     key !== "images" &&
+      //     data[key as keyof UpdateCommunityDto] !== undefined &&
+      //     data[key as keyof UpdateCommunityDto] !== null
+      //   ) {
+      //     formData.append(key, String(data[key as keyof UpdateCommunityDto]));
+      //   }
+      // });
+
+      // Ajouter les images de couverture
+      if (data.images && data.images.length > 0) {
+        data.images.forEach((photo: string, index: number) => {
+          if (photo.startsWith("data:image/")) {
+            const imageFile = this.base64ToFile(photo, `cover-${index}.png`);
+            formData.append("images", imageFile);
+          }
+        });
+      }
+
+      const response = await apiClient.patch<CommunitySingleResponseDto>(
         `/communities/${id}`,
-        data
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       return this.mapResponseToEntity(response.data.data);
     } catch (error) {

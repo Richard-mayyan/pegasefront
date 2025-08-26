@@ -34,7 +34,29 @@ export interface CommunityEntity {
   // cover?: string;
   profil?: string;
   logo?: string;
-  coverPhotos?: string[]; // Tableau de photos de couverture (max 5)
+  images?: { resourceId: string; url: string }[];
+  color?: string;
+  typography?: string;
+  classes?: ClassEntity[];
+  members?: UserEntity[];
+  // Configuration de la communauté
+  settings?: {
+    communityDiscussion: boolean;
+    studentListVisibility: boolean;
+    groupMeeting: boolean;
+  };
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CommunityEntityWithoutImages {
+  id?: any;
+  name: string;
+  description?: string;
+  // cover?: string;
+  profil?: string;
+  logo?: string;
+  images?: string[];
   color?: string;
   typography?: string;
   classes?: ClassEntity[];

@@ -5,10 +5,14 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
+import { useAppData } from "@/components/layouts/AppDataProvider";
 
 export default function MainNavbar() {
   const pathname = usePathname();
-
+  const { currentCommunity } = useAppData();
+  if (!currentCommunity) {
+    return null;
+  }
   const navItems = [
     {
       label: "Chat",
@@ -39,14 +43,14 @@ export default function MainNavbar() {
     // },
     {
       label: "Communauté",
-      href: ROUTES.myCommunity,
+      href: ROUTES.goToMyCommunity(currentCommunity.id),
       isActive: pathname?.startsWith("/p/myCommunity"),
     },
-    // {
-    //   label: "Options",
-    //   href: ROUTES.options,
-    //   isActive: pathname?.startsWith("/p/profile"),
-    // },
+    {
+      label: "Profil",
+      href: ROUTES.coachProfile,
+      isActive: pathname?.startsWith("/p/profile"),
+    },
   ];
 
   return (
@@ -84,7 +88,7 @@ export default function MainNavbar() {
           <Circle className="h-4 w-4 text-gray-500" />
         </Button>
         <Link
-          href="/p/profile/1"
+          href="/p/profile"
           className={cn(
             buttonVariants({ variant: "ghost", size: "icon" }),
             "h-8 w-8 rounded-full border border-gray-300"
