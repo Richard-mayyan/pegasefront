@@ -109,7 +109,7 @@ export interface CommunityResponseDto {
   cover?: string;
   profil?: string;
   logo?: string;
-  images?: { ressourceId: string; url: string }[];
+  images?: { resourceId: string; url: string }[];
   color?: string;
   typography?: string;
   settings?: {

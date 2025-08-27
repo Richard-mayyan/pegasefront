@@ -80,7 +80,7 @@ export class InMemoryCommunityRepo implements ICommunityRepo {
       ...this.communities[index],
       ...data,
       updatedAt: new Date().toISOString(),
-    };
+    } as CommunityEntity;
 
     this.saveToStorage();
     return this.communities[index];
