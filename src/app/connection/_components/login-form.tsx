@@ -21,6 +21,7 @@ import { ACCESS_TOKEN_KEY, ROUTES } from "@/lib/constants";
 import { getdefaultValue } from "@/lib/utils";
 import Image from "next/image";
 import { useAuth } from "@/components/layouts/AuthProvider";
+import { PasswordRequirements } from "@/components/ui/password-requirements";
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
@@ -33,6 +34,7 @@ export default function LoginForm() {
     reset,
     setValue,
     handleSubmit,
+    watch,
   } = useForm<SigninFormValues>({
     defaultValues: {
       email: getdefaultValue("richard.bathiebo.7@gmail.com"),
@@ -107,6 +109,10 @@ export default function LoginForm() {
               {...SIGNIN_FORM["password"]}
               register={register}
               errors={errors}
+            />
+            <PasswordRequirements
+              password={watch("password") || ""}
+              show={!!watch("password")}
             />
           </div>
 

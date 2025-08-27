@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
 import { getdefaultValue } from "@/lib/utils";
 import Image from "next/image";
+import { PasswordRequirements } from "@/components/ui/password-requirements";
 
 interface SignupFormProps {
   selectedProfile: ProfileEnum;
@@ -41,6 +42,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
     reset,
     setValue,
     handleSubmit,
+    watch,
   } = useForm<SignupFormValues>({
     defaultValues: {
       firstName: getdefaultValue("firstname"),
@@ -158,6 +160,10 @@ export const SignupForm: React.FC<SignupFormProps> = ({
               {...SIGNUP_FORM["password"]}
               register={register}
               errors={errors}
+            />
+            <PasswordRequirements
+              password={watch("password") || ""}
+              show={true}
             />
           </div>
 
