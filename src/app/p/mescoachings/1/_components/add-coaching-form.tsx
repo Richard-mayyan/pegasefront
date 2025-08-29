@@ -129,7 +129,7 @@ export default function AddCoachingForm({
       >
         <div className="text-center">
           <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Plus className="h-8 w-8 text-teal-600" />
+            <Plus className="h-8 w-8 text-customBg" />
           </div>
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
             Ajouter un coaching
@@ -238,7 +238,7 @@ export default function AddCoachingForm({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="bg-teal-600 hover:bg-teal-700 text-white"
+            className="bg-customBg hover:bg-customBg-hover text-white"
           >
             {isSubmitting
               ? isEditing

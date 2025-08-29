@@ -26,7 +26,7 @@ export default function ChatEmptyState() {
         {/* Actions */}
         <div className="space-y-3">
           <Link href="/p/chat/1">
-            <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3">
+            <Button className="w-full bg-customBg hover:bg-customBg-hover text-white py-3">
               <Plus className="h-5 w-5 mr-2" />
               Créer un groupe de discussion
             </Button>

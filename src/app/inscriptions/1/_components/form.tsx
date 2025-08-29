@@ -17,15 +17,15 @@ import z from "zod";
 import { useMutation } from "react-query";
 import { authRepo } from "@/logic/infra/di/container";
 import { RegisterDto } from "@/logic/infra/repos/nodeapi/dtos";
-import { ProfileEnum } from "@/logic/domain/entities";
+import { RegisterProfileEnum } from "@/logic/domain/entities";
 import { useRouter } from "next/navigation";
-import { ROUTES } from "@/lib/constants";
+import { handleApiError, ROUTES } from "@/lib/constants";
 import { getdefaultValue } from "@/lib/utils";
 import Image from "next/image";
 import { PasswordRequirements } from "@/components/ui/password-requirements";
 
 interface SignupFormProps {
-  selectedProfile: ProfileEnum;
+  selectedProfile: RegisterProfileEnum;
   onBack?: () => void;
 }
 
@@ -47,7 +47,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
     defaultValues: {
       firstName: getdefaultValue("firstname"),
       lastName: getdefaultValue("lastname"),
-      email: getdefaultValue("richard.bathiebo.7@gmail.com"),
+      email: getdefaultValue("richardfreelance1@gmail.com"),
       password: getdefaultValue("Password123@?"),
     },
     resolver: zodResolver(SignupSchema),
@@ -69,16 +69,15 @@ export const SignupForm: React.FC<SignupFormProps> = ({
       router.replace(`${ROUTES.codeSent}?email=${variables.email}`);
     },
     onError(error, variables, context) {
-      console.log(error);
-      toast.error("Erreur ");
+      handleApiError(error as any);
     },
   });
 
-  const getProfileDisplayName = (profile: ProfileEnum) => {
+  const getProfileDisplayName = (profile: RegisterProfileEnum) => {
     switch (profile) {
-      case ProfileEnum.Standard:
-        return "Utilisateur Standard";
-      case ProfileEnum.Coach:
+      case RegisterProfileEnum.Student:
+        return "Etudiant";
+      case RegisterProfileEnum.Coach:
         return "Coach";
       default:
         return "Utilisateur";
@@ -90,7 +89,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
       <div className="w-full max-w-md space-y-8">
         {/* Logo */}
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
             <Image
               src="/logo.svg"
               alt="Pegasus Logo"
@@ -117,7 +116,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
         {/* Header */}
         <div className="space-y-4">
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-teal-600 font-medium">
+            <span className="text-sm text-customBg font-medium">
               {getProfileDisplayName(selectedProfile)}
             </span>
           </div>
@@ -193,7 +192,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
             J'ai déjà un compte.{" "}
             <Link
               href="/login"
-              className="text-teal-600 hover:text-teal-700 font-medium"
+              className="text-customBg hover:text-customBg-hover font-medium"
             >
               Connectez-vous !
             </Link>

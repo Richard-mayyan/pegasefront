@@ -32,7 +32,7 @@ export default function MainSidebar() {
       <SidebarHeader className="flex flex-col items-center gap-4 py-4">
         <div className="flex items-center gap-2">
           {/* Logo Pegasus - cheval ailé */}
-          <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-customBg rounded-lg flex items-center justify-center">
             <Image
               src="/logo.svg"
               alt="Pegasus Logo"
@@ -52,7 +52,7 @@ export default function MainSidebar() {
                 <SidebarMenuButton
                   className={`h-12 w-12 rounded-lg border-2 transition-all duration-200 flex items-center justify-center text-xs font-semibold shadow-sm ${
                     currentCommunity?.id === comm.id
-                      ? "bg-teal-500 border-teal-600 text-white shadow-md"
+                      ? "bg-teal-500 border-customBg text-white shadow-md"
                       : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
                   }`}
                   onClick={() => handleCommunitySelect(comm)}

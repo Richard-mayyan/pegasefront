@@ -55,7 +55,7 @@ export default function NewChatGroupForm() {
         <div className="bg-white rounded-lg shadow-lg p-6">
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-customBg rounded-full flex items-center justify-center mx-auto mb-4">
               <Plus className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-gray-800">
@@ -144,7 +144,7 @@ export default function NewChatGroupForm() {
             <Button
               type="submit"
               disabled={isLoading || !formData.name.trim()}
-              className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3"
+              className="w-full bg-customBg hover:bg-customBg-hover text-white py-3"
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">

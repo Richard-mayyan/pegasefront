@@ -1,5 +1,5 @@
 import { IAuthRepo, LoginResult } from "@/logic/domain/repos/AuthRepo";
-import { ProfileEnum, UserEntity } from "@/logic/domain/entities";
+import { RegisterProfileEnum, UserEntity } from "@/logic/domain/entities";
 import { RegisterDto } from "@/logic/infra/repos/nodeapi/dtos";
 
 export class InMemoryAuthRepo implements IAuthRepo {
@@ -20,9 +20,10 @@ export class InMemoryAuthRepo implements IAuthRepo {
         firstName: "Richard",
         lastName: "Bathiebo",
         password: "Password123@?", // En production, ceci devrait être hashé
-        profile: ProfileEnum.Standard,
+        profile: RegisterProfileEnum.Student,
         communities: [
           {
+            studentCount: 0,
             id: 1,
             name: "Communauté Test",
             description: "Une communauté de test",
@@ -38,9 +39,11 @@ export class InMemoryAuthRepo implements IAuthRepo {
         firstName: "Jane",
         lastName: "Smith",
         password: "password123",
-        profile: ProfileEnum.Coach,
+        profile: RegisterProfileEnum.Coach,
         communities: [
           {
+            studentCount: 0,
+
             id: 1,
             name: "Communauté Test",
             description: "Une communauté de test",
@@ -56,9 +59,11 @@ export class InMemoryAuthRepo implements IAuthRepo {
         firstName: "Admin",
         lastName: "User",
         password: "admin123",
-        profile: ProfileEnum.Coach,
+        profile: RegisterProfileEnum.Coach,
         communities: [
           {
+            studentCount: 0,
+
             id: 1,
             name: "Communauté Test",
             description: "Une communauté de test",
@@ -116,7 +121,7 @@ export class InMemoryAuthRepo implements IAuthRepo {
       firstName: data.firstName,
       lastName: data.lastName,
       password: data.password, // En production, ceci devrait être hashé
-      profile: data.profile as any, // Cast vers ProfileEnum
+      profile: data.profile as any, // Cast vers RegisterProfileEnum
       communities: [],
     };
 

@@ -165,13 +165,13 @@ export default function ChatInputArea() {
               : "Sélectionnez un groupe pour commencer à discuter"
           }
           disabled={isDisabled}
-          className="flex-1 min-h-[40px] max-h-[120px] pr-12 resize-none rounded-lg border border-gray-300 focus-visible:ring-0 focus-visible:border-teal-600 disabled:bg-gray-50 disabled:text-gray-400"
+          className="flex-1 min-h-[40px] max-h-[120px] pr-12 resize-none rounded-lg border border-gray-300 focus-visible:ring-0 focus-visible:border-customBg disabled:bg-gray-50 disabled:text-gray-400"
         />
         <Button
           onClick={handleSubmit}
           disabled={isDisabled || !message.trim()}
           size="icon"
-          className="absolute right-2 bottom-2 h-8 w-8 rounded-full bg-teal-600 hover:bg-teal-700 text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
+          className="absolute right-2 bottom-2 h-8 w-8 rounded-full bg-customBg hover:bg-customBg-hover text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

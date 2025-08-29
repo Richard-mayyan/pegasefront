@@ -276,7 +276,7 @@ export default function Component() {
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Logo and Brand */}
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
             <Image
               src="/logo.svg"
               alt="Pegasus Logo"
@@ -294,7 +294,7 @@ export default function Component() {
             5. Ajouter une classe
           </h2>
           <Button
-            className="bg-teal-600 hover:bg-teal-700 text-white px-8"
+            className="bg-customBg hover:bg-customBg-hover text-white px-8"
             onClick={handleAddChapter}
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -419,7 +419,7 @@ export default function Component() {
                   </div>
                   <div className="flex items-center space-x-3">
                     <button
-                      className="text-teal-600 hover:text-teal-700 text-sm font-medium flex items-center"
+                      className="text-customBg hover:text-customBg-hover text-sm font-medium flex items-center"
                       onClick={() => handleAddLesson(chapterIndex)}
                     >
                       <Plus className="w-4 h-4 mr-1" />
@@ -427,7 +427,7 @@ export default function Component() {
                     </button>
                     <Switch
                       defaultChecked
-                      className="data-[state=checked]:bg-teal-600"
+                      className="data-[state=checked]:bg-customBg"
                     />
                     <button
                       className="text-red-500 hover:text-red-600"
@@ -465,7 +465,7 @@ export default function Component() {
                         <div className="flex items-center space-x-3">
                           <Switch
                             defaultChecked
-                            className="data-[state=checked]:bg-teal-600"
+                            className="data-[state=checked]:bg-customBg"
                           />
                           <button
                             className="text-red-500 hover:text-red-600"
@@ -516,7 +516,7 @@ export default function Component() {
               Passer
             </Button>
             <Button
-              className="bg-teal-600 hover:bg-teal-700 text-white px-8"
+              className="bg-customBg hover:bg-customBg-hover text-white px-8"
               onClick={handleCreateLesson}
               disabled={mutation.isLoading}
             >

@@ -105,7 +105,7 @@ export default function Form() {
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Logo and Brand */}
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
             <Image
               src="/logo.svg"
               alt="Pegasus Logo"
@@ -296,15 +296,15 @@ export default function Form() {
 
         {/* Navigation Buttons */}
         <div className="flex justify-between pt-8">
-          <Button
+          {/* <Button
             variant="ghost"
             className="text-gray-600 hover:text-gray-800"
             onClick={handleSkip}
           >
             Passer
-          </Button>
+          </Button> */}
           <Button
-            className="bg-teal-600 hover:bg-teal-700 text-white px-8 w-full"
+            className="bg-customBg hover:bg-customBg-hover text-white px-8 w-full"
             onClick={handleNext}
           >
             Suivant

@@ -10,54 +10,21 @@ import NavigationButtons from "./navigation-buttons";
 import PlanSelection from "./plan-selection";
 import ProcessInfo from "./process-info";
 import { ACCESS_TOKEN_KEY } from "@/lib/constants";
-
-// Types pour l'API
-interface PaymentIntentResponse {
-  clientSecret: string;
-  setupIntentId: string;
-}
+import { usePaymentIntent } from "@/hooks/use-payment-intent";
 
 export default function SubscriptionForm() {
   const { goToNextStep } = useOnboardingNavigation();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [paymentIntent, setPaymentIntent] =
-    useState<PaymentIntentResponse | null>(null);
+  const { paymentIntent } = usePaymentIntent();
+  // const [paymentIntent, setPaymentIntent] =
+  //   useState<PaymentIntentResponse | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
 
   // Récupérer le payment intent au chargement
-  useEffect(() => {
-    fetchPaymentIntent();
-  }, []);
-
-  const fetchPaymentIntent = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/user/intent", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN_KEY)}`,
-        },
-        body: JSON.stringify({
-          amount: 5000, // 50€ en centimes
-          currency: "eur",
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Erreur lors de la récupération du payment intent");
-      }
-
-      const data = await response.json();
-      setPaymentIntent(data);
-    } catch (error) {
-      console.error("Erreur:", error);
-      toast.error("Erreur lors de la récupération du payment intent");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // useEffect(() => {
+  //   fetchPaymentIntent();
+  // }, []);
 
   const handleSuccess = () => {
     // if (selectedPlan) {
@@ -67,6 +34,7 @@ export default function SubscriptionForm() {
     // } else {
     //   toast.success("Carte enregistrée avec succès !");
     // }
+    toast.success("Abonnement créé avec succès !");
     goToNextStep(0);
   };
 
@@ -79,7 +47,7 @@ export default function SubscriptionForm() {
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Logo and Brand */}
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
             <Image
               src="/logo.svg"
               alt="Pegasus Logo"
@@ -113,6 +81,7 @@ export default function SubscriptionForm() {
         {/* Stripe Payment Form */}
         {paymentIntent ? (
           <StripePaymentForm
+            publishableKey={paymentIntent.publishableKey}
             clientSecret={paymentIntent.clientSecret}
             onSuccess={handleSuccess}
             onError={handleError}
@@ -122,7 +91,7 @@ export default function SubscriptionForm() {
           />
         ) : (
           <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-customBg mx-auto"></div>
             <p className="text-gray-600 mt-2">
               Chargement du formulaire de paiement...
             </p>
@@ -148,7 +117,7 @@ export default function SubscriptionForm() {
           Nous vous informerons 3 jours avant le 20 Juin 2025 pour le paiement
           de votre premier mois.
           <br />
-          <span className="text-teal-600 cursor-pointer hover:underline">
+          <span className="text-customBg cursor-pointer hover:underline">
             En savoir plus sur nos termes
           </span>
         </div>
@@ -156,7 +125,7 @@ export default function SubscriptionForm() {
         {/* Login Link */}
         <div className="text-center pt-4">
           <span className="text-gray-600">J'ai déjà un compte. </span>
-          <span className="text-teal-600 cursor-pointer hover:underline font-medium">
+          <span className="text-customBg cursor-pointer hover:underline font-medium">
             Connectez-vous !
           </span>
         </div>

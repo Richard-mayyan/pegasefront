@@ -50,7 +50,7 @@ export default function ForgotPasswordForm() {
       <div className="w-full max-w-md space-y-8">
         {/* Logo */}
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
             <Image
               src="/logo.svg"
               alt="Pegasus Logo"
@@ -86,7 +86,7 @@ export default function ForgotPasswordForm() {
           <Button
             type="submit"
             variant="default"
-            className="w-full rounded-lg h-12 bg-teal-600 hover:bg-teal-700"
+            className="w-full rounded-lg h-12 bg-customBg hover:bg-customBg-hover"
             disabled={isLoading}
           >
             {isLoading ? "Envoi..." : "Restaurer le mot de passe"}
@@ -99,7 +99,7 @@ export default function ForgotPasswordForm() {
             <span className="font-bold">Je me souviens du mot de passe </span>
             <a
               href={ROUTES.connection}
-              className="text-teal-600 hover:text-teal-700 font-medium"
+              className="text-customBg hover:text-customBg-hover font-medium"
             >
               Connectez-vous !
             </a>

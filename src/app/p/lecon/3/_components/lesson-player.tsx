@@ -105,10 +105,10 @@ export default function LessonPlayer({
           <div className="absolute inset-0 flex items-center justify-center">
             <Button
               size="icon"
-              className="h-16 w-16 rounded-full bg-white/80 text-teal-600 hover:bg-white"
+              className="h-16 w-16 rounded-full bg-white/80 text-customBg hover:bg-white"
               onClick={() => window.open(lesson.content.videoLink, "_blank")}
             >
-              <Play className="h-8 w-8 fill-teal-600" />
+              <Play className="h-8 w-8 fill-customBg" />
               <span className="sr-only">Play video</span>
             </Button>
           </div>
@@ -120,7 +120,7 @@ export default function LessonPlayer({
         <div className="w-full aspect-video bg-gray-100 rounded-lg flex items-center justify-center mb-6">
           <div className="text-center">
             <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Play className="h-8 w-8 text-teal-600" />
+              <Play className="h-8 w-8 text-customBg" />
             </div>
             <p className="text-gray-600">Lecteur audio</p>
             <p className="text-sm text-gray-500">Contenu audio à venir</p>

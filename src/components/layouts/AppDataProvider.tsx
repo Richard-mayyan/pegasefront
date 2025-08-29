@@ -69,8 +69,6 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
       // Mettre à jour la communauté sélectionnée
       setCommunity(selectedCommunity);
 
-      console.log("selectedCommunity", selectedCommunity);
-
       // Charger les classes de la communauté sélectionnée
       if (selectedCommunity) {
         try {

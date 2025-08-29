@@ -41,7 +41,7 @@ export function getFullName(user: User) {
   return `${user.firstName} ${user.lastName}`;
 }
 
-export function formatPrice(value: number, locale = "us-US", currency = "$") {
+export function formatPrice(value: number, locale = "us-US", currency = "€") {
   return `${value} ${currency}`;
   // return `$${value.toFixed(2)}`;
   // return new Intl.NumberFormat(locale, {

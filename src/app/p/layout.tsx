@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: any) {
   if (!currentCommunity) {
     toast.error("Aucune communauté sélectionné");
     // window.location.href = ROUTES.createCommunity;
-    return redirect(ROUTES.createCommunity);
+    // return redirect(ROUTES.createCommunity);
   }
   return (
     <SidebarProvider>

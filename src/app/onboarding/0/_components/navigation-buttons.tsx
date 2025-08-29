@@ -33,7 +33,7 @@ export default function NavigationButtons({ onSkip }: NavigationButtonsProps) {
 
       <Button
         variant="outline"
-        className="text-teal-600 border-teal-600 hover:bg-teal-50"
+        className="text-customBg border-customBg hover:bg-teal-50"
         onClick={handleSkip}
       >
         <SkipForward className="w-4 h-4 mr-2" />

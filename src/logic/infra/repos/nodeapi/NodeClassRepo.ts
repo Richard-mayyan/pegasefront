@@ -54,7 +54,6 @@ export class NodeClassRepo implements IClassRepo {
       if (!selectedCommunityId) {
         throw new Error("Aucune communauté sélectionnée pour créer la classe");
       }
-      console.log("selectedCommunityId", selectedCommunityId);
 
       const form = new FormData();
       form.append("name", data.name);

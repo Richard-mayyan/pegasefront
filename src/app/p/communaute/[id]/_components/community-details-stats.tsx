@@ -7,65 +7,64 @@ import { useState, useEffect } from "react";
 
 interface CommunityDetailsStatsProps {
   community: CommunityEntity;
-  classData: ClassEntity;
+  // classData: ClassEntity;
 }
 
 export default function CommunityDetailsStats({
   community,
-  classData,
-}: CommunityDetailsStatsProps) {
+}: // classData,
+CommunityDetailsStatsProps) {
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
+  const [totalRevenue, setTotalRevenue] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Calculer les statistiques réelles basées sur les données
-  const totalChapters = classData.chapters?.length || 0;
-  const totalLessons =
-    classData.chapters?.reduce(
-      (total, chapter) => total + (chapter.lessons?.length || 0),
-      0
-    ) || 0;
+  // const totalChapters = classData.chapters?.length || 0;
+  // const totalLessons =
+  //   classData.chapters?.reduce(
+  //     (total, chapter) => total + (chapter.lessons?.length || 0),
+  //     0
+  //   ) || 0;
 
   // Calculer la progression (pour l'instant, on considère qu'aucune leçon n'est terminée)
   const completedLessons = 0;
-  const progressPercentage =
-    totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+  // const progressPercentage =
+  //   totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
 
-  // Récupérer les vraies données d'abonnements depuis l'API
+  // Récupérer les vraies données d'abonnements et de revenus depuis l'API
   useEffect(() => {
-    const fetchSubscriptions = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await apiClient.get(
+
+        // Récupérer les abonnements
+        const subscriptionsResponse = await apiClient.get(
           `/communities/${community.id}/subscriptions`
         );
-        setSubscriptions(response.data.data || []);
+        setSubscriptions(subscriptionsResponse.data.data || []);
+
+        // Récupérer les revenus
+        const revenueResponse = await apiClient.get(
+          `/communities/${community.id}/revenus`
+        );
+        setTotalRevenue(revenueResponse.data.data.revenue || 0);
+
         setError(null);
       } catch (err) {
-        console.error("Erreur lors de la récupération des abonnements:", err);
-        setError("Impossible de charger les abonnements");
+        console.error("Erreur lors de la récupération des données:", err);
+        setError("Impossible de charger les données");
         setSubscriptions([]);
+        setTotalRevenue(0);
       } finally {
         setLoading(false);
       }
     };
 
     if (community.id) {
-      fetchSubscriptions();
+      fetchData();
     }
   }, [community.id]);
-
-  // Calculer le revenu total basé sur les vraies données
-  const totalRevenue = subscriptions
-    .filter(
-      (sub) =>
-        sub.amount !== 0 && sub.amount !== "0" && sub.amount !== "Gratuit"
-    )
-    .reduce((total, sub) => {
-      const amount =
-        typeof sub.amount === "number" ? sub.amount : parseInt(sub.amount) || 0;
-      return total + amount;
-    }, 0);
 
   // Nombre total d'étudiants (basé sur les souscriptions)
   const totalStudents = subscriptions.length;
@@ -82,7 +81,9 @@ export default function CommunityDetailsStats({
         </div>
         <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
           <p className="text-sm text-gray-500 mb-1">Nombre d'étudiant</p>
-          <h3 className="text-3xl font-bold text-gray-800">{totalStudents}</h3>
+          <h3 className="text-3xl font-bold text-gray-800">
+            {community.studentCount}
+          </h3>
         </div>
       </div>
 
@@ -172,25 +173,25 @@ export default function CommunityDetailsStats({
 
       {/* Informations supplémentaires de la classe */}
       {/* <div className="mt-8 p-4 bg-teal-50 rounded-lg border border-teal-200">
-        <h3 className="text-lg font-semibold text-teal-800 mb-4">
+        <h3 className="text-lg font-semibold text-customBg-augmented mb-4">
           Informations de la classe
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div>
-            <span className="text-teal-600 font-medium">Nom:</span>
-            <p className="text-teal-800">{classData.name}</p>
+            <span className="text-customBg font-medium">Nom:</span>
+            <p className="text-customBg-augmented">{classData.name}</p>
           </div>
           <div>
-            <span className="text-teal-600 font-medium">Chapitres:</span>
-            <p className="text-teal-800">{totalChapters}</p>
+            <span className="text-customBg font-medium">Chapitres:</span>
+            <p className="text-customBg-augmented">{totalChapters}</p>
           </div>
           <div>
-            <span className="text-teal-600 font-medium">Leçons:</span>
-            <p className="text-teal-800">{totalLessons}</p>
+            <span className="text-customBg font-medium">Leçons:</span>
+            <p className="text-customBg-augmented">{totalLessons}</p>
           </div>
           <div>
-            <span className="text-teal-600 font-medium">Progression:</span>
-            <p className="text-teal-800">{progressPercentage}%</p>
+            <span className="text-customBg font-medium">Progression:</span>
+            <p className="text-customBg-augmented">{progressPercentage}%</p>
           </div>
         </div>
       </div> */}

@@ -11,7 +11,7 @@ function SearchInput({}: Props) {
       <div className="relative flex-1">
         <Input
           placeholder="Rechercher"
-          className="pl-4 pr-10 py-2 rounded-lg border border-gray-300 focus:ring-teal-600 focus:border-teal-600"
+          className="pl-4 pr-10 py-2 rounded-lg border border-gray-300 focus:ring-customBg focus:border-customBg"
         />
         <Button
           variant="ghost"
@@ -21,7 +21,7 @@ function SearchInput({}: Props) {
           <Circle className="h-4 w-4 text-gray-500" />
         </Button>
       </div>
-      <Button className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg flex items-center gap-2">
+      <Button className="bg-customBg hover:bg-customBg-hover text-white px-6 py-2 rounded-lg flex items-center gap-2">
         <Plus className="h-4 w-4" />
         Ajouter une leçon
       </Button>

@@ -435,7 +435,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
               <ToggleGroupItem
                 value="video"
                 aria-label="Toggle video"
-                className="h-24 w-full bg-teal-600 text-white flex flex-col items-center justify-center gap-2 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                className="h-24 w-full bg-customBg text-white flex flex-col items-center justify-center gap-2 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
               >
                 <Upload className="h-6 w-6" />
                 Vidéo
@@ -636,7 +636,10 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
               <Button type="button" variant="outline" onClick={onClose}>
                 Annuler
               </Button>
-              <Button type="submit" className="bg-teal-600 hover:bg-teal-700">
+              <Button
+                type="submit"
+                className="bg-customBg hover:bg-customBg-hover"
+              >
                 {isEditing ? "Modifier" : "Créer"}
               </Button>
             </div>
@@ -735,7 +738,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
               Structure de la classe
             </h2>
             <Button
-              className="bg-teal-600 hover:bg-teal-700 text-white px-8"
+              className="bg-customBg hover:bg-customBg-hover text-white px-8"
               onClick={handleAddChapter}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -787,7 +790,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
                     </div>
                     <div className="flex items-center space-x-3">
                       <button
-                        className="text-teal-600 hover:text-teal-700 text-sm font-medium flex items-center"
+                        className="text-customBg hover:text-customBg-hover text-sm font-medium flex items-center"
                         onClick={() => handleAddLesson(chapterIndex)}
                       >
                         <Plus className="w-4 h-4 mr-1" />
@@ -795,7 +798,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
                       </button>
                       <Switch
                         defaultChecked
-                        className="data-[state=checked]:bg-teal-600"
+                        className="data-[state=checked]:bg-customBg"
                       />
                       <button
                         className="text-red-500 hover:text-red-600"
@@ -835,7 +838,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
                           <div className="flex items-center space-x-3">
                             <Switch
                               defaultChecked
-                              className="data-[state=checked]:bg-teal-600"
+                              className="data-[state=checked]:bg-customBg"
                             />
                             <button
                               className="text-red-500 hover:text-red-600"
@@ -872,7 +875,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
           {chapters.length > 0 && (
             <div className="flex justify-center pt-4">
               <Button
-                className="bg-teal-600 hover:bg-teal-700 text-white px-8"
+                className="bg-customBg hover:bg-customBg-hover text-white px-8"
                 onClick={handleCreateLesson}
                 disabled={mutation.isLoading}
               >

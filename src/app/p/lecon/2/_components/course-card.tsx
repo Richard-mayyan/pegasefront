@@ -54,7 +54,7 @@ export default function CourseCard({
           </div>
           <Progress
             value={progress}
-            className="h-2 rounded-full bg-gray-200 [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-teal-600"
+            className="h-2 rounded-full bg-gray-200 [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-customBg"
           />
           {totalLessons > 0 && (
             <div className="text-xs text-gray-500 text-center">

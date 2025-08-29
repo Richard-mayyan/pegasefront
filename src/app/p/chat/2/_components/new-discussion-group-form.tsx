@@ -165,7 +165,7 @@ export default function NewDiscussionGroupForm() {
       </CardContent>
       <CardFooter className="flex justify-end gap-2 pt-4">
         <Button variant="outline">Annuler</Button>
-        <Button className="bg-teal-600 hover:bg-teal-700 text-white">
+        <Button className="bg-customBg hover:bg-customBg-hover text-white">
           Ajouter Groupe de chat
         </Button>
       </CardFooter>

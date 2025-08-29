@@ -5,29 +5,18 @@ import { apiClient } from "@/logic/infra/repos/nodeapi/axios";
 import { Check, Crown, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
-
-interface Plan {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  currency: string;
-  interval: string;
-  trialPeriodDays?: number;
-  features?: string[];
-  popular?: boolean;
-}
+import { PlanEntity } from "@/logic/domain/entities";
 
 interface PlanSelectionProps {
-  onPlanSelect: (plan: Plan) => void;
-  selectedPlan: Plan | null;
+  onPlanSelect: (plan: PlanEntity) => void;
+  selectedPlan: PlanEntity | null;
 }
 
 export default function PlanSelection({
   onPlanSelect,
   selectedPlan,
 }: PlanSelectionProps) {
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const [plans, setPlans] = useState<PlanEntity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +27,7 @@ export default function PlanSelection({
   const fetchPlans = async () => {
     try {
       setLoading(true);
-      const response = await apiClient.get("/plans");
+      const response = await apiClient.get("/plans?target=coaches");
       setPlans(response.data.data || response.data || []);
     } catch (error) {
       console.error("Erreur lors de la récupération des plans:", error);
@@ -51,7 +40,7 @@ export default function PlanSelection({
   if (loading) {
     return (
       <div className="text-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-customBg mx-auto"></div>
         <p className="text-gray-600 mt-2">Chargement des plans...</p>
       </div>
     );
@@ -75,6 +64,8 @@ export default function PlanSelection({
       </div>
     );
   }
+
+  console.log("plans ", plans);
 
   return (
     <div className="space-y-4">
@@ -163,11 +154,11 @@ export default function PlanSelection({
 
       {selectedPlan && (
         <div className="text-center p-4 bg-teal-50 border border-teal-200 rounded-lg">
-          <p className="text-teal-800 font-medium">
+          <p className="text-customBg-augmented font-medium">
             Plan sélectionné :{" "}
             <span className="font-semibold">{selectedPlan.name}</span>
           </p>
-          <p className="text-teal-600 text-sm mt-1">
+          <p className="text-customBg text-sm mt-1">
             {selectedPlan.price === 0
               ? "Vous pourrez commencer immédiatement"
               : `Prix : ${formatPrice(selectedPlan.price / 100)}/ par mois`}

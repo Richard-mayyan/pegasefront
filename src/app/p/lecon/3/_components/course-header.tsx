@@ -25,13 +25,13 @@ export default function CourseHeader({
           </span>
           <Progress
             value={progress}
-            className="w-24 h-2 rounded-full bg-gray-200 [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-teal-600"
+            className="w-24 h-2 rounded-full bg-gray-200 [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-customBg"
           />
           <span>{progress}%</span>
         </div>
       </div>
       <div className="flex items-center gap-4">
-        <Button className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+        <Button className="bg-customBg hover:bg-customBg-hover text-white px-4 py-2 rounded-lg flex items-center gap-2">
           Valider et continuer
           <ArrowRight className="h-4 w-4" />
         </Button>

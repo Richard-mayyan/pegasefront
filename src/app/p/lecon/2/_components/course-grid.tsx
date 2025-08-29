@@ -6,8 +6,12 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import AddCourseForm from "./add-course-form";
 import { getPlaceholderImage, IMG_URL } from "@/lib/constants";
+import { RegisterProfileEnum } from "@/logic/domain/entities";
+import { useAuth } from "@/components/layouts/AuthProvider";
 
 export default function CourseGrid() {
+  const { user } = useAuth();
+
   const {
     currentCommunity,
     classes,
@@ -45,18 +49,20 @@ export default function CourseGrid() {
     return (
       <div className="flex flex-col items-center justify-center flex-1 text-center py-16">
         <div className="bg-gray-100 p-6 rounded-full mb-6">
-          <UsersIcon className="h-16 w-16 text-teal-600" />
+          <UsersIcon className="h-16 w-16 text-customBg" />
         </div>
         <h3 className="text-2xl font-bold text-gray-800 mb-4">
           Pas encore de cours ici .
         </h3>
-        <Button
-          onClick={() => setShowAddCourseForm(true)}
-          className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg flex items-center gap-2"
-        >
-          <PlusIcon className="h-4 w-4" />
-          Ajouter un cours
-        </Button>
+        {user?.profile === RegisterProfileEnum.Coach && (
+          <Button
+            onClick={() => setShowAddCourseForm(true)}
+            className="bg-customBg hover:bg-customBg-hover text-white px-6 py-3 rounded-lg flex items-center gap-2"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Ajouter un cours
+          </Button>
+        )}
 
         {/* Formulaire d'ajout de cours */}
         <AddCourseForm
@@ -106,7 +112,7 @@ export default function CourseGrid() {
           <h1 className="text-2xl font-bold text-gray-800">Mes Cours</h1>
           <Button
             onClick={() => setShowAddCourseForm(true)}
-            className="bg-teal-600 hover:bg-teal-700 text-white"
+            className="bg-customBg hover:bg-customBg-hover text-white"
           >
             <PlusIcon className="h-4 w-4 mr-2" />
             Ajouter un cours

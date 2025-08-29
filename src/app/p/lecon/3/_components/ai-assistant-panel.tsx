@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 export default function AIAssistantPanel() {
   return (
     <aside className="w-80 bg-gray-100 border-l border-gray-200 p-6 flex flex-col items-center text-center animate-in slide-in-from-right duration-300">
-      <div className="bg-teal-600 p-4 rounded-full mb-6">
+      <div className="bg-customBg p-4 rounded-full mb-6">
         <Sparkles className="h-10 w-10 text-white" />
       </div>
       <p className="text-gray-700 text-sm mb-4">
@@ -32,7 +32,7 @@ export default function AIAssistantPanel() {
       <div className="relative w-full mt-auto">
         <Input
           placeholder="Posez une question à Pegase"
-          className="w-full pr-10 py-2 rounded-lg border border-gray-300 focus:ring-teal-600 focus:border-teal-600"
+          className="w-full pr-10 py-2 rounded-lg border border-gray-300 focus:ring-customBg focus:border-customBg"
         />
         <Button
           variant="ghost"

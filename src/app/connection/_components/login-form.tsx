@@ -15,9 +15,10 @@ import {
 } from "@/components/forms";
 import z from "zod";
 import { useMutation } from "react-query";
+import { AxiosError } from "axios";
 import { authRepo } from "@/logic/infra/di/container";
 import { useRouter } from "next/navigation";
-import { ACCESS_TOKEN_KEY, ROUTES } from "@/lib/constants";
+import { ACCESS_TOKEN_KEY, handleApiError, ROUTES } from "@/lib/constants";
 import { getdefaultValue } from "@/lib/utils";
 import Image from "next/image";
 import { useAuth } from "@/components/layouts/AuthProvider";
@@ -37,7 +38,7 @@ export default function LoginForm() {
     watch,
   } = useForm<SigninFormValues>({
     defaultValues: {
-      email: getdefaultValue("richard.bathiebo.7@gmail.com"),
+      email: getdefaultValue("richardfreelance1@gmail.com"),
       password: getdefaultValue("Password123@?"),
     },
     resolver: zodResolver(SigninSchema),
@@ -57,8 +58,7 @@ export default function LoginForm() {
       // router.replace(ROUTES.createCommunity);
     },
     onError(error, variables, context) {
-      console.log(error);
-      toast.error("Erreur de connexion");
+      handleApiError(error as any);
     },
   });
 
@@ -67,7 +67,7 @@ export default function LoginForm() {
       <div className="w-full max-w-md space-y-8">
         {/* Logo */}
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
             <Image
               src="/logo.svg"
               alt="Pegasus Logo"
@@ -82,7 +82,7 @@ export default function LoginForm() {
         {/* Header */}
         <div className="space-y-4">
           <h2 className="text-3xl font-bold text-black">
-            Content de vous revoir
+            Content de vous revoir !
           </h2>
           <p className="text-gray-600 text-base leading-relaxed">
             Connectez-vous à votre compte pour continuer.
@@ -110,10 +110,10 @@ export default function LoginForm() {
               register={register}
               errors={errors}
             />
-            <PasswordRequirements
+            {/* <PasswordRequirements
               password={watch("password") || ""}
               show={!!watch("password")}
-            />
+            /> */}
           </div>
 
           {/* Submit Button */}
@@ -139,7 +139,7 @@ export default function LoginForm() {
             Mot de passe oublié ?{" "}
             <Link
               href={ROUTES.forgotPassword}
-              className="text-teal-600 hover:text-teal-700 font-medium"
+              className="text-customBg hover:text-customBg-hover font-medium"
             >
               Réinitialisez-le ici
             </Link>
@@ -148,7 +148,7 @@ export default function LoginForm() {
             Vous n'avez pas de compte ?{" "}
             <Link
               href={ROUTES.register}
-              className="text-teal-600 hover:text-teal-700 font-medium"
+              className="text-customBg hover:text-customBg-hover font-medium"
             >
               Créez-en un !
             </Link>

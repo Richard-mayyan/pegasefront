@@ -10,11 +10,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Send, Users, User } from "lucide-react";
-import { ProfileEnum } from "@/logic/domain/entities";
+import {
+  RegisterProfileEnum,
+  RegisterRegisterProfileEnum,
+} from "@/logic/domain/entities";
 import Image from "next/image";
 
 interface ProfileSelectionProps {
-  onProfileSelect: (profile: ProfileEnum) => void;
+  onProfileSelect: (profile: RegisterProfileEnum) => void;
 }
 
 export const ProfileSelection: React.FC<ProfileSelectionProps> = ({
@@ -25,7 +28,7 @@ export const ProfileSelection: React.FC<ProfileSelectionProps> = ({
       <div className="w-full max-w-md space-y-8">
         {/* Logo */}
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
             <Image
               src="/logo.svg"
               alt="Pegasus Logo"
@@ -51,7 +54,7 @@ export const ProfileSelection: React.FC<ProfileSelectionProps> = ({
         <div className="space-y-4">
           {/* <Card
             className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-teal-500"
-            onClick={() => onProfileSelect(ProfileEnum.Standard)}
+            onClick={() => onProfileSelect(RegisterProfileEnum.Student)}
           >
             <CardHeader>
               <div className="flex items-center space-x-3">
@@ -59,9 +62,7 @@ export const ProfileSelection: React.FC<ProfileSelectionProps> = ({
                   <User className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <CardTitle className="text-lg">
-                    Utilisateur Standard
-                  </CardTitle>
+                  <CardTitle className="text-lg">Etudiant</CardTitle>
                   <CardDescription>
                     Accédez aux cours et suivez votre progression
                   </CardDescription>
@@ -80,12 +81,12 @@ export const ProfileSelection: React.FC<ProfileSelectionProps> = ({
 
           <Card
             className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-teal-500"
-            onClick={() => onProfileSelect(ProfileEnum.Coach)}
+            onClick={() => onProfileSelect(RegisterProfileEnum.Coach)}
           >
             <CardHeader>
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-                  <Users className="w-5 h-5 text-teal-600" />
+                  <Users className="w-5 h-5 text-customBg" />
                 </div>
                 <div>
                   <CardTitle className="text-lg">Coach</CardTitle>

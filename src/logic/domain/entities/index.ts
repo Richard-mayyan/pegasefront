@@ -1,9 +1,13 @@
 // models.ts
-
-export enum ProfileEnum {
-  Standard = "student",
-  Coach = "coach",
+export enum RegisterProfileEnum {
   Admin = "admin",
+  Coach = "coach",
+  Student = "student",
+}
+
+export enum RegisterRegisterProfileEnum {
+  Coach = "coach",
+  Student = "student",
 }
 
 export interface SubscriptionEntity {
@@ -21,9 +25,36 @@ export interface UserEntity {
   firstName: string;
   lastName: string;
   password?: string;
-  profile: ProfileEnum;
+  profile: RegisterProfileEnum;
   communities?: CommunityEntity[];
   subscriptions?: SubscriptionEntity[];
+  coach?: {
+    avatar: string;
+    firstname: string;
+    id: string;
+    lastname: string;
+  };
+  paymentMethods?: PaymentMethodEntity[];
+}
+
+export interface PaymentMethodEntity {
+  id: string;
+  brand: string;
+  last4: string;
+  exp_month: number;
+  exp_year: number;
+}
+
+export interface PlanEntity {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  currency: string;
+  interval: string;
+  trialPeriodDays?: number;
+  features?: string[];
+  popular?: boolean;
 }
 
 // --- CommunityEntity ---
@@ -47,6 +78,8 @@ export interface CommunityEntity {
   };
   createdAt?: string;
   updatedAt?: string;
+  studentCount: number;
+  plan?: PlanEntity;
 }
 
 export interface CommunityEntityWithoutImages {

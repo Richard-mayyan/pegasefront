@@ -1,3 +1,6 @@
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+
 export type SortFilterItem = {
   title: string;
   slug: string | null;
@@ -80,6 +83,15 @@ export const TYPOGRAPHY_OPTIONS = [
 ];
 
 const ROUTES = {
+  student: {
+    home: "/stud/home",
+  },
+  coach: {
+    home: "/coach",
+  },
+  admin: {
+    home: "/admin",
+  },
   onboarding0: "/onboarding/0",
   onboarding1: "/onboarding/1",
   onboarding2: "/onboarding/2",
@@ -118,3 +130,10 @@ const womanDefaultPP =
 
 export const ACCESS_TOKEN_KEY = "ACCESS_TOKEN_KEY";
 export { ROUTES, manDefaultPP, womanDefaultPP };
+
+export const handleApiError = (error: AxiosError<any>) => {
+  console.log("handleApiError ", error);
+  const message =
+    (error.response?.data as any)?.message || "Erreur de connexion";
+  toast.error(message);
+};

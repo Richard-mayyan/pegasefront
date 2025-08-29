@@ -2,15 +2,14 @@
 
 import React, { useState } from "react";
 import { SignupForm } from "./_components/form";
-import { ProfileEnum } from "@/logic/domain/entities";
+import { RegisterProfileEnum } from "@/logic/domain/entities";
 import { ProfileSelection } from "./_components/profile-selection";
 
 type Props = {};
 
 function page({}: Props) {
-  const [selectedProfile, setSelectedProfile] = useState<ProfileEnum | null>(
-    null
-  );
+  const [selectedProfile, setSelectedProfile] =
+    useState<RegisterProfileEnum | null>(null);
 
   const handleBackToProfileSelection = () => {
     setSelectedProfile(null);
@@ -19,7 +18,7 @@ function page({}: Props) {
   return (
     <div>
       <div className="md:flex py-4 px-5 md:h-screen overflow-hidden  w-fit mx-auto">
-        <div className="min-w-[450px]">
+        <div className="min-w-[450px] overflow-scroll">
           {selectedProfile ? (
             <SignupForm
               selectedProfile={selectedProfile}

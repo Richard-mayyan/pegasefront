@@ -101,7 +101,7 @@ export default function CourseSidebar({
                 onClick={() => onCommunitySelect(index)}
                 className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-all duration-200 ${
                   selectedCommunityIndex === index
-                    ? "bg-teal-100 border-2 border-teal-300 text-teal-800 shadow-sm"
+                    ? "bg-teal-100 border-2 border-teal-300 text-customBg-augmented shadow-sm"
                     : "bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 hover:border-gray-300"
                 }`}
               >
@@ -123,7 +123,7 @@ export default function CourseSidebar({
                   </div>
                 </div>
                 {selectedCommunityIndex === index && (
-                  <CheckCircle className="h-4 w-4 text-teal-600 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-customBg flex-shrink-0" />
                 )}
               </button>
             ))}
@@ -205,7 +205,7 @@ export default function CourseSidebar({
                         className={`flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 text-sm cursor-pointer transition-colors ${
                           selectedChapterIndex === chapterIndex &&
                           selectedLessonIndex === lessonIndex
-                            ? "bg-teal-50 text-teal-700 border border-teal-200"
+                            ? "bg-teal-50 text-customBg-hover border border-teal-200"
                             : "text-gray-700"
                         }`}
                         onClick={() => {
@@ -217,7 +217,7 @@ export default function CourseSidebar({
                         <span className="truncate flex-1">{lesson.title}</span>
                         {selectedChapterIndex === chapterIndex &&
                           selectedLessonIndex === lessonIndex && (
-                            <CheckCircle className="h-4 w-4 text-teal-600 flex-shrink-0" />
+                            <CheckCircle className="h-4 w-4 text-customBg flex-shrink-0" />
                           )}
                       </div>
                     ))

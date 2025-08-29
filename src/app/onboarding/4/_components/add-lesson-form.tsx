@@ -175,7 +175,7 @@ export default function AddLessonForm({
           <ToggleGroupItem
             value="video"
             aria-label="Toggle video"
-            className="h-24 w-full bg-teal-600 text-white flex flex-col items-center justify-center gap-2 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+            className="h-24 w-full bg-customBg text-white flex flex-col items-center justify-center gap-2 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
           >
             <Video className="h-6 w-6" />
             Vidéo
@@ -357,7 +357,7 @@ export default function AddLessonForm({
           Annuler
         </Button>
         <Button
-          className="bg-teal-600 hover:bg-teal-700 text-white px-8 w-full"
+          className="bg-customBg hover:bg-customBg-hover text-white px-8 w-full"
           onClick={handleSave}
           disabled={!title.trim()}
         >

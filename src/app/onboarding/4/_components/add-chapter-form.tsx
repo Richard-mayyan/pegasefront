@@ -36,7 +36,7 @@ export default function NewChapterForm() {
       <CardFooter className="flex justify-end gap-2 pt-4">
         <Button variant="outline">Annuler</Button>
         {/* <Button>Ajouter le chapitre</Button> */}
-        <Button className="bg-teal-600 hover:bg-teal-700 text-white px-8">
+        <Button className="bg-customBg hover:bg-customBg-hover text-white px-8">
           Ajouter le chapitre
         </Button>
       </CardFooter>

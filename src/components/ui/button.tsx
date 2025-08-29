@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 //  <Button
 //           type="submit"
-//           className="w-full bg-teal-600 hover:bg-teal-700 text-white rounded-lg h-12 text-base font-medium mt-6"
+//           className="w-full bg-customBg hover:bg-customBg-hover text-white rounded-lg h-12 text-base font-medium mt-6"
 //         >
 //           Créer ma classe
 //           <Send className="w-4 h-4 ml-2" />
@@ -17,7 +17,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        roam: "bg-teal-600 hover:bg-teal-700 text-white  ",
+        roam: "bg-customBg hover:bg-customBg-hover text-white  ",
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",

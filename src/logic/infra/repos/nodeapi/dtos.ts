@@ -103,6 +103,7 @@ export interface UpdateNoteDtop {}
 
 // Community DTOs
 export interface CommunityResponseDto {
+  studentCount: number;
   id: string;
   name: string;
   description?: string;

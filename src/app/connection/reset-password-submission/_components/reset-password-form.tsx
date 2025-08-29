@@ -9,6 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
 import { authRepo } from "@/logic/infra/di/container";
 import { ResetPasswordDto } from "@/logic/domain/repos/AuthRepo";
+import { PasswordRequirements } from "@/components/ui/password-requirements";
 
 export default function ResetPasswordForm() {
   const [email, setEmail] = useState("");
@@ -85,7 +86,7 @@ export default function ResetPasswordForm() {
     <div className="min-h-screen bg-white flex items-center justify-center p-8">
       <div className="w-full max-w-md space-y-8">
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
             <Image
               src="/logo.svg"
               alt="Pegasus Logo"
@@ -159,6 +160,7 @@ export default function ResetPasswordForm() {
               >
                 {showPassword ? "👁️" : "👁️‍🗨️"}
               </Button>
+              <PasswordRequirements password={password} show={!!password} />
             </div>
             <p className="text-xs text-gray-500">
               Le mot de passe doit contenir au moins 8 caractères
@@ -194,7 +196,7 @@ export default function ResetPasswordForm() {
           <Button
             type="submit"
             variant="default"
-            className="w-full rounded-lg h-12 bg-teal-600 hover:bg-teal-700"
+            className="w-full rounded-lg h-12 bg-customBg hover:bg-customBg-hover"
             disabled={isLoading}
           >
             {isLoading
@@ -211,7 +213,7 @@ export default function ResetPasswordForm() {
             </span>
             <a
               href={ROUTES.connection}
-              className="text-teal-600 hover:text-teal-700 font-medium"
+              className="text-customBg hover:text-customBg-hover font-medium"
             >
               Connectez-vous !
             </a>

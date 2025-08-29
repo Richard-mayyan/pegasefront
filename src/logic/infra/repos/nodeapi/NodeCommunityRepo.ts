@@ -20,6 +20,7 @@ export class NodeCommunityRepo implements ICommunityRepo {
       profil: response.profil,
       logo: response.logo,
       images: response.images,
+      studentCount: response.studentCount,
       color: response.color,
       typography: response.typography,
       settings: response.settings,

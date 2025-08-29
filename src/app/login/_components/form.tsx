@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { ACCESS_TOKEN_KEY, ROUTES } from "@/lib/constants";
 import { getdefaultValue } from "@/lib/utils";
 import Image from "next/image";
+import { RegisterProfileEnum } from "@/logic/domain/entities";
 
 export const LoginForm = () => {
   const [loading, setLoading] = useState(false);
@@ -33,7 +34,7 @@ export const LoginForm = () => {
     handleSubmit,
   } = useForm<SigninFormValues>({
     defaultValues: {
-      email: getdefaultValue("richard.bathiebo.7@gmail.com"),
+      email: getdefaultValue("richardfreelance1@gmail.com"),
       password: getdefaultValue("Password123@?"),
     },
     resolver: zodResolver(SigninSchema),
@@ -50,7 +51,11 @@ export const LoginForm = () => {
       localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
       reset();
       // router.replace(ROUTES.createCommunity);
-      router.replace(ROUTES.createCommunity);
+      if (data?.user.profile === RegisterProfileEnum.Student) {
+        router.replace(ROUTES.student.home);
+      } else {
+        router.replace(ROUTES.connection);
+      }
     },
     onError(error, variables, context) {
       console.log(error);
@@ -63,7 +68,7 @@ export const LoginForm = () => {
       <div className="w-full max-w-md space-y-8">
         {/* Logo */}
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
             <Image
               src="/logo.svg"
               alt="Pegasus Logo"
@@ -131,7 +136,7 @@ export const LoginForm = () => {
             Mot de passe oublié ?{" "}
             <Link
               href={ROUTES.forgotPassword}
-              className="text-teal-600 hover:text-teal-700 font-medium"
+              className="text-customBg hover:text-customBg-hover font-medium"
             >
               Réinitialisez-le ici
             </Link>
@@ -140,7 +145,7 @@ export const LoginForm = () => {
             Vous n'avez pas de compte ?{" "}
             <Link
               href={ROUTES.register}
-              className="text-teal-600 hover:text-teal-700 font-medium"
+              className="text-customBg hover:text-customBg-hover font-medium"
             >
               Créez-en un !
             </Link>

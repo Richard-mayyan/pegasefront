@@ -71,7 +71,7 @@ export default function ChatNoGroupSelected() {
           <Button
             onClick={handleCreate}
             disabled={!name.trim() || isCreating}
-            className="bg-teal-600 hover:bg-teal-700 text-white w-full"
+            className="bg-customBg hover:bg-customBg-hover text-white w-full"
           >
             <Plus className="h-4 w-4 mr-2" />
             {isCreating ? "Création en cours..." : "Créer un nouveau groupe"}

@@ -215,7 +215,7 @@
 //         className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110 ${
 //           isAIPanelOpen
 //             ? "bg-red-500 hover:bg-red-600 text-white"
-//             : "bg-teal-500 hover:bg-teal-600 text-white"
+//             : "bg-teal-500 hover:bg-customBg text-white"
 //         }`}
 //         title={
 //           isAIPanelOpen ? "Fermer l'assistant AI" : "Ouvrir l'assistant AI"

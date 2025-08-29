@@ -219,7 +219,7 @@ export default function CoachingsListTable() {
             </Button>
             <Button
               onClick={handleOpenAddForm}
-              className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+              className="bg-customBg hover:bg-customBg-hover text-white px-4 py-2 rounded-lg flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
               Ajouter coaching
@@ -371,7 +371,7 @@ export default function CoachingsListTable() {
               </Button>
               <Button
                 onClick={handleOpenEditForm}
-                className="flex-1 bg-teal-600 hover:bg-teal-700 text-white"
+                className="flex-1 bg-customBg hover:bg-customBg-hover text-white"
               >
                 Modifier coaching
               </Button>

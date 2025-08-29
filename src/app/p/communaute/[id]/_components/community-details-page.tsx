@@ -6,19 +6,26 @@ import { cn } from "@/lib/utils";
 import CommunityDetailsAbout from "./community-details-about";
 import MembersMetrics from "./members-metrics";
 import { useAppData } from "@/components/layouts/AppDataProvider";
-import { CommunityEntity, ClassEntity } from "@/logic/domain/entities";
+import {
+  CommunityEntity,
+  ClassEntity,
+  RegisterProfileEnum,
+} from "@/logic/domain/entities";
 import CommunityDetailsStats from "./community-details-stats";
 import EditCommunityModal from "./edit-community-modal";
 import { toast } from "sonner";
 import { communityRepo } from "@/logic/infra/di/container";
 import { useParams } from "next/navigation";
+import { useAuth } from "@/components/layouts/AuthProvider";
 
 export default function CommunityDetailsPage() {
-  const [activeTab, setActiveTab] = useState("metrics"); // 'about', 'stats', 'metrics'
+  const { user } = useAuth();
+
+  const [activeTab, setActiveTab] = useState("about"); // 'about', 'stats', 'metrics'
   const { classes, isLoadingCommunities } = useAppData();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const [currentClass, setCurrentClass] = useState<ClassEntity | null>(null);
+  // const [currentClass, setCurrentClass] = useState<ClassEntity | null>(null);
   const [community, setCommunity] = useState<CommunityEntity | null>(null);
   const [loading, setLoading] = useState(true);
   const params = useParams<{ id: string }>();
@@ -28,8 +35,8 @@ export default function CommunityDetailsPage() {
       try {
         if (params?.id) {
           const data = await communityRepo.findOne(params.id);
-          setCommunity(data);
           console.log("data", data);
+          setCommunity(data);
         }
       } catch (e) {
         toast.error("Impossible de récupérer la communauté");
@@ -40,19 +47,19 @@ export default function CommunityDetailsPage() {
     load();
   }, [params?.id]);
 
-  useEffect(() => {
-    if (classes && classes.length > 0) {
-      setCurrentClass(classes[0]);
-    } else {
-      setCurrentClass(null);
-    }
-  }, [classes]);
+  // useEffect(() => {
+  //   if (classes && classes.length > 0) {
+  //     setCurrentClass(classes[0]);
+  //   } else {
+  //     setCurrentClass(null);
+  //   }
+  // }, [classes]);
 
   const getTabClass = (tabName: string) =>
     cn(
       "px-4 py-2 rounded-lg text-base font-medium",
       activeTab === tabName
-        ? "bg-teal-600 text-white"
+        ? "bg-customBg text-white"
         : "bg-transparent text-gray-700 hover:bg-gray-100"
     );
 
@@ -109,7 +116,7 @@ export default function CommunityDetailsPage() {
   }
 
   // Si aucune communauté ou classe n'est disponible
-  if (!community || !currentClass) {
+  if (!community) {
     return (
       <div className="min-h-screen bg-gray-100 p-8">
         <div className="max-w-4xl mx-auto">
@@ -130,27 +137,28 @@ export default function CommunityDetailsPage() {
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto">
         {/* Tab Navigation */}
-        <div className="flex gap-2 mb-8 w-fit mx-auto">
-          <Button
-            onClick={() => setActiveTab("about")}
-            className={getTabClass("about")}
-          >
-            À propos
-          </Button>
-          <Button
-            onClick={() => setActiveTab("stats")}
-            className={getTabClass("stats")}
-          >
-            Statistiques
-          </Button>
-          <Button
-            onClick={() => setActiveTab("metrics")}
-            className={getTabClass("metrics")}
-          >
-            Métriques
-          </Button>
-        </div>
-
+        {user?.profile === RegisterProfileEnum.Coach && (
+          <div className="flex gap-2 mb-8 w-fit mx-auto">
+            <Button
+              onClick={() => setActiveTab("about")}
+              className={getTabClass("about")}
+            >
+              À propos
+            </Button>
+            <Button
+              onClick={() => setActiveTab("stats")}
+              className={getTabClass("stats")}
+            >
+              Statistiques
+            </Button>
+            <Button
+              onClick={() => setActiveTab("metrics")}
+              className={getTabClass("metrics")}
+            >
+              Métriques
+            </Button>
+          </div>
+        )}
         {/* Header avec informations de la communauté */}
         <div className="mb-8 p-6 bg-white rounded-lg shadow-sm">
           <div className="flex items-center justify-between mb-4">
@@ -178,7 +186,7 @@ export default function CommunityDetailsPage() {
         {activeTab === "about" && (
           <CommunityDetailsAbout
             community={community}
-            classData={currentClass}
+            // classData={currentClass}
             onEdit={handleEditCommunity}
             onDelete={handleDeleteCommunity}
           />
@@ -186,11 +194,14 @@ export default function CommunityDetailsPage() {
         {activeTab === "stats" && (
           <CommunityDetailsStats
             community={community}
-            classData={currentClass}
+            // classData={currentClass}
           />
         )}
         {activeTab === "metrics" && (
-          <MembersMetrics community={community} classData={currentClass} />
+          <MembersMetrics
+            community={community}
+            //  classData={currentClass}
+          />
         )}
       </div>
 

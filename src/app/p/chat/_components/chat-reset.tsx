@@ -123,7 +123,7 @@ export default function ChatSidebar() {
         <div className="p-4 border-t border-gray-200">
           <Button
             onClick={() => setIsModalOpen(true)}
-            className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+            className="w-full bg-customBg hover:bg-customBg-hover text-white"
           >
             <Plus className="h-4 w-4 mr-2" />
             Nouveau groupe
@@ -237,7 +237,7 @@ export default function ChatSidebar() {
                 <Button
                   type="submit"
                   disabled={isSubmitting || !formData.name.trim()}
-                  className="flex-1 bg-teal-600 hover:bg-teal-700 text-white"
+                  className="flex-1 bg-customBg hover:bg-customBg-hover text-white"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center gap-2">

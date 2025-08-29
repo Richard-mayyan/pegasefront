@@ -300,7 +300,7 @@ export default function EditCommunityModal({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-teal-600 hover:bg-teal-700 text-white"
+              className="flex-1 bg-customBg hover:bg-customBg-hover text-white"
             >
               {isSubmitting ? "Mise à jour..." : "Mettre à jour"}
             </Button>

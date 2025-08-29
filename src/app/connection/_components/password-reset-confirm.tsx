@@ -12,7 +12,7 @@ export default function PasswordResetConfirmation() {
   return (
     <Card className="w-full max-w-md rounded-xl shadow-lg p-6 text-center">
       <CardHeader className="flex flex-col items-center gap-4 pb-6">
-        <div className="bg-teal-600 p-4 rounded-full">
+        <div className="bg-customBg p-4 rounded-full">
           <Mail className="h-8 w-8 text-white" />
         </div>
         <CardTitle className="text-2xl font-bold">
@@ -33,7 +33,7 @@ export default function PasswordResetConfirmation() {
           Je me souviens du mot de passe{" "}
           <a
             href={ROUTES.connection}
-            className="text-teal-600 hover:underline font-semibold"
+            className="text-customBg hover:underline font-semibold"
           >
             Connectez-vous!
           </a>

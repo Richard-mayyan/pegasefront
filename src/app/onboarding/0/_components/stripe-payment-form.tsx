@@ -21,7 +21,6 @@ import { APP_ENVS } from "@/logic/infra/config/envs";
 import { useAuth } from "@/components/layouts/AuthProvider";
 
 // Charger Stripe
-const stripePromise = loadStripe(STRIPE_CONFIG.publishableKey);
 
 interface PaymentFormProps {
   onSuccess: () => void;
@@ -101,7 +100,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
               }
             );
 
-            toast.success("Abonnement créé avec succès !");
             onSuccess();
           } catch (subscriptionError) {
             console.error("Erreur lors de la souscription:", subscriptionError);
@@ -191,7 +189,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
         <div className="border border-gray-300 rounded-lg p-4 min-h-[60px] flex items-center">
           {stripeLoading ? (
             <div className="w-full text-center text-gray-500">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600 mx-auto mb-2"></div>
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-customBg mx-auto mb-2"></div>
               <p className="text-sm">Chargement du formulaire de carte...</p>
             </div>
           ) : (
@@ -219,7 +217,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       <Button
         type="submit"
         disabled={!stripe || isLoading || stripeLoading || !selectedPlan}
-        className="bg-teal-600 hover:bg-teal-700 text-white px-8 w-full h-12 text-lg font-semibold"
+        className="bg-customBg hover:bg-customBg-hover text-white px-8 w-full h-12 text-lg font-semibold"
       >
         {isLoading
           ? "Traitement..."
@@ -240,6 +238,7 @@ interface StripePaymentFormProps {
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
   selectedPlan: any;
+  publishableKey: string;
 }
 
 const StripePaymentForm: React.FC<StripePaymentFormProps> = ({
@@ -249,7 +248,10 @@ const StripePaymentForm: React.FC<StripePaymentFormProps> = ({
   isLoading,
   setIsLoading,
   selectedPlan,
+  publishableKey,
 }) => {
+  const stripePromise = loadStripe(publishableKey);
+
   return (
     <Elements
       stripe={stripePromise}
@@ -258,7 +260,7 @@ const StripePaymentForm: React.FC<StripePaymentFormProps> = ({
         appearance: {
           theme: "stripe",
           variables: {
-            colorPrimary: "#0d9488", // teal-600
+            colorPrimary: "#4800D1", // customBg
           },
         },
       }}

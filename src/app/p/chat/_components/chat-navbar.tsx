@@ -72,7 +72,7 @@ export default function ChatNavbar() {
     //   <div className="flex-1 max-w-md mx-4 relative">
     //     <Input
     //       placeholder="Chercher"
-    //       className="w-full pl-4 pr-10 py-2 rounded-lg border border-gray-300 focus:ring-teal-600 focus:border-teal-600"
+    //       className="w-full pl-4 pr-10 py-2 rounded-lg border border-gray-300 focus:ring-customBg focus:border-customBg"
     //     />
     //     <Button
     //       variant="ghost"

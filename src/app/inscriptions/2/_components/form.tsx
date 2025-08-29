@@ -90,7 +90,7 @@ export default function Form() {
       <div className="w-full max-w-md space-y-8">
         {/* Logo */}
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
             <Image
               src="/logo.svg"
               alt="Pegasus Logo"
@@ -143,7 +143,7 @@ export default function Form() {
           <Button
             type="submit"
             variant="default"
-            className="w-full rounded-lg h-12 bg-teal-600 hover:bg-teal-700"
+            className="w-full rounded-lg h-12 bg-customBg hover:bg-customBg-hover"
             disabled={isLoading}
           >
             {isLoading ? "Vérification..." : "Continuer"}
@@ -157,7 +157,7 @@ export default function Form() {
             <button
               onClick={handleResendCode}
               disabled={isResending}
-              className="text-teal-600 underline hover:text-teal-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-customBg underline hover:text-customBg-hover cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isResending ? "Envoi..." : "Réessayez"}
             </button>
@@ -167,7 +167,7 @@ export default function Form() {
             J'ai déjà un compte.{" "}
             <a
               href="/login"
-              className="text-teal-600 underline hover:text-teal-700"
+              className="text-customBg underline hover:text-customBg-hover"
             >
               Connectez-vous !
             </a>

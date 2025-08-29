@@ -52,6 +52,6 @@ export class NodeAuthRepo implements IAuthRepo {
     //   ...res.data.data,
     //   communities: communities.map((v) => ({ ...v, classes: classes })),
     // };
-    return { ...res.data.data, communities: res.data.data.community };
+    return { ...res.data.data };
   }
 }

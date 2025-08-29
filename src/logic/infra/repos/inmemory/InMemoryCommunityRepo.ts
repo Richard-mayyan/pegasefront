@@ -39,6 +39,8 @@ export class InMemoryCommunityRepo implements ICommunityRepo {
 
   async create(data: CreateCommunityDto): Promise<CommunityEntity> {
     const newCommunity: CommunityEntity = {
+      studentCount: 0,
+
       id: this.communities.length + 1,
       name: data.name,
       description: data.description,

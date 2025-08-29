@@ -12,11 +12,11 @@ const PasswordRequirement: React.FC<PasswordRequirementProps> = ({
 }) => (
   <div className="flex items-center space-x-2 text-sm">
     {isValid ? (
-      <Check className="w-4 h-4 text-green-500" />
+      <Check className="w-4 h-4 text-customBg" />
     ) : (
       <X className="w-4 h-4 text-red-500" />
     )}
-    <span className={isValid ? "text-green-700" : "text-red-700"}>
+    <span className={isValid ? "text-customBg-hover" : "text-red-700"}>
       {children}
     </span>
   </div>

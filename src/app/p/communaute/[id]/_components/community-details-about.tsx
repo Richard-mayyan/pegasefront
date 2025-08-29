@@ -2,24 +2,30 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Pencil, Settings, Plus, Trash2 } from "lucide-react";
 import { IMG_URL } from "@/lib/constants";
-import { CommunityEntity, ClassEntity } from "@/logic/domain/entities";
+import {
+  CommunityEntity,
+  ClassEntity,
+  RegisterProfileEnum,
+} from "@/logic/domain/entities";
 import { useState } from "react";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
+import { useAuth } from "@/components/layouts/AuthProvider";
 
 interface CommunityDetailsAboutProps {
   community: CommunityEntity;
-  classData: ClassEntity;
+  // classData: ClassEntity;
   onEdit?: () => void;
   onDelete?: () => void;
 }
 
 export default function CommunityDetailsAbout({
   community,
-  classData,
+  // classData,
   onEdit,
   onDelete,
 }: CommunityDetailsAboutProps) {
+  const { user } = useAuth();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleDelete = () => {
@@ -43,25 +49,27 @@ export default function CommunityDetailsAbout({
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-sm">
-      <div className="flex justify-end gap-2 mb-6">
-        <Button
-          variant="outline"
-          onClick={onEdit}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-transparent hover:bg-gray-50"
-        >
-          <Pencil className="h-4 w-4" />
-          Modifier
-        </Button>
+      {user?.profile === RegisterProfileEnum.Coach && (
+        <div className="flex justify-end gap-2 mb-6">
+          <Button
+            variant="outline"
+            onClick={onEdit}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-transparent hover:bg-gray-50"
+          >
+            <Pencil className="h-4 w-4" />
+            Modifier
+          </Button>
 
-        <Button
-          variant="outline"
-          onClick={() => setShowDeleteConfirm(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-transparent hover:bg-red-50 border-red-200 text-red-600"
-        >
-          <Trash2 className="h-4 w-4" />
-          Supprimer
-        </Button>
-      </div>
+          <Button
+            variant="outline"
+            onClick={() => setShowDeleteConfirm(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-transparent hover:bg-red-50 border-red-200 text-red-600"
+          >
+            <Trash2 className="h-4 w-4" />
+            Supprimer
+          </Button>
+        </div>
+      )}
 
       {/* Main Image - Utilise la première coverPhoto ou cover par défaut */}
       <div className="relative w-full h-80 rounded-xl overflow-hidden mb-4">
@@ -76,29 +84,32 @@ export default function CommunityDetailsAbout({
       <div className="grid grid-cols-5 gap-4 mb-8">
         {/* Afficher les images existantes */}
         {community.images && community.images.length > 0 ? (
-          community.images.map((photo: any, index: number) => (
-            <div
-              key={index}
-              className="relative w-full h-24 rounded-lg overflow-hidden"
-            >
-              <Image
-                src={photo}
-                alt={`Photo de couverture ${index + 1} de ${community.name}`}
-                layout="fill"
-                objectFit="cover"
-              />
-            </div>
-          ))
+          community.images
+            .filter((photo, index) => index !== 0)
+            .map((photo, index: number) => (
+              <div
+                key={index}
+                className="relative w-full h-24 rounded-lg overflow-hidden"
+              >
+                <img
+                  src={photo.url}
+                  className="w-full h-full object-cover"
+                  alt={`Photo de couverture ${index + 1} de ${community.name}`}
+                />
+              </div>
+            ))
         ) : (
           // Fallback si pas de images
           <></>
         )}
 
         {/* Bouton d'ajout d'image */}
-        <Button className="w-full h-24 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 hover:bg-gray-100">
-          <Plus className="h-6 w-6 text-gray-500" />
-          <span className="sr-only">Add image</span>
-        </Button>
+        {user!.profile === RegisterProfileEnum.Coach && (
+          <Button className="w-full h-24 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 hover:bg-gray-100">
+            <Plus className="h-6 w-6 text-gray-500" />
+            <span className="sr-only">Add image</span>
+          </Button>
+        )}
       </div>
 
       {/* Description */}

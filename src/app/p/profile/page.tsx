@@ -8,12 +8,19 @@ import { Upload, X } from "lucide-react";
 import Image from "next/image";
 import { apiClient } from "@/logic/infra/repos/nodeapi/axios";
 import { toast } from "sonner";
+import { useAppData } from "@/components/layouts/AppDataProvider";
+import { useAuth } from "@/components/layouts/AuthProvider";
 
 export default function Page() {
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
+  const { user } = useAuth();
+
+  console.log("user", user);
+  const [firstname, setFirstname] = useState(user?.firstName || "");
+  const [lastname, setLastname] = useState(user?.lastName || "");
   const [description, setDescription] = useState("");
-  const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [photoPreview, setPhotoPreview] = useState<string>(
+    user?.coach?.avatar || ""
+  );
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -68,7 +75,7 @@ export default function Page() {
       <div className="max-w-md mx-auto space-y-6">
         {/* Brand */}
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-customBg rounded-lg flex items-center justify-center">
             <Image src="/logo.svg" alt="Pegase" width={20} height={16} />
           </div>
           <h1 className="text-xl font-bold text-black">Pegase</h1>
@@ -166,7 +173,7 @@ export default function Page() {
             </Button>
             <Button
               type="submit"
-              className="flex-1 bg-teal-600 hover:bg-teal-700"
+              className="flex-1 bg-customBg hover:bg-customBg-hover"
               disabled={submitting}
             >
               {submitting ? "Envoi..." : "Suivant"}

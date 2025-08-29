@@ -18,7 +18,7 @@ export default function SuccessPage() {
             <span className="font-semibold">BeTech Education</span> a été
             configuré avec succès !
           </p>
-          <Button className="px-8 py-6 mx-auto text-lg bg-teal-600 hover:bg-teal-700 text-white rounded-lg shadow-md flex items-center gap-2">
+          <Button className="px-8 py-6 mx-auto text-lg bg-customBg hover:bg-customBg-hover text-white rounded-lg shadow-md flex items-center gap-2">
             Accéder à ma classe
             <Home className="h-5 w-5" />
           </Button>
@@ -36,7 +36,7 @@ export default function SuccessPage() {
           <div className="flex-1 px-4 py-3 bg-gray-100 rounded-lg text-gray-700 text-sm text-left truncate">
             https://pegase.com/votreclasse
           </div>
-          <Button className="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-lg shadow-md flex items-center gap-2">
+          <Button className="px-6 py-3 bg-customBg hover:bg-customBg-hover text-white rounded-lg shadow-md flex items-center gap-2">
             <FileText className="h-5 w-5" />
             Terminer la configuration
           </Button>

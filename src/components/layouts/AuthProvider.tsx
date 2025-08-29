@@ -1,4 +1,4 @@
-import { ROUTES } from "@/lib/constants";
+import { ACCESS_TOKEN_KEY, ROUTES } from "@/lib/constants";
 import { UserEntity } from "@/logic/domain/entities";
 import { authRepo } from "@/logic/infra/di/container";
 import { RegisterDto } from "@/logic/infra/repos/nodeapi/dtos";
@@ -96,10 +96,14 @@ export const AuthProvider: React.FC<{
   const logout = async () => {
     setLoading(true);
     try {
+      // Clear auth state and token
       setUser(null);
+      try {
+        localStorage.removeItem(ACCESS_TOKEN_KEY);
+      } catch {}
 
-      // await USE_CASES.auth.logoutUC.execute();
-      router.replace(ROUTES.login);
+      // Redirect to connection/login
+      router.replace(ROUTES.connection);
     } finally {
       setLoading(false);
     }
