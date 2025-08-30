@@ -60,7 +60,7 @@ export default function Page() {
       form.append("description", description.trim());
       form.append("photo", photoFile);
 
-      await apiClient.post("/coachs", form);
+      await apiClient.post("/user/coachs", form);
       toast.success("Profil mis à jour avec succès");
     } catch (err) {
       console.error(err);
