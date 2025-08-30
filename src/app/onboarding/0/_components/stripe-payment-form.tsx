@@ -93,13 +93,21 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
         // Si un plan est sélectionné, s'abonner au plan
         if (selectedPlan) {
           try {
-            const subscriptionResponse = await apiClient.post(
-              `/plans/${selectedPlan.id}/subscribe`,
+            const paymentMethodResponse = await apiClient.post(
+              `/user/payment-methods`,
               {
                 paymentMethodId: paymentMethod.id,
               }
             );
+            console.log("paymentMethodResponse", paymentMethodResponse);
 
+            const subscriptionResponse = await apiClient.post(
+              `/plans/${selectedPlan.id}/subscribe`
+              // {
+              //   paymentMethodId: paymentMethod.id,
+              // }
+            );
+            console.log("subscriptionResponse", subscriptionResponse);
             onSuccess();
           } catch (subscriptionError) {
             console.error("Erreur lors de la souscription:", subscriptionError);

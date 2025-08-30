@@ -150,9 +150,9 @@ export default function Form() {
                 <h4 className="font-semibold text-gray-900">
                   Logo de la communauté
                 </h4>
-                <p className="text-xs text-gray-600">
+                {/* <p className="text-xs text-gray-600">
                   Recommandé: 500px x 500px
-                </p>
+                </p> */}
               </div>
               <div className="relative">
                 {logoPreview ? (
@@ -196,9 +196,9 @@ export default function Form() {
                 <h4 className="font-semibold text-gray-900">
                   Couverture de la communauté
                 </h4>
-                <p className="text-xs text-gray-600">
+                {/* <p className="text-xs text-gray-600">
                   Nous recommandons au minimum une image de 1600 x 900px
-                </p>
+                </p> */}
               </div>
               <div className="relative">
                 {coverPreview ? (

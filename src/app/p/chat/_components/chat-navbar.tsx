@@ -50,7 +50,7 @@ export default function ChatNavbar() {
             <p className="text-gray-600">{currentChatGroup.description}</p>
           </div>
         </div>
-
+        {/* 
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon">
             <Bell className="h-5 w-5" />
@@ -61,7 +61,7 @@ export default function ChatNavbar() {
           <Button variant="ghost" size="icon">
             <FilterIcon className="h-5 w-5" />
           </Button>
-        </div>
+        </div> */}
       </div>
     </div>
     // <nav className="flex items-center justify-between h-16 px-6 border-b border-gray-200 bg-white">

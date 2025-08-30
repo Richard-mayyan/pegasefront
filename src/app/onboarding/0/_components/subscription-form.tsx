@@ -16,15 +16,15 @@ export default function SubscriptionForm() {
   const { goToNextStep } = useOnboardingNavigation();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const { paymentIntent } = usePaymentIntent();
+  const { paymentIntent, fetchPaymentIntent } = usePaymentIntent(() => {});
   // const [paymentIntent, setPaymentIntent] =
   //   useState<PaymentIntentResponse | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
 
   // Récupérer le payment intent au chargement
-  // useEffect(() => {
-  //   fetchPaymentIntent();
-  // }, []);
+  useEffect(() => {
+    fetchPaymentIntent();
+  }, []);
 
   const handleSuccess = () => {
     // if (selectedPlan) {

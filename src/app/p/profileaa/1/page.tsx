@@ -82,9 +82,9 @@ export default function ClassConfigurationForm() {
                 <p className="text-xs text-muted-foreground">
                   Couverture de la classe
                 </p>
-                <p className="text-xs text-muted-foreground">
+                {/* <p className="text-xs text-muted-foreground">
                   Nous recommandons de faire une image de 1600x300px
-                </p>
+                </p> */}
                 <div className="w-full h-24 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
                   <Button variant="ghost" className="text-sm text-gray-600">
                     Modifier votre image
