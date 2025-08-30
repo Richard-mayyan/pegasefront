@@ -29,6 +29,7 @@ export interface UserEntity {
   communities?: CommunityEntity[];
   subscriptions?: SubscriptionEntity[];
   coach?: {
+    description: string;
     avatar: string;
     firstname: string;
     id: string;

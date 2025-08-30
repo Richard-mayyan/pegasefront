@@ -15,9 +15,11 @@ export default function Page() {
   const { user } = useAuth();
 
   console.log("user", user);
-  const [firstname, setFirstname] = useState(user?.firstName || "");
-  const [lastname, setLastname] = useState(user?.lastName || "");
-  const [description, setDescription] = useState("");
+  const [firstname, setFirstname] = useState(user?.coach?.firstname || "");
+  const [lastname, setLastname] = useState(user?.coach?.lastname || "");
+  const [description, setDescription] = useState(
+    user?.coach?.description || ""
+  );
   const [photoPreview, setPhotoPreview] = useState<string>(
     user?.coach?.avatar || ""
   );
@@ -42,15 +44,20 @@ export default function Page() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      !firstname.trim() ||
-      !lastname.trim() ||
-      !description.trim() ||
-      !photoFile
-    ) {
+    if (!firstname || !lastname || !description) {
       toast.error("Tous les champs sont requis (y compris la photo)");
       return;
     }
+    // if (
+    //   (!firstname.trim() && !firstname) ||
+    //   (!lastname.trim() && !lastname) ||
+    //   (!description.trim() && !description) ||
+    //   !photoFile
+    // ) {
+    //   console.log(firstname, lastname, description, photoFile);
+    //   toast.error("Tous les champs sont requis (y compris la photo)");
+    //   return;
+    // }
 
     try {
       setSubmitting(true);
@@ -58,9 +65,11 @@ export default function Page() {
       form.append("firstname", firstname.trim());
       form.append("lastname", lastname.trim());
       form.append("description", description.trim());
-      form.append("photo", photoFile);
+      if (photoFile) {
+        form.append("photo", photoFile);
+      }
 
-      await apiClient.patch("/user/coachs", form);
+      await apiClient.patch("/user/coach", form);
       toast.success("Profil mis à jour avec succès");
     } catch (err) {
       console.error(err);
