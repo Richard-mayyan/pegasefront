@@ -132,9 +132,9 @@ export default function Component() {
       toast.success("Classe créée avec succès !");
       console.log("Classe sauvegardée:", result);
 
-      // Rediriger vers p/lecon/2
+      // Rediriger vers p/cours/2
       setTimeout(() => {
-        router.push("/p/lecon/2");
+        router.push("/p/cours/2");
       }, 1500);
     },
     onError: (error: any) => {

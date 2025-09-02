@@ -59,6 +59,7 @@ export const SHOPIFY_GRAPHQL_API_ENDPOINT = "/api/2023-01/graphql.json";
 export const IMG_URL = "https://placehold.co/600x400?text=Image";
 export const getPlaceholderImage = (text: string) =>
   `https://placehold.co/600x400?text=${text}`;
+
 export const IMG_URL2 =
   "https://images.pexels.com/photos/1007018/pexels-photo-1007018.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
 export const IMG_URL_MODEL =
@@ -108,7 +109,7 @@ const ROUTES = {
   myCommunity: "/p/communaute/1",
   goToMyCommunity: (id: string) => `/p/communaute/${id}`,
   membres: "/p/membres/1",
-  lecons: "/p/lecon/2",
+  lecons: "/p/cours/2",
   chat: "/p/chat/2",
   createCommunity: "/onboarding/0",
   createCommunitySuccess: "/onboarding/5",

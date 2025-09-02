@@ -150,11 +150,11 @@ export interface ClassResponseDto {
     active: boolean;
     publishedAt: string;
     lessons?: Array<{
-      id: string;
+      id: any;
       title: string;
       type: string;
       publishedAt: string;
-      content: object;
+      content: string;
     }>;
   }>;
   community?: any;

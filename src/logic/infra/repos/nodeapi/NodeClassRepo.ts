@@ -21,13 +21,13 @@ export class NodeClassRepo implements IClassRepo {
       content: response.content,
       chapters:
         response.chapters?.map((chapter) => ({
-          id: parseInt(chapter.id),
+          id: chapter.id,
           name: chapter.name,
           active: chapter.active,
           publishedAt: chapter.publishedAt,
           lessons:
             chapter.lessons?.map((lesson) => ({
-              id: parseInt(lesson.id),
+              id: lesson.id,
               title: lesson.title,
               type: lesson.type,
               publishedAt: lesson.publishedAt,
@@ -102,7 +102,7 @@ export class NodeClassRepo implements IClassRepo {
                   lf.append("text", JSON.stringify(payload || {}));
                 } else {
                   // Par défaut, texte pur
-                  lf.append("type", "Text");
+                  lf.append("type", "text");
                   lf.append(
                     "text",
                     typeof lesson.content === "string"

@@ -6,8 +6,12 @@ import AIAssistantPanel from "./ai-assistant-panel";
 import CourseHeader from "./course-header";
 import CourseSidebar from "./course-sidebar";
 import LessonPlayer from "./lesson-player";
+import { useParams } from "next/navigation";
 
 export default function CoursePlayerLayout() {
+  const params = useParams();
+  const courseId = params.id as string;
+
   const {
     currentCommunity,
     communities,
@@ -22,6 +26,10 @@ export default function CoursePlayerLayout() {
   const [selectedLessonIndex, setSelectedLessonIndex] = useState(0);
   const [isAIPanelOpen, setIsAIPanelOpen] = useState(false);
 
+  // Trouver la classe correspondant à l'ID de l'URL
+  const currentClass =
+    classes.find((cls) => cls.id?.toString() === courseId) || classes[0];
+
   // Mettre à jour les indices quand la communauté ou classe change
   useEffect(() => {
     if (communities && communities.length > 0) {
@@ -34,69 +42,16 @@ export default function CoursePlayerLayout() {
     }
   }, [currentCommunity, communities]);
 
-  // Mettre à jour la classe sélectionnée quand la communauté change
-  // useEffect(() => {
-  //   console.log("communityICI", community);
-  //   if (currentCommunity?.classes && currentCommunity.classes.length > 0) {
-  //     // Sélectionner automatiquement la première classe de la nouvelle communauté
-  //     const newClass = currentCommunity.currentClass;
-  //     setClass(newClass);
-  //     setSelectedClassIndex(0);
-  //     setSelectedChapterIndex(0);
-  //     setSelectedLessonIndex(0);
-  //   } else {
-  //     // Si la communauté n'a pas de classes, réinitialiser
-  //     setClass(null);
-  //     setSelectedClassIndex(0);
-  //     setSelectedChapterIndex(0);
-  //     setSelectedLessonIndex(0);
-  //   }
-  // }, [community]);
+  // Mettre à jour l'index de la classe sélectionnée
+  useEffect(() => {
+    if (classes && currentClass) {
+      const classIndex = classes.findIndex((cls) => cls.id === currentClass.id);
+      if (classIndex !== -1) {
+        setSelectedClassIndex(classIndex);
+      }
+    }
+  }, [classes, currentClass]);
 
-  // useEffect(() => {
-  //   if (community?.classes && community.classes.length > 0) {
-  //     const currentClassIndex = community.classes.findIndex(
-  //       (c) => c.id === classData?.id
-  //     );
-  //     if (currentClassIndex !== -1) {
-  //       setSelectedClassIndex(currentClassIndex);
-  //     }
-  //   }
-  // }, [classData, community]);
-
-  // Fonction pour changer de communauté
-  // const handleCommunityChange = (communityIndex: number) => {
-  //   if (communities && communities[communityIndex]) {
-  //     const newCommunity = communities[communityIndex];
-  //     setCommunity(newCommunity);
-
-  //     // Sélectionner la première classe de cette communauté
-  //     if (newCommunity.classes && newCommunity.classes.length > 0) {
-  //       setClass(newCommunity.currentClass);
-  //       setSelectedClassIndex(0);
-  //       setSelectedChapterIndex(0);
-  //       setSelectedLessonIndex(0);
-  //     } else {
-  //       setClass(null);
-  //       setSelectedClassIndex(0);
-  //       setSelectedChapterIndex(0);
-  //       setSelectedLessonIndex(0);
-  //     }
-  //   }
-  // };
-
-  // Fonction pour changer de classe
-  // const handleClassChange = (classIndex: number) => {
-  //   if (community?.classes && community.classes[classIndex]) {
-  //     const newClass = community.classes[classIndex];
-  //     setClass(newClass);
-  //     setSelectedClassIndex(classIndex);
-  //     setSelectedChapterIndex(0);
-  //     setSelectedLessonIndex(0);
-  //   }
-  // };
-
-  const currentClass = classes[0];
   // Si les données sont en cours de chargement
   if (isLoadingCommunities) {
     return (
@@ -122,11 +77,10 @@ export default function CoursePlayerLayout() {
     );
   }
 
-  // Si aucune classe n'est disponible dans la communauté sélectionnée
-
-  // || !currentClass.chapters.length === 0
+  // Si aucune classe n'est disponible ou si la classe demandée n'existe pas
   if (
     !classes ||
+    !currentClass ||
     !currentClass.chapters ||
     currentClass.chapters.length === 0
   ) {
@@ -134,10 +88,10 @@ export default function CoursePlayerLayout() {
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
           <h3 className="text-xl font-semibold text-gray-800 mb-2">
-            Aucun cours disponible {JSON.stringify(classes)}
+            Cours non trouvé ou aucun contenu disponible
           </h3>
           <p className="text-gray-500">
-            Commencez par créer des chapitres et des leçons dans l'onboarding
+            Le cours demandé (ID: {courseId}) n'existe pas ou n'a pas de contenu
           </p>
         </div>
       </div>
@@ -146,6 +100,9 @@ export default function CoursePlayerLayout() {
 
   const selectedChapter = currentClass.chapters[selectedChapterIndex];
   const selectedLesson = selectedChapter?.lessons?.[selectedLessonIndex];
+
+  console.log("selectedChapter", selectedChapter);
+  console.log("selectedLesson", selectedLesson);
 
   // Calculer la progression globale
   const totalLessons = currentClass.chapters.reduce(
@@ -198,10 +155,7 @@ export default function CoursePlayerLayout() {
                       ...selectedChapter,
                       id: selectedChapter.id ?? 0, // fallback to 0 if undefined
                     }}
-                    lesson={{
-                      ...selectedLesson,
-                      id: selectedLesson.id ?? 0, // fallback to 0 if undefined
-                    }}
+                    lessonId={selectedLesson.id ?? 0}
                     chapterIndex={selectedChapterIndex}
                     lessonIndex={selectedLessonIndex}
                   />

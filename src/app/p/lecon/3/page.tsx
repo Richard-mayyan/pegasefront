@@ -1,18 +1,22 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Circle, Plus, Users } from "lucide-react";
-import React from "react";
-import SearchInput from "../_components/searchInput";
-import CoursePlayerLayout from "./_components/course-player-layout";
+"use client";
 
-type Props = {};
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-function page({}: Props) {
+export default function Lecon3Redirect() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Rediriger vers la page des cours car nous n'avons pas d'ID spécifique
+    router.replace("/p/cours/2");
+  }, [router]);
+
   return (
-    <div className="flex flex-col flex-1 p-6 w-full">
-      <CoursePlayerLayout />
+    <div className="flex items-center justify-center h-screen">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-customBg mx-auto mb-4"></div>
+        <p className="text-gray-600">Redirection vers la page des cours...</p>
+      </div>
     </div>
   );
 }
-
-export default page;

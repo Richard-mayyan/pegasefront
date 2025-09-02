@@ -122,7 +122,7 @@ export interface ClassEntity {
 
 // --- ChapterEntity ---
 export interface ChapterEntity {
-  id?: number;
+  id?: any;
   name: string;
   active: boolean;
   publishedAt?: string; // ISO string
@@ -136,7 +136,17 @@ export interface LessonEntity {
   title: string;
   type: string;
   publishedAt?: string; // ISO string
-  content: object;
+  video?: {
+    transcribeVideo?: boolean;
+    url?: string;
+    resourceId?: string;
+  };
+  document?: {
+    url?: string;
+    resourceId?: string;
+  };
+  content: string;
+  resources?: string[];
   chapter?: ChapterEntity;
   transcription?: TranscriptionEntity;
   notes?: NoteEntity[];
