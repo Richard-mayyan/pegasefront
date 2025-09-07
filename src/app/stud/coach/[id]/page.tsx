@@ -10,6 +10,10 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { CoachEntity, CommunityEntity } from "@/logic/domain/entities";
 import { MessageSquare, Users, Video } from "lucide-react";
+import RichDescription from "@/components/RichDescription";
+import StripePaymentForm from "@/app/onboarding/0/_components/stripe-payment-form";
+import { toast } from "sonner";
+import { usePaymentIntent } from "@/hooks/use-payment-intent";
 import { formatPrice } from "@/lib/utils";
 
 // type Coach = {
@@ -38,6 +42,13 @@ export default function StudCommunityDetailsPage() {
   const [communities, setCommunities] = useState<CommunityEntity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showPayment, setShowPayment] = useState(false);
+  const [selectedCommunity, setSelectedCommunity] =
+    useState<CommunityEntity | null>(null);
+  const [isPayLoading, setIsPayLoading] = useState(false);
+  const { paymentIntent, fetchPaymentIntent } = usePaymentIntent(() => {
+    setShowPayment(true);
+  });
 
   useEffect(() => {
     if (!id) return;
@@ -73,6 +84,15 @@ export default function StudCommunityDetailsPage() {
     () => (coach ? `${coach.firstname} ${coach.lastname}` : ""),
     [coach]
   );
+
+  const handleJoinCommunity = (community: CommunityEntity) => {
+    if (!community.plan && !community.price) {
+      toast.error("Aucun plan n'est disponible pour cette communauté");
+      return;
+    }
+    setSelectedCommunity(community);
+    fetchPaymentIntent();
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -155,7 +175,10 @@ export default function StudCommunityDetailsPage() {
                             >
                               Voir la communauté
                             </Link>
-                            <Button className="bg-customBg hover:bg-customBg-hover text-white h-8 px-3 rounded-full text-xs">
+                            <Button
+                              className="bg-customBg hover:bg-customBg-hover text-white h-8 px-3 rounded-full text-xs"
+                              onClick={() => handleJoinCommunity(c)}
+                            >
                               {c.plan
                                 ? `Rejoindre ${formatPrice(
                                     c.plan.price / 100
@@ -181,6 +204,40 @@ export default function StudCommunityDetailsPage() {
           </div>
         )}
       </div>
+
+      {/* Formulaire de paiement Stripe */}
+      {showPayment && paymentIntent?.clientSecret && selectedCommunity && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">
+              Rejoindre {selectedCommunity.name}
+            </h3>
+            <StripePaymentForm
+              publishableKey={paymentIntent.publishableKey}
+              clientSecret={paymentIntent.clientSecret}
+              onSuccess={() => {
+                toast.success("Paiement effectué avec succès");
+                setShowPayment(false);
+                setSelectedCommunity(null);
+              }}
+              onError={(m) => toast.error(m)}
+              isLoading={isPayLoading}
+              setIsLoading={setIsPayLoading}
+              selectedPlan={selectedCommunity.plan}
+            />
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowPayment(false);
+                setSelectedCommunity(null);
+              }}
+              className="w-full mt-4"
+            >
+              Annuler
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
