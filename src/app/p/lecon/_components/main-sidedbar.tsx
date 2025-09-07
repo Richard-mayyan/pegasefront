@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useAppData } from "@/components/layouts/AppDataProvider";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ROUTES } from "@/lib/constants";
 
 export default function MainSidebar() {
   const { currentCommunity, communities, setCommunity } = useAppData();
@@ -23,6 +25,7 @@ export default function MainSidebar() {
     setCommunity(selectedCommunity);
   };
 
+  const router = useRouter();
   return (
     <Sidebar
       side="left"
@@ -50,17 +53,29 @@ export default function MainSidebar() {
             communities.map((comm, index) => (
               <SidebarMenuItem key={comm.id} className="w-auto relative">
                 <SidebarMenuButton
+                  style={{
+                    // borderWidth: "2px",
+                    // borderColor: "green",
+                    // borderColor:
+                    //   currentCommunity?.id === comm.id
+                    //     ? comm.color
+                    //     : "transparent",
+                    backgroundColor: comm.color,
+                    backgroundImage: `url(${comm.images?.[0]?.url})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
                   className={`h-12 w-12 rounded-lg border-2 transition-all duration-200 flex items-center justify-center text-xs font-semibold shadow-sm ${
                     currentCommunity?.id === comm.id
-                      ? "bg-teal-500 border-customBg text-white shadow-md"
+                      ? ` border-customBg text-white shadow-md`
                       : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
                   }`}
                   onClick={() => handleCommunitySelect(comm)}
                   onMouseEnter={() => setHoveredCommunity(index)}
                   onMouseLeave={() => setHoveredCommunity(null)}
                 >
-                  {comm.name.charAt(0).toUpperCase()}
-                  {comm.name.charAt(1)?.toUpperCase() || ""}
+                  {/* {comm.name.charAt(0).toUpperCase()}
+                  {comm.name.charAt(1)?.toUpperCase() || ""} */}
                 </SidebarMenuButton>
 
                 {/* Indicateur de sélection */}
@@ -91,6 +106,7 @@ export default function MainSidebar() {
 
       <SidebarFooter className="flex flex-col items-center py-4">
         <Button
+          onClick={() => router.push(ROUTES.createCommunity)}
           size="icon"
           className="h-12 w-12 rounded-lg bg-gray-300 text-gray-700 shadow-sm hover:bg-gray-400"
           title="Ajouter une communauté"

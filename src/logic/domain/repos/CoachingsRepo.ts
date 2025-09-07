@@ -7,7 +7,7 @@ export interface CreateCoachingDto {
   link?: string;
   price?: number;
   startAt?: string;
-  endAt?: string;
+  duration?: number; // minutes
 }
 
 export interface UpdateCoachingDto {
@@ -16,7 +16,7 @@ export interface UpdateCoachingDto {
   link?: string;
   price?: number;
   startAt?: string;
-  endAt?: string;
+  duration?: number; // minutes
 }
 
 export interface CreateReservationDto {

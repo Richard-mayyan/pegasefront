@@ -2,12 +2,13 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ROUTES } from "@/lib/constants";
 
 export default function Lecon2Redirect() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/p/cours/2");
+    router.replace(ROUTES.modules);
   }, [router]);
 
   return (

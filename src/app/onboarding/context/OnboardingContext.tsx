@@ -31,8 +31,8 @@ interface OnboardingData {
 
   // Étape 4: Configuration finale
   settings: {
-    communityDiscussion: boolean;
-    studentListVisibility: boolean;
+    communityChat: boolean;
+    showStudentsList: boolean;
     groupMeeting: boolean;
   };
 }
@@ -52,12 +52,12 @@ const defaultData: OnboardingData = {
   profil: "",
   logo: "",
   images: [],
-  color: "red", // Rouge par défaut
-  typography: "manrope", // Manrope par défaut
+  color: "#ff0000", // Rouge par défaut
+  typography: "Inter", // Manrope par défaut
   chapters: [],
   settings: {
-    communityDiscussion: true,
-    studentListVisibility: true,
+    communityChat: true,
+    showStudentsList: true,
     groupMeeting: true,
   },
 };

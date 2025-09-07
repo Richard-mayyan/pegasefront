@@ -84,8 +84,9 @@ export const TYPOGRAPHY_OPTIONS = [
 ];
 
 const ROUTES = {
+  createModule: "/p/modules/create",
   student: {
-    home: "/stud/home",
+    home: "/stud",
   },
   coach: {
     home: "/coach",
@@ -98,6 +99,9 @@ const ROUTES = {
   onboarding2: "/onboarding/2",
   onboarding3: "/onboarding/3",
   onboarding4: "/onboarding/4",
+  onboarding5: "/onboarding/5",
+
+  selectPlan: "/select-plan",
 
   connection: "/connection/1",
   forgotPassword: "/connection/2",
@@ -109,9 +113,9 @@ const ROUTES = {
   myCommunity: "/p/communaute/1",
   goToMyCommunity: (id: string) => `/p/communaute/${id}`,
   membres: "/p/membres/1",
-  lecons: "/p/cours/2",
+  modules: "/p/modules/2",
   chat: "/p/chat/2",
-  createCommunity: "/onboarding/0",
+  createCommunity: "/onboarding/1",
   createCommunitySuccess: "/onboarding/5",
   codeSent: "/inscriptions/2",
   accountConfirmed: "/inscriptions/3",

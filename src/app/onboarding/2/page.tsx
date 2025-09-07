@@ -10,7 +10,7 @@ function page({}: Props) {
         <div className="min-w-[450px] overflow-scroll hide-scrollbar">
           <Signup />
         </div>
-        <img className="object-cover h-full" src={"/onboarding2.png"} />
+        {/* <img className="object-cover h-full" src={"/onboarding2.png"} /> */}
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ export interface IAuthRepo {
   login(data: { email: string; password: string }): Promise<LoginResult>;
   // login(data: LoginDto): Promise<UserDto>;
   register(data: RegisterDto): Promise<UserEntity>;
-  confirmAccountWithCode(data: ConfirmAccountDto): Promise<UserEntity>;
+  confirmAccountWithCode(data: ConfirmAccountDto): Promise<LoginResult>;
   resendCode(data: ResendCodeDto): Promise<void>;
   forgotPassword(data: ForgotPasswordDto): Promise<void>;
   resetPassword(data: ResetPasswordDto): Promise<void>;

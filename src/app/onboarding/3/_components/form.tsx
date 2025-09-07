@@ -15,7 +15,7 @@ import { useMutation } from "react-query";
 import { communityRepo } from "@/logic/infra/di/container";
 import { CreateCommunityDto } from "@/logic/domain/repos/CommunityRepo";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useAppData } from "@/components/layouts/AppDataProvider";
 import Image from "next/image";
 import { ROUTES } from "@/lib/constants";
@@ -37,11 +37,11 @@ export default function Component() {
         profil: data.profil || "default",
         logo: data.logo || "",
         images: data.images || [],
-        color: data.color || "red",
+        color: data.color || "#ff0000",
         typography: data.typography || "manrope",
         settings: data.settings || {
-          communityDiscussion: true,
-          studentListVisibility: true,
+          communityChat: true,
+          showStudentsList: true,
           groupMeeting: true,
         },
       };
@@ -60,9 +60,9 @@ export default function Component() {
       console.log("Communauté sauvegardée:", result);
 
       // Rediriger vers la page onboarding/4
-      setTimeout(() => {
-        window.location.href = "/onboarding/4";
-      }, 1500);
+      // setTimeout(() => {
+      window.location.href = ROUTES.onboarding4;
+      // }, 1500);
     },
     onError: (error: any) => {
       toast.error("Erreur lors de la sauvegarde");
@@ -82,14 +82,18 @@ export default function Component() {
   const getSettings = () => {
     return (
       data.settings || {
-        communityDiscussion: true,
-        studentListVisibility: true,
+        communityChat: true,
+        showStudentsList: true,
         groupMeeting: true,
       }
     );
   };
 
   const settings = getSettings();
+
+  if (!data.cover) {
+    return redirect(ROUTES.onboarding2);
+  }
 
   return (
     <div className="min-h-screen bg-white p-8">
@@ -137,10 +141,10 @@ export default function Component() {
               </div>
               <div className="flex-shrink-0 ml-4">
                 <Switch
-                  checked={settings.communityDiscussion}
+                  checked={settings.communityChat}
                   onCheckedChange={(checked) =>
                     updateData({
-                      settings: { ...settings, communityDiscussion: checked },
+                      settings: { ...settings, communityChat: checked },
                     })
                   }
                   className="data-[state=checked]:bg-customBg"
@@ -170,10 +174,10 @@ export default function Component() {
               </div>
               <div className="flex-shrink-0 ml-4">
                 <Switch
-                  checked={settings.studentListVisibility}
+                  checked={settings.showStudentsList}
                   onCheckedChange={(checked) =>
                     updateData({
-                      settings: { ...settings, studentListVisibility: checked },
+                      settings: { ...settings, showStudentsList: checked },
                     })
                   }
                   className="data-[state=checked]:bg-customBg"
@@ -225,7 +229,8 @@ export default function Component() {
           </Button> */}
           <div className="flex space-x-4">
             <Button
-              className="bg-customBg hover:bg-customBg-hover text-white px-8 py-3 text-lg"
+              className="w-full rounded-lg h-12"
+              variant={"roam"}
               onClick={handleFinishConfiguration}
               disabled={mutation.isLoading}
             >

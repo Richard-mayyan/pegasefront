@@ -26,7 +26,7 @@ export default function CoursePlayerLayout() {
   const [selectedLessonIndex, setSelectedLessonIndex] = useState(0);
   const [isAIPanelOpen, setIsAIPanelOpen] = useState(false);
 
-  // Trouver la classe correspondant à l'ID de l'URL
+  // Trouver du module correspondant à l'ID de l'URL
   const currentClass =
     classes.find((cls) => cls.id?.toString() === courseId) || classes[0];
 
@@ -42,7 +42,7 @@ export default function CoursePlayerLayout() {
     }
   }, [currentCommunity, communities]);
 
-  // Mettre à jour l'index de la classe sélectionnée
+  // Mettre à jour l'index de du module sélectionnée
   useEffect(() => {
     if (classes && currentClass) {
       const classIndex = classes.findIndex((cls) => cls.id === currentClass.id);
@@ -77,7 +77,7 @@ export default function CoursePlayerLayout() {
     );
   }
 
-  // Si aucune classe n'est disponible ou si la classe demandée n'existe pas
+  // Si aucun module n'est disponible ou si du module demandée n'existe pas
   if (
     !classes ||
     !currentClass ||
@@ -101,17 +101,10 @@ export default function CoursePlayerLayout() {
   const selectedChapter = currentClass.chapters[selectedChapterIndex];
   const selectedLesson = selectedChapter?.lessons?.[selectedLessonIndex];
 
-  console.log("selectedChapter", selectedChapter);
-  console.log("selectedLesson", selectedLesson);
-
   // Calculer la progression globale
-  const totalLessons = currentClass.chapters.reduce(
-    (total, chapter) => total + (chapter.lessons?.length || 0),
-    0
-  );
-  const completedLessons = 0; // Pour l'instant, on considère qu'aucune leçon n'est terminée
-  const progress =
-    totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+  const totalLessons = currentClass.progression?.totalLessons || 0;
+  const completedLessons = currentClass.progression?.lessonsCompleted || 0; // Pour l'instant, on considère qu'aucune leçon n'est terminée
+  const progress = currentClass.progression?.progress || 0;
 
   return (
     <div className="flex">
@@ -126,15 +119,7 @@ export default function CoursePlayerLayout() {
         <div className="flex">
           <div className="flex h-screen overflow-hidden">
             <CourseSidebar
-              chapters={currentClass.chapters.map((chapter) => ({
-                ...chapter,
-                id: chapter.id ?? 0, // Ensure id is always a number
-                lessons:
-                  chapter.lessons?.map((lesson) => ({
-                    ...lesson,
-                    id: lesson.id ?? 0, // Ensure lesson id is always a number
-                  })) ?? [],
-              }))}
+              chapters={currentClass.chapters}
               selectedChapterIndex={selectedChapterIndex}
               selectedLessonIndex={selectedLessonIndex}
               onChapterSelect={setSelectedChapterIndex}

@@ -13,6 +13,8 @@ export class NodeCoachingsRepo implements ICoachingsRepo {
   async createCoaching(data: CreateCoachingDto): Promise<CoachingEntity> {
     try {
       const response = await apiClient.post("/user/coachings", {
+        duration: data.duration,
+        startAt: data.startAt,
         name: data.name,
         description: data.description,
         link: data.link,
@@ -74,6 +76,8 @@ export class NodeCoachingsRepo implements ICoachingsRepo {
   ): Promise<CoachingEntity> {
     try {
       const response = await apiClient.patch(`/coachings/${id}`, {
+        duration: data.duration,
+        startAt: data.startAt,
         name: data.name,
         description: data.description,
         link: data.link,
@@ -179,10 +183,10 @@ export class NodeCoachingsRepo implements ICoachingsRepo {
       const now = new Date();
       const pastCoachings = coachings
         .filter((coaching) => {
-          if (!coaching.endAt) return false;
-          return new Date(coaching.endAt) < now;
+          if (!coaching.startAt) return false;
+          return new Date(coaching.startAt) < now;
         })
-        .sort((a, b) => {
+        .sort((a: any, b: any) => {
           if (!a.endAt || !b.endAt) return 0;
           return new Date(b.endAt).getTime() - new Date(a.endAt).getTime();
         });
@@ -206,7 +210,7 @@ export class NodeCoachingsRepo implements ICoachingsRepo {
       link: data.link,
       price: data.price ? data.price / 100 : undefined, // Convertir centimes en euros
       startAt: data.startAt,
-      endAt: data.endAt,
+      duration: data.duration,
       user: data.user,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,

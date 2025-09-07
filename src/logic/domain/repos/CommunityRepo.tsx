@@ -12,8 +12,8 @@ export interface CreateCommunityDto {
   color?: string;
   typography: string;
   settings?: {
-    communityDiscussion: boolean;
-    studentListVisibility: boolean;
+    communityChat: boolean;
+    showStudentsList: boolean;
     groupMeeting: boolean;
   };
 }
@@ -22,7 +22,7 @@ export interface UpdateCommunityDto {
   name?: string;
 
   trial_days?: string;
-  price?: string;
+  price?: number;
   description?: string;
   cover?: string;
   profil?: string;
@@ -31,8 +31,8 @@ export interface UpdateCommunityDto {
   color?: string;
   typography?: string;
   settings?: {
-    communityDiscussion: boolean;
-    studentListVisibility: boolean;
+    communityChat: boolean;
+    showStudentsList: boolean;
     groupMeeting: boolean;
   };
 }

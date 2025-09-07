@@ -113,7 +113,7 @@ export default function NewChatGroupForm() {
             </div>
 
             {/* Couleur */}
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Couleur du groupe
               </label>
@@ -138,7 +138,7 @@ export default function NewChatGroupForm() {
                   </button>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             {/* Bouton de soumission */}
             <Button

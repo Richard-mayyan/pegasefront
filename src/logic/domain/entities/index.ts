@@ -1,3 +1,5 @@
+import { CommunitySettings } from "../repos/CommunityRepo";
+
 // models.ts
 export enum RegisterProfileEnum {
   Admin = "admin",
@@ -18,6 +20,13 @@ export interface SubscriptionEntity {
   trial_start: number | null;
   trial_end: number | null;
 }
+export interface CoachEntity {
+  description: string;
+  avatar: string;
+  firstname: string;
+  id: string;
+  lastname: string;
+}
 // --- UserEntity ---
 export interface UserEntity {
   id?: number;
@@ -28,13 +37,7 @@ export interface UserEntity {
   profile: RegisterProfileEnum;
   communities?: CommunityEntity[];
   subscriptions?: SubscriptionEntity[];
-  coach?: {
-    description: string;
-    avatar: string;
-    firstname: string;
-    id: string;
-    lastname: string;
-  };
+  coach?: CoachEntity;
   paymentMethods?: PaymentMethodEntity[];
 }
 
@@ -56,6 +59,7 @@ export interface PlanEntity {
   trialPeriodDays?: number;
   features?: string[];
   popular?: boolean;
+  frequency: "monthly" | "yearly";
 }
 
 // --- CommunityEntity ---
@@ -69,14 +73,11 @@ export interface CommunityEntity {
   images?: { resourceId: string; url: string }[];
   color?: string;
   typography?: string;
+  price?: number;
   classes?: ClassEntity[];
   members?: UserEntity[];
   // Configuration de la communauté
-  settings?: {
-    communityDiscussion: boolean;
-    studentListVisibility: boolean;
-    groupMeeting: boolean;
-  };
+  settings?: CommunitySettings;
   createdAt?: string;
   updatedAt?: string;
   studentCount: number;
@@ -93,14 +94,11 @@ export interface CommunityEntityWithoutImages {
   images?: string[];
   color?: string;
   typography?: string;
+  price?: number;
   classes?: ClassEntity[];
   members?: UserEntity[];
   // Configuration de la communauté
-  settings?: {
-    communityDiscussion: boolean;
-    studentListVisibility: boolean;
-    groupMeeting: boolean;
-  };
+  settings?: CommunitySettings;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -116,6 +114,7 @@ export interface ClassEntity {
   content?: string; // markdown text
   community?: CommunityEntity;
   chapters?: ChapterEntity[];
+  progression?: ProgressionEntity;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -145,11 +144,19 @@ export interface LessonEntity {
     url?: string;
     resourceId?: string;
   };
-  content: string;
   resources?: string[];
   chapter?: ChapterEntity;
+
   transcription?: TranscriptionEntity;
   notes?: NoteEntity[];
+  progression?: ProgressionEntity;
+}
+export interface ProgressionEntity {
+  progress: number;
+  completed: boolean;
+  completedAt: string | null;
+  lessonsCompleted: number;
+  totalLessons: number;
 }
 
 // --- NoteEntity ---
@@ -191,7 +198,7 @@ export interface CoachingEntity {
   link?: string;
   price?: number;
   startAt?: string;
-  endAt?: string;
+  duration?: number; // minutes
   user?: UserEntity;
   createdAt?: string;
   updatedAt?: string;

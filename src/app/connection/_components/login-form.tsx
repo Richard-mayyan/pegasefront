@@ -23,6 +23,8 @@ import { getdefaultValue } from "@/lib/utils";
 import Image from "next/image";
 import { useAuth } from "@/components/layouts/AuthProvider";
 import { PasswordRequirements } from "@/components/ui/password-requirements";
+import { APP_ENVS } from "@/logic/infra/config/envs";
+import { RegisterProfileEnum } from "@/logic/domain/entities";
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
@@ -54,8 +56,15 @@ export default function LoginForm() {
       toast.success("Connexion réussie !");
       localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
       reset();
-      window.location.href = ROUTES.createCommunity;
-      // router.replace(ROUTES.createCommunity);
+      if (data?.user.profile === RegisterProfileEnum.Student) {
+        router.replace(ROUTES.student.home);
+      } else {
+        if (data.user.communities && data.user.communities.length > 0) {
+          window.location.href = ROUTES.modules;
+        } else {
+          window.location.href = ROUTES.createCommunity;
+        }
+      }
     },
     onError(error, variables, context) {
       handleApiError(error as any);
@@ -116,6 +125,37 @@ export default function LoginForm() {
             /> */}
           </div>
 
+          {!APP_ENVS.isProductionMode && (
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant={"default"}
+                onClick={() => {
+                  mutation.mutate({
+                    email: "coach@pegase.me",
+                    password: "password",
+                  });
+                }}
+              >
+                COACH
+                <Send className="w-4 h-4 ml-2" />
+              </Button>
+
+              <Button
+                type="button"
+                variant={"default"}
+                onClick={() => {
+                  mutation.mutate({
+                    email: "student@pegase.me",
+                    password: "password",
+                  });
+                }}
+              >
+                Etudiant
+                <Send className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          )}
           {/* Submit Button */}
           <Button
             variant={"roam"}

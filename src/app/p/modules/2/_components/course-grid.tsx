@@ -5,9 +5,10 @@ import { useAppData } from "@/components/layouts/AppDataProvider";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import AddCourseForm from "./add-course-form";
-import { getPlaceholderImage, IMG_URL } from "@/lib/constants";
+import { getPlaceholderImage, IMG_URL, ROUTES } from "@/lib/constants";
 import { RegisterProfileEnum } from "@/logic/domain/entities";
 import { useAuth } from "@/components/layouts/AuthProvider";
+import { useRouter } from "next/navigation";
 
 export default function CourseGrid() {
   const { user } = useAuth();
@@ -17,9 +18,11 @@ export default function CourseGrid() {
     classes,
     isLoadingCommunities,
     loadUserCommunities,
+    doIfUpgradeSubscription,
   } = useAppData();
   const [showAddCourseForm, setShowAddCourseForm] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(0);
+  const router = useRouter();
 
   if (!currentCommunity) {
     return <div>Aucune communauté sélectionnée</div>;
@@ -28,7 +31,7 @@ export default function CourseGrid() {
   //   loadUserCommunities();
   // }, []);
 
-  // Forcer la mise à jour du composant quand la classe change
+  // Forcer la mise à jour du composant quand du module change
   // useEffect(() => {
   //   if (classData) {
   //     setForceUpdate((prev) => prev + 1);
@@ -44,7 +47,7 @@ export default function CourseGrid() {
     );
   }
 
-  // Si aucune classe n'est disponible, afficher un message
+  // Si aucun module n'est disponible, afficher un message
   if (!classes || classes.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center flex-1 text-center py-16">
@@ -52,20 +55,24 @@ export default function CourseGrid() {
           <UsersIcon className="h-16 w-16 text-customBg" />
         </div>
         <h3 className="text-2xl font-bold text-gray-800 mb-4">
-          Pas encore de cours ici .
+          Créez votre premier module
         </h3>
         {user?.profile === RegisterProfileEnum.Coach && (
           <Button
-            onClick={() => setShowAddCourseForm(true)}
-            className="bg-customBg hover:bg-customBg-hover text-white px-6 py-3 rounded-lg flex items-center gap-2"
+            onClick={() =>
+              doIfUpgradeSubscription(() => router.push(ROUTES.createModule))
+            }
+            variant={"roam"}
+            className="gap-2"
           >
             <PlusIcon className="h-4 w-4" />
-            Ajouter un cours
+            ajouter un module
           </Button>
         )}
 
         {/* Formulaire d'ajout de cours */}
         <AddCourseForm
+          hasDialog={true}
           key={`add-course-${forceUpdate}`}
           isOpen={showAddCourseForm}
           onClose={() => setShowAddCourseForm(false)}
@@ -80,8 +87,8 @@ export default function CourseGrid() {
       (acc, ch) => acc + (ch.lessons?.length || 0),
       0
     ) ?? 0) as number;
-    const completedLessons = 0;
-    const progress = totalLessons > 0 ? 0 : 0;
+    const completedLessons = cls.progression?.lessonsCompleted || 0;
+    const progress = cls.progression?.progress || 0;
     return {
       id: cls.id,
       imageUrl: cls.cover || getPlaceholderImage("Cours"),
@@ -112,17 +119,19 @@ export default function CourseGrid() {
           <h1 className="text-2xl font-bold text-gray-800">Mes Cours</h1>
           <div className="flex gap-2">
             <Button
-              onClick={() => setShowAddCourseForm(true)}
-              className="bg-customBg hover:bg-customBg-hover text-white"
+              variant={"roam"}
+              onClick={() =>
+                doIfUpgradeSubscription(() => setShowAddCourseForm(true))
+              }
             >
               <PlusIcon className="h-4 w-4 mr-2" />
-              Ajouter un cours
+              ajouter un module
             </Button>
             {/* Bouton de test pour la navigation */}
             {courses.length > 0 && (
               <Button
                 onClick={() =>
-                  (window.location.href = `/p/cours/${courses[0].id}`)
+                  (window.location.href = `/p/modules/${courses[0].id}`)
                 }
                 variant="outline"
                 className="text-xs"
@@ -190,6 +199,7 @@ export default function CourseGrid() {
 
       {/* Formulaire d'ajout de cours */}
       <AddCourseForm
+        hasDialog={true}
         key={`add-course-${forceUpdate}`}
         isOpen={showAddCourseForm}
         onClose={() => setShowAddCourseForm(false)}

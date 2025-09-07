@@ -24,17 +24,18 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/logic/infra/repos/nodeapi/axios";
 import { toast } from "sonner";
 import NotesTest from "./notes-test";
+import { LessonEntity } from "@/logic/domain/entities";
 
-interface Lesson {
-  id: number;
-  title: string;
-  type: string;
-  content: {
-    videoLink?: string;
-    transcribeVideo?: boolean;
-    resources?: string[];
-  };
-}
+// interface Lesson {
+//   id: number;
+//   title: string;
+//   type: string;
+//   content: {
+//     videoLink?: string;
+//     transcribeVideo?: boolean;
+//     resources?: string[];
+//   };
+// }
 
 interface Chapter {
   id: number;
@@ -44,14 +45,14 @@ interface Chapter {
 interface Note {
   id: string;
   content: string;
-  lesson: Lesson;
+  lesson: LessonEntity;
   createdAt: string;
   updatedAt: string;
 }
 
 interface LessonPlayerProps {
   chapter: Chapter;
-  lesson: Lesson | undefined;
+  lesson: LessonEntity | undefined;
   chapterIndex: number;
   lessonIndex: number;
 }
@@ -200,10 +201,10 @@ export default function LessonPlayer({
       </div>
 
       {/* Video Player */}
-      {lesson.type === "video" && lesson.content.videoLink && (
+      {lesson.type === "video" && lesson.video?.url && (
         <div className="relative w-full aspect-video bg-gray-200 rounded-lg overflow-hidden mb-6">
           <Image
-            src={getVideoThumbnail(lesson.content.videoLink)}
+            src={getVideoThumbnail(lesson.video?.url)}
             alt="Video thumbnail"
             layout="fill"
             objectFit="cover"
@@ -213,7 +214,7 @@ export default function LessonPlayer({
             <Button
               size="icon"
               className="h-16 w-16 rounded-full bg-white/80 text-customBg hover:bg-white"
-              onClick={() => window.open(lesson.content.videoLink, "_blank")}
+              onClick={() => window.open(lesson.video?.url, "_blank")}
             >
               <Play className="h-8 w-8 fill-customBg" />
               <span className="sr-only">Play video</span>
@@ -269,7 +270,7 @@ export default function LessonPlayer({
       </div> */}
 
       {/* Course Description */}
-      <div className="prose prose-sm max-w-none text-gray-700 mb-8 text-sm font-medium">
+      {/* <div className="prose prose-sm max-w-none text-gray-700 mb-8 text-sm font-medium">
         <p>
           {lesson.type === "video" && lesson.content.videoLink ? (
             <>
@@ -285,7 +286,7 @@ export default function LessonPlayer({
             "Cette leçon contient du contenu textuel et des ressources pour enrichir votre apprentissage."
           )}
         </p>
-      </div>
+      </div> */}
 
       {/* Personal Notes */}
       <div className="space-y-4">

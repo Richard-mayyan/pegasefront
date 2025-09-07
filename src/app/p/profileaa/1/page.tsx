@@ -67,7 +67,7 @@ export default function ClassConfigurationForm() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <p className="text-xs text-muted-foreground">
-                  Logo de la classe
+                  Logo de du module
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Recommandé: 300px x 300px
@@ -80,7 +80,7 @@ export default function ClassConfigurationForm() {
               </div>
               <div className="space-y-2">
                 <p className="text-xs text-muted-foreground">
-                  Couverture de la classe
+                  Couverture de du module
                 </p>
                 {/* <p className="text-xs text-muted-foreground">
                   Nous recommandons de faire une image de 1600x300px

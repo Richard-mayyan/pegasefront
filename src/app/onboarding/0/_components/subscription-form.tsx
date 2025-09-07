@@ -62,15 +62,15 @@ export default function SubscriptionForm() {
         {/* Header Section */}
         <div className="space-y-4">
           <h2 className="text-3xl font-bold text-black">
-            Créez votre Communauté
+            Souscrivez à un plan
           </h2>
-          <p className="text-gray-600 text-base leading-relaxed">
+          {/* <p className="text-gray-600 text-base leading-relaxed">
             Profitez de 15 Jours gratuits, puis payez 50€/mois sans engagement
-          </p>
+          </p> */}
         </div>
 
         {/* Process Information */}
-        <ProcessInfo />
+        {/* <ProcessInfo /> */}
 
         {/* Plan Selection */}
         <PlanSelection
@@ -79,7 +79,7 @@ export default function SubscriptionForm() {
         />
 
         {/* Stripe Payment Form */}
-        {paymentIntent ? (
+        {paymentIntent && selectedPlan ? (
           <StripePaymentForm
             publishableKey={paymentIntent.publishableKey}
             clientSecret={paymentIntent.clientSecret}
@@ -90,45 +90,28 @@ export default function SubscriptionForm() {
             selectedPlan={selectedPlan}
           />
         ) : (
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-customBg mx-auto"></div>
-            <p className="text-gray-600 mt-2">
-              Chargement du formulaire de paiement...
-            </p>
-          </div>
+          selectedPlan && (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-customBg mx-auto"></div>
+              <p className="text-gray-600 mt-2">
+                Chargement du formulaire de paiement...
+              </p>
+            </div>
+          )
         )}
 
-        {/* Test Stripe (temporaire) */}
-        <div className="mt-8 space-y-6">
-          {/* <StripeDiagnostics />
-          <FunctionalStripeTest />
-          <WorkingStripeTest />
-          <RealStripeTest />
-          <MinimalStripeTest />
-          <SimpleStripeTest /> */}
-          {/* <StripeTest /> */}
-        </div>
-
         {/* Navigation Buttons */}
-        <NavigationButtons />
+        {/* <NavigationButtons /> */}
 
         {/* Disclaimer */}
-        <div className="text-xs text-gray-500 text-center leading-relaxed">
+        {/* <div className="text-xs text-gray-500 text-center leading-relaxed">
           Nous vous informerons 3 jours avant le 20 Juin 2025 pour le paiement
           de votre premier mois.
           <br />
           <span className="text-customBg cursor-pointer hover:underline">
             En savoir plus sur nos termes
           </span>
-        </div>
-
-        {/* Login Link */}
-        <div className="text-center pt-4">
-          <span className="text-gray-600">J'ai déjà un compte. </span>
-          <span className="text-customBg cursor-pointer hover:underline font-medium">
-            Connectez-vous !
-          </span>
-        </div>
+        </div> */}
       </div>
     </div>
   );

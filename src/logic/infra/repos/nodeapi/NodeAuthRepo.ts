@@ -27,7 +27,7 @@ export class NodeAuthRepo implements IAuthRepo {
     return res.data.data;
   }
 
-  async confirmAccountWithCode(data: ConfirmAccountDto): Promise<UserEntity> {
+  async confirmAccountWithCode(data: ConfirmAccountDto): Promise<LoginResult> {
     const res = await apiClient.post("/auth/confirm-email", data);
     return res.data.data;
   }

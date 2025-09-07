@@ -21,9 +21,9 @@ Ce système permet de créer et gérer des communautés avec des classes contena
 
 - Informations additionnelles sur la communauté
 
-#### Étape 3 : Ajouter une classe
+#### Étape 3 : Ajouter un module
 
-- **Titre** : "Ajouter une classe" (modifié)
+- **Titre** : "Ajouter un module" (modifié)
 - **Fonctionnalités** :
   - Ajouter des chapitres
   - Ajouter des leçons dans chaque chapitre
@@ -111,10 +111,10 @@ function MonComposant() {
 #### Données Disponibles
 
 - `community` : Données de la communauté
-- `class` : Données de la classe avec chapitres et leçons
+- `class` : Données de du module avec chapitres et leçons
 - `isLoading` : État de chargement
 - `setCommunity()` : Mettre à jour la communauté
-- `setClass()` : Mettre à jour la classe
+- `setClass()` : Mettre à jour du module
 
 ### 4. Persistance des Données
 

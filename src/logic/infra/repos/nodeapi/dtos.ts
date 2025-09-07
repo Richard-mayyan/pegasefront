@@ -1,3 +1,6 @@
+import { ChapterEntity, ProgressionEntity } from "@/logic/domain/entities";
+import { CommunitySettings } from "@/logic/domain/repos/CommunityRepo";
+
 // SignIn DTO
 export interface SignInDto {
   email: string;
@@ -30,6 +33,16 @@ export interface CreateUserDto {
   profile: string;
 }
 
+export interface LessonDto {
+  transcribe: boolean;
+  title: string;
+  type: "video" | "text";
+  publishedAt?: string;
+  link?: string;
+  text?: string;
+  video?: File;
+  document?: File;
+}
 // CreateClass DTO
 export interface CreateClassDto {
   name: string;
@@ -37,17 +50,11 @@ export interface CreateClassDto {
   cover?: string;
   profil?: string;
   color?: string;
-  content?: string;
   chapters?: Array<{
     name: string;
     active: boolean;
     publishedAt: string;
-    lessons?: Array<{
-      title: string;
-      type: string;
-      publishedAt: string;
-      content: object;
-    }>;
+    lessons?: Array<LessonDto>;
   }>;
 }
 
@@ -113,11 +120,7 @@ export interface CommunityResponseDto {
   images?: { resourceId: string; url: string }[];
   color?: string;
   typography?: string;
-  settings?: {
-    communityDiscussion: boolean;
-    studentListVisibility: boolean;
-    groupMeeting: boolean;
-  };
+  settings?: CommunitySettings;
   classes?: any[];
   members?: any[];
   createdAt: string;
@@ -143,20 +146,8 @@ export interface ClassResponseDto {
   thumbnail?: string;
   profil?: string;
   color?: string;
-  content?: string;
-  chapters?: Array<{
-    id: string;
-    name: string;
-    active: boolean;
-    publishedAt: string;
-    lessons?: Array<{
-      id: any;
-      title: string;
-      type: string;
-      publishedAt: string;
-      content: string;
-    }>;
-  }>;
+  chapters?: ChapterEntity[];
+  progression?: ProgressionEntity;
   community?: any;
   createdAt: string;
   updatedAt: string;

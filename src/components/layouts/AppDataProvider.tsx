@@ -4,6 +4,9 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { CommunityEntity, ClassEntity } from "@/logic/domain/entities";
 import { useAuth } from "./AuthProvider";
 import { classRepo } from "@/logic/infra/di/container";
+import Link from "next/link";
+import { ROUTES } from "@/lib/constants";
+import { Button } from "../ui/button";
 
 interface AppDataContextType {
   loadUserCommunities: () => void;
@@ -15,6 +18,10 @@ interface AppDataContextType {
   setClasses: (classes: ClassEntity[]) => void;
   addClass: (classData: ClassEntity) => void;
   isLoadingCommunities: boolean;
+  // Upgrade popup
+  openUpgradeSubscription: (reason?: string) => void;
+  doIfUpgradeSubscription: (callback: () => void) => void;
+  hasDisabledSubscription: boolean;
 }
 
 const AppDataContext = createContext<AppDataContextType | undefined>(undefined);
@@ -30,6 +37,26 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
   const [classesData, setClassesData] = useState<ClassEntity[]>([]);
   const [isLoadingCommunities, setIsLoadingCommunities] = useState(true);
   const { user } = useAuth();
+
+  // Upgrade popup state
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [upgradeReason, setUpgradeReason] = useState<string | undefined>(
+    undefined
+  );
+
+  const openUpgradeSubscription = (reason?: string) => {
+    setUpgradeReason(reason);
+    setShowUpgrade(true);
+  };
+
+  const hasDisabledSubscription = user?.subscriptions?.length === 0;
+  const doIfUpgradeSubscription = (callback: () => void) => {
+    if (hasDisabledSubscription) {
+      openUpgradeSubscription();
+    } else {
+      callback();
+    }
+  };
 
   const loadUserCommunities = async () => {
     if (!user || !user.communities) {
@@ -127,6 +154,8 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppDataContext.Provider
       value={{
+        hasDisabledSubscription,
+        doIfUpgradeSubscription,
         loadUserCommunities,
         currentCommunity,
         communities,
@@ -136,9 +165,52 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
         setClasses: setClassesData,
         addClass: (c: ClassEntity) => setClassesData((prev) => [c, ...prev]),
         isLoadingCommunities,
+        openUpgradeSubscription,
       }}
     >
       {children}
+
+      {/* Global Upgrade Popup */}
+      {showUpgrade && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-md rounded-xl bg-white shadow-lg">
+            <div className="p-5 border-b">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Souscrivez à un plan
+              </h3>
+              {upgradeReason && (
+                <p className="mt-1 text-sm text-gray-600">{upgradeReason}</p>
+              )}
+            </div>
+            <div className="p-5 space-y-3 text-sm text-gray-700">
+              <p>
+                Cette fonctionnalité nécessite un abonnement actif. Choisissez
+                un plan pour continuer.
+              </p>
+            </div>
+            <div className="p-5 flex items-center justify-end gap-3 border-t">
+              <Button
+                onClick={() => setShowUpgrade(false)}
+                variant={"outline"}
+                className="w-full rounded-lg h-12"
+              >
+                Plus tard
+              </Button>
+              <Button
+                type="button"
+                onClick={() => {
+                  setShowUpgrade(false);
+                  window.location.href = ROUTES.selectPlan;
+                }}
+                variant={"roam"}
+                className="w-full rounded-lg h-12"
+              >
+                Voir les plans
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </AppDataContext.Provider>
   );
 }
@@ -149,4 +221,9 @@ export function useAppData() {
     throw new Error("useAppData must be used within an AppDataProvider");
   }
   return context;
+}
+
+export function useUpgradeCoach() {
+  const { openUpgradeSubscription } = useAppData();
+  return openUpgradeSubscription;
 }

@@ -12,6 +12,8 @@ import "@blocknote/core/style.css";
 import { BlockNoteView } from "@blocknote/shadcn";
 import "@blocknote/shadcn/style.css";
 import { fr as frLocale } from "@blocknote/core/locales";
+import { redirect } from "next/navigation";
+import { ROUTES } from "@/lib/constants";
 
 export default function Component() {
   const { data, updateData } = useOnboarding();
@@ -63,6 +65,11 @@ export default function Component() {
   const handleSkip = () => {
     skipStep(2);
   };
+
+  console.log("data", data);
+  if (!data.logo) {
+    return redirect(ROUTES.onboarding1);
+  }
 
   return (
     <div className="min-h-screen bg-white p-8">

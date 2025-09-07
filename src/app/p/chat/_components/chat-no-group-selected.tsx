@@ -46,7 +46,7 @@ export default function ChatNoGroupSelected() {
         </p>
 
         {/* Actions */}
-        <div className="space-y-3 text-left">
+        {/* <div className="space-y-3 text-left">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">
               Nom du groupe
@@ -76,7 +76,7 @@ export default function ChatNoGroupSelected() {
             <Plus className="h-4 w-4 mr-2" />
             {isCreating ? "Création en cours..." : "Créer un nouveau groupe"}
           </Button>
-        </div>
+        </div> */}
 
         {/* Conseils */}
         {/* <div className="mt-6 p-4 bg-white rounded-lg border border-gray-200">

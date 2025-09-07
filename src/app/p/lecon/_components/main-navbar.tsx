@@ -24,9 +24,9 @@ export default function MainNavbar() {
     isActive: pathname?.startsWith("/p/chat"),
   };
   const coursItem = {
-    label: "Cours",
-    href: ROUTES.lecons,
-    isActive: pathname?.startsWith("/p/lecon"),
+    label: "Modules",
+    href: ROUTES.modules,
+    isActive: pathname?.startsWith("/p/cours"),
   };
 
   let studentItems = [

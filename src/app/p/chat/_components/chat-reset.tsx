@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Building, Plus, SearchIcon, X } from "lucide-react";
+import { useAppData } from "@/components/layouts/AppDataProvider";
 
 export default function ChatSidebar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,6 +16,7 @@ export default function ChatSidebar() {
     color: "blue",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { doIfUpgradeSubscription } = useAppData();
 
   const {
     currentChatGroup,
@@ -122,8 +124,9 @@ export default function ChatSidebar() {
         {/* Bouton nouveau groupe */}
         <div className="p-4 border-t border-gray-200">
           <Button
-            onClick={() => setIsModalOpen(true)}
-            className="w-full bg-customBg hover:bg-customBg-hover text-white"
+            className="w-full rounded-lg h-12"
+            variant={"roam"}
+            onClick={() => doIfUpgradeSubscription(() => setIsModalOpen(true))}
           >
             <Plus className="h-4 w-4 mr-2" />
             Nouveau groupe
@@ -195,7 +198,7 @@ export default function ChatSidebar() {
               </div>
 
               {/* Couleur */}
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Couleur du groupe
                 </label>
@@ -222,7 +225,7 @@ export default function ChatSidebar() {
                     </button>
                   ))}
                 </div>
-              </div>
+              </div> */}
 
               {/* Boutons d'action */}
               <div className="flex gap-3 pt-4">

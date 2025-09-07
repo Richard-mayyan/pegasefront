@@ -12,13 +12,13 @@ import {
 export class NodeClassRepo implements IClassRepo {
   private mapResponseToEntity(response: ClassResponseDto): ClassEntity {
     return {
+      progression: response.progression,
       id: response.id,
       name: response.name,
       description: response.description,
       cover: response.thumbnail,
       profil: response.profil,
       color: response.color,
-      content: response.content,
       chapters:
         response.chapters?.map((chapter) => ({
           id: chapter.id,
@@ -27,11 +27,11 @@ export class NodeClassRepo implements IClassRepo {
           publishedAt: chapter.publishedAt,
           lessons:
             chapter.lessons?.map((lesson) => ({
+              progression: lesson.progression,
               id: lesson.id,
               title: lesson.title,
               type: lesson.type,
               publishedAt: lesson.publishedAt,
-              content: lesson.content,
               transcription: undefined,
               notes: [],
             })) || [],
@@ -52,7 +52,7 @@ export class NodeClassRepo implements IClassRepo {
       const selectedCommunityId = data.communityId;
 
       if (!selectedCommunityId) {
-        throw new Error("Aucune communauté sélectionnée pour créer la classe");
+        throw new Error("Aucune communauté sélectionnée pour créer du module");
       }
 
       const form = new FormData();
@@ -61,7 +61,7 @@ export class NodeClassRepo implements IClassRepo {
       // Seuls les champs whitelistés par le backend sont envoyés (name, thumbnail)
 
       const response = await apiClient.post<ClassSingleResponseDto>(
-        `/communities/${selectedCommunityId}/classes`,
+        `/communities/${selectedCommunityId}/modules`,
         form
       );
       const created = this.mapResponseToEntity(response.data.data);
@@ -73,7 +73,7 @@ export class NodeClassRepo implements IClassRepo {
         for (const chapter of data.chapters) {
           try {
             const chapterRes = await apiClient.post(
-              `/classes/${created.id}/chapters`,
+              `/modules/${created.id}/chapters`,
               {
                 name: chapter.name,
                 active: true,
@@ -89,26 +89,28 @@ export class NodeClassRepo implements IClassRepo {
                 const normalizedType = String(lesson.type || "").toLowerCase();
                 if (normalizedType === "video") {
                   // Envoyer comme texte avec le lien vidéo dans le contenu
-                  lf.append("type", "Text");
-                  const payload =
-                    typeof lesson.content === "string"
-                      ? { videoLink: lesson.content }
-                      : {
-                          videoLink: (lesson as any)?.content?.videoLink,
-                          transcribeVideo: (lesson as any)?.content
-                            ?.transcribeVideo,
-                          resources: (lesson as any)?.content?.resources,
-                        };
-                  lf.append("text", JSON.stringify(payload || {}));
+                  lf.append("type", normalizedType);
+                  // const payload =
+                  //   typeof lesson.content === "string"
+                  //     ? { videoLink: lesson.content }
+                  //     : {
+                  //         videoLink: (lesson as any)?.content?.videoLink,
+                  //         transcribeVideo: (lesson as any)?.content
+                  //           ?.transcribeVideo,
+                  //         resources: (lesson as any)?.content?.resources,
+                  //       };
+                  // lf.append("text", JSON.stringify(lesson.text || {}));
+                  lf.append("link", lesson.link || "");
                 } else {
                   // Par défaut, texte pur
                   lf.append("type", "text");
-                  lf.append(
-                    "text",
-                    typeof lesson.content === "string"
-                      ? lesson.content
-                      : JSON.stringify(lesson.content || {})
-                  );
+                  lf.append("text", lesson.text || "");
+                  // lf.append(
+                  //   "text",
+                  //   typeof lesson.content === "string"
+                  //     ? lesson.content
+                  //     : JSON.stringify(lesson.content || {})
+                  // );
                 }
 
                 await apiClient.post(`/chapters/${newChapterId}/lessons`, lf);
@@ -122,15 +124,15 @@ export class NodeClassRepo implements IClassRepo {
 
       return created;
     } catch (error) {
-      console.error("Erreur lors de la création de la classe:", error);
-      throw new Error("Impossible de créer la classe");
+      console.error("Erreur lors de la création de du module:", error);
+      throw new Error("Impossible de créer du module");
     }
   }
 
   async findAll(communityId: string): Promise<ClassEntity[]> {
     try {
       const response = await apiClient.get<ClassListResponseDto>(
-        `/communities/${communityId}/classes`
+        `/communities/${communityId}/modules`
       );
       return response.data.data.map((classItem) =>
         this.mapResponseToEntity(classItem)
@@ -144,37 +146,37 @@ export class NodeClassRepo implements IClassRepo {
   async findOne(id: string): Promise<ClassEntity> {
     try {
       const response = await apiClient.get<ClassSingleResponseDto>(
-        `/classes/${id}`
+        `/modules/${id}`
       );
       return this.mapResponseToEntity(response.data.data);
     } catch (error) {
       console.error(
-        `Erreur lors de la récupération de la classe ${id}:`,
+        `Erreur lors de la récupération de du module ${id}:`,
         error
       );
-      throw new Error(`Impossible de récupérer la classe ${id}`);
+      throw new Error(`Impossible de récupérer du module ${id}`);
     }
   }
 
   async update(id: string, data: UpdateClassDto): Promise<ClassEntity> {
     try {
       const response = await apiClient.patch<ClassSingleResponseDto>(
-        `/classes/${id}`,
+        `/modules/${id}`,
         data
       );
       return this.mapResponseToEntity(response.data.data);
     } catch (error) {
-      console.error(`Erreur lors de la mise à jour de la classe ${id}:`, error);
-      throw new Error(`Impossible de mettre à jour la classe ${id}`);
+      console.error(`Erreur lors de la mise à jour de du module ${id}:`, error);
+      throw new Error(`Impossible de mettre à jour du module ${id}`);
     }
   }
 
   async delete(id: string): Promise<void> {
     try {
-      await apiClient.delete(`/classes/${id}`);
+      await apiClient.delete(`/modules/${id}`);
     } catch (error) {
-      console.error(`Erreur lors de la suppression de la classe ${id}:`, error);
-      throw new Error(`Impossible de supprimer la classe ${id}`);
+      console.error(`Erreur lors de la suppression de du module ${id}:`, error);
+      throw new Error(`Impossible de supprimer du module ${id}`);
     }
   }
 }

@@ -41,7 +41,7 @@
 
 ### Problème identifié
 
-- ❌ La classe était créée mais sans chapitres et leçons
+- ❌ du module était créée mais sans chapitres et leçons
 - ❌ Les interfaces DTO ne supportaient pas les chapitres et leçons
 - ❌ Le repo InMemory ne traitait pas les chapitres lors de la création/mise à jour
 
@@ -63,7 +63,7 @@
 #### 3. Simplification de la logique de création (src/app/onboarding/4/\_components/form.tsx)
 
 - ✅ Suppression de la logique complexe de création puis mise à jour
-- ✅ Création directe de la classe avec tous ses chapitres et leçons
+- ✅ Création directe de du module avec tous ses chapitres et leçons
 - ✅ Passage des données complètes lors de la création
 
 ### Structure des données maintenant supportée
@@ -94,7 +94,7 @@ interface CreateClassDto {
 
 1. **Collecte des données** : Chapitres et leçons collectés dans le contexte d'onboarding
 2. **Création de classe** : Une seule opération `classRepo.create()` avec toutes les données
-3. **Sauvegarde automatique** : Chapitres et leçons automatiquement sauvegardés avec la classe
+3. **Sauvegarde automatique** : Chapitres et leçons automatiquement sauvegardés avec du module
 4. **Persistance** : Données sauvegardées dans le localStorage via InMemoryClassRepo
 
 ## Modifications apportées
@@ -153,9 +153,9 @@ interface CreateClassDto {
 ### 7. Page onboarding/4 (src/app/onboarding/4/\_components/form.tsx)
 
 - ✅ Remplacement du bouton "Suivant" par "Créer leçon"
-- ✅ Utilisation du `classRepo` pour créer une classe
+- ✅ Utilisation du `classRepo` pour créer un module
 - ✅ Création des chapitres et leçons associés
-- ✅ Redirection vers `/lecon/2` après création réussie de la classe
+- ✅ Redirection vers `/lecon/2` après création réussie de du module
 
 ## Fonctionnalités implémentées
 
@@ -185,7 +185,7 @@ interface CreateClassDto {
 1. **onboarding/1** : Configuration de base (nom, logo, couverture, couleur, typographie)
 2. **onboarding/2** : Photos de couverture et description riche
 3. **onboarding/3** : Paramètres de configuration et création de la communauté
-4. **onboarding/4** : Création de la classe et redirection vers `/lecon/2`
+4. **onboarding/4** : Création de du module et redirection vers `/lecon/2`
 
 ## Technologies utilisées
 

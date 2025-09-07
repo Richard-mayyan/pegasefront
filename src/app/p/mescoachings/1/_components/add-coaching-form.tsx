@@ -46,10 +46,12 @@ export default function AddCoachingForm({
     link: editingCoaching?.link || "",
     price: editingCoaching?.price,
     startAt: editingCoaching?.startAt || new Date().toISOString(),
-    endAt:
-      editingCoaching?.endAt ||
-      new Date(Date.now() + 60 * 60 * 1000).toISOString(), // +1 heure par défaut
+    duration: editingCoaching?.duration || 60,
   });
+
+  const [durationMinutes, setDurationMinutes] = useState<number>(
+    formData.duration || 60
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,35 +65,32 @@ export default function AddCoachingForm({
       setIsSubmitting(true);
 
       if (isEditing && editingCoaching?.id) {
-        // Mode édition : mettre à jour le coaching existant
         await updateCoaching(editingCoaching.id, {
           name: formData.name,
           description: formData.description,
           link: formData.link,
           price: formData.price,
           startAt: formData.startAt,
-          endAt: formData.endAt,
+          duration: durationMinutes,
         });
         toast("Coaching modifié avec succès !");
       } else {
-        // Mode création : créer un nouveau coaching
         await createCoaching({
           ...formData,
+          duration: durationMinutes,
         });
-
-        // Réinitialiser le formulaire seulement en mode création
         setFormData({
           name: "",
           description: "",
           link: "",
           price: undefined,
           startAt: new Date().toISOString(),
-          endAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+          duration: 60,
         });
+        setDurationMinutes(60);
         toast("Coaching créé avec succès !");
       }
 
-      // Appeler onClose si fourni
       if (onClose) {
         onClose();
       }
@@ -220,14 +219,18 @@ export default function AddCoachingForm({
             />
           </div>
 
+          {/* Durée au lieu de date de fin */}
           <div className="space-y-2">
-            <Label htmlFor="coaching-end">Date et heure de fin</Label>
+            <Label htmlFor="coaching-duration">Durée (en minutes)</Label>
             <Input
-              id="coaching-end"
-              type="datetime-local"
-              value={formData.endAt ? formData.endAt.slice(0, 16) : ""}
-              onChange={(e) => handleInputChange("endAt", e.target.value)}
+              id="coaching-duration"
+              type="number"
+              min={0}
+              placeholder="60"
+              value={durationMinutes}
+              onChange={(e) => setDurationMinutes(Number(e.target.value || 0))}
             />
+            <p className="text-sm text-gray-500">Ex: 30, 45, 60, 90…</p>
           </div>
         </CardContent>
 

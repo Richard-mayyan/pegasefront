@@ -20,6 +20,7 @@ import { CoachingEntity, ReservationEntity } from "@/logic/domain/entities";
 import AddCoachingForm from "./add-coaching-form";
 import { toast } from "sonner";
 import { useAuth } from "@/components/layouts/AuthProvider";
+import { useAppData } from "@/components/layouts/AppDataProvider";
 
 export default function CoachingsListTable() {
   const { user } = useAuth();
@@ -31,6 +32,7 @@ export default function CoachingsListTable() {
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
   const { coachings, reservations, isLoading, error, deleteCoaching } =
     useCoachingsData();
+  const { doIfUpgradeSubscription } = useAppData();
 
   const getTabClass = (tabName: string) =>
     cn(
@@ -211,14 +213,14 @@ export default function CoachingsListTable() {
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
-              onClick={handleExportData}
+              onClick={() => doIfUpgradeSubscription(handleExportData)}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-transparent"
             >
               <Download className="h-4 w-4" />
               Exporter
             </Button>
             <Button
-              onClick={handleOpenAddForm}
+              onClick={() => doIfUpgradeSubscription(handleOpenAddForm)}
               className="bg-customBg hover:bg-customBg-hover text-white px-4 py-2 rounded-lg flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />

@@ -38,10 +38,10 @@ export const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({
       isValid: password.length >= 8,
       text: "Au moins 8 caractères",
     },
-    {
-      isValid: /\d/.test(password),
-      text: "Au moins 1 chiffre",
-    },
+    // {
+    //   isValid: /\d/.test(password),
+    //   text: "Au moins 1 chiffre",
+    // },
     {
       isValid: /[a-z]/.test(password),
       text: "Au moins 1 lettre minuscule",
@@ -50,10 +50,10 @@ export const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({
       isValid: /[A-Z]/.test(password),
       text: "Au moins 1 lettre majuscule",
     },
-    {
-      isValid: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
-      text: "Au moins 1 symbole",
-    },
+    // {
+    //   isValid: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+    //   text: "Au moins 1 symbole",
+    // },
   ];
 
   return (

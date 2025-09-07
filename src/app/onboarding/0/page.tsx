@@ -11,7 +11,7 @@ type Props = {};
 function page({}: Props) {
   const { user } = useAuth();
   if (user?.communities && user.communities.length > 0)
-    return redirect(ROUTES.lecons);
+    return redirect(ROUTES.modules);
 
   // if (user?.subscriptions && user.subscriptions.length > 0) {
   //   return redirect(ROUTES.onboarding1);
@@ -23,7 +23,7 @@ function page({}: Props) {
         <div className="min-w-[450px] overflow-scroll hide-scrollbar">
           <SubscriptionForm />
         </div>
-        <img className="object-cover h-full" src={"/onboarding1.png"} />
+        {/* <img className="object-cover h-full" src={"/onboarding1.png"} /> */}
       </div>
     </div>
   );

@@ -17,6 +17,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useAppData } from "@/components/layouts/AppDataProvider";
 import { useAuth } from "@/components/layouts/AuthProvider";
+import { getdefaultValue } from "@/lib/utils";
+import { ROUTES } from "@/lib/constants";
 
 interface LessonData {
   title: string;
@@ -46,8 +48,10 @@ export default function Component() {
     lessonIndex: number;
   } | null>(null);
   const [tempChapterTitle, setTempChapterTitle] = useState("");
-  const [className, setClassName] = useState("");
-  const [classDescription, setClassDescription] = useState("");
+  const [className, setClassName] = useState(getdefaultValue("nomdelaclasse"));
+  const [classDescription, setClassDescription] = useState(
+    getdefaultValue("descriptiondelaclasse")
+  );
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -76,21 +80,21 @@ export default function Component() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      // Créer la classe avec ses chapitres et leçons
+      // Créer du module avec ses chapitres et leçons
       if (data.chapters && data.chapters.length > 0) {
         if (!className.trim()) {
-          toast.error("Veuillez renseigner le nom de la classe");
+          toast.error("Veuillez renseigner le nom du module");
           throw new Error("Class name required");
         }
         if (!classDescription.trim()) {
-          toast.error("Veuillez renseigner la description de la classe");
+          toast.error("Veuillez renseigner la description de du module");
           throw new Error("Class description required");
         }
         if (!user || !user.communities || user.communities.length === 0) {
-          toast.error("Veuillez vous connecter pour créer une classe");
+          toast.error("Veuillez vous connecter pour créer un module");
           throw new Error("User not found");
         }
-        // Créer la classe avec tous les chapitres et leçons
+        // Créer du module avec tous les chapitres et leçons
         const classData: CreateClassDto & {
           communityId: string;
           thumbnailFile?: File | null;
@@ -100,8 +104,7 @@ export default function Component() {
           description: classDescription.trim(),
           cover: data.cover || "",
           profil: "default",
-          color: data.color || "red",
-          content: "",
+          color: data.color || "#ff0000",
           thumbnailFile: thumbnail,
           // Passer les chapitres au repo pour enchaîner la création côté API
           chapters: data.chapters.map((chapter: any) => ({
@@ -132,13 +135,12 @@ export default function Component() {
       toast.success("Classe créée avec succès !");
       console.log("Classe sauvegardée:", result);
 
-      // Rediriger vers p/cours/2
       setTimeout(() => {
-        router.push("/p/cours/2");
+        router.push(ROUTES.modules);
       }, 1500);
     },
     onError: (error: any) => {
-      toast.error("Erreur lors de la création de la classe");
+      toast.error("Erreur lors de la création de du module");
       console.error("Erreur:", error);
     },
   });
@@ -291,7 +293,7 @@ export default function Component() {
         {/* Header with Add Chapter Button */}
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-black">
-            5. Ajouter une classe
+            5. Ajouter un module
           </h2>
           <Button
             className="bg-customBg hover:bg-customBg-hover text-white px-8"
@@ -308,7 +310,7 @@ export default function Component() {
           <div className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
-                Nom de la classe
+                Nom du module
               </label>
               <Input
                 placeholder="Ex: Mathématiques - Niveau 1"
@@ -329,7 +331,7 @@ export default function Component() {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
-                Thumbnail de la classe
+                Thumbnail de du module
               </label>
               <div className="flex items-center space-x-4">
                 {thumbnailPreview ? (

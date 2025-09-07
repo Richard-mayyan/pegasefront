@@ -2,13 +2,14 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ROUTES } from "@/lib/constants";
 
 export default function Lecon3Redirect() {
   const router = useRouter();
 
   useEffect(() => {
     // Rediriger vers la page des cours car nous n'avons pas d'ID spécifique
-    router.replace("/p/cours/2");
+    router.replace(ROUTES.modules);
   }, [router]);
 
   return (

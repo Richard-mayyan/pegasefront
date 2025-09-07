@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { X, Upload, Trash2 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { X, Upload, Trash2, MessageSquare, Users, Video } from "lucide-react";
 import {
   CommunityEntity,
   CommunityEntityWithoutImages,
@@ -20,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { TYPOGRAPHY_OPTIONS } from "@/lib/constants";
 import { apiClient } from "@/logic/infra/repos/nodeapi/axios";
+import AppFontPicker from "@/components/ui/AppFontPicker";
 
 interface EditCommunityModalProps {
   community: CommunityEntity;
@@ -46,6 +48,12 @@ export default function EditCommunityModal({
     description: community.description,
     color: community.color,
     typography: community.typography,
+    price: community.price,
+    settings: community.settings || {
+      communityChat: true,
+      showStudentsList: true,
+      groupMeeting: true,
+    },
   });
   const [images, setCoverPhotos] = useState<ImageData[]>(
     community.images || []
@@ -60,6 +68,12 @@ export default function EditCommunityModal({
         description: community.description,
         color: community.color,
         typography: community.typography,
+        price: community.price,
+        settings: community.settings || {
+          communityChat: true,
+          showStudentsList: true,
+          groupMeeting: true,
+        },
       });
       setCoverPhotos(community.images || []);
     }
@@ -69,6 +83,19 @@ export default function EditCommunityModal({
     setFormData((prev) => ({
       ...prev,
       [field]: value,
+    }));
+  };
+
+  const handleSettingsChange = (
+    setting: keyof NonNullable<CommunityEntity["settings"]>,
+    value: boolean
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      settings: {
+        ...prev.settings,
+        [setting]: value,
+      } as CommunityEntity["settings"],
     }));
   };
 
@@ -141,6 +168,7 @@ export default function EditCommunityModal({
       await onSave({
         ...formData,
         images: images.map((image) => image.url),
+        // settings: formData.settings || null,
       });
       toast.success("Communauté mise à jour avec succès");
       onClose();
@@ -218,23 +246,130 @@ export default function EditCommunityModal({
           </div>
 
           {/* Typographie */}
+          <div className="space-y-2 mb-4">
+            <Label htmlFor="community-description">Choisir une police</Label>
+            <AppFontPicker
+              value={formData.typography || "Inter"}
+              onChange={(font) => handleInputChange("typography", font)}
+              previewText="Aperçu de la police pour votre communauté."
+            />
+          </div>
+
+          {/* Prix */}
           <div className="space-y-2 mb-6">
-            <Label htmlFor="community-typography">Typographie</Label>
-            <Select
-              value={formData.typography || ""}
-              onValueChange={(value) => handleInputChange("typography", value)}
-            >
-              <SelectTrigger id="community-typography">
-                <SelectValue placeholder="Choisir une typographie" />
-              </SelectTrigger>
-              <SelectContent>
-                {TYPOGRAPHY_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label htmlFor="community-price">Prix (€/mois)</Label>
+            <Input
+              id="community-price"
+              type="number"
+              value={formData.price || ""}
+              onChange={(e) =>
+                handleInputChange(
+                  "price",
+                  e.target.value ? Number(e.target.value) : undefined
+                )
+              }
+              placeholder="0"
+              min="0"
+            />
+            <p className="text-sm text-gray-500">
+              Laissez vide pour une communauté gratuite
+            </p>
+          </div>
+
+          {/* Settings */}
+          <div className="space-y-4 mb-6">
+            <Label className="text-base font-semibold">
+              Paramètres de la communauté
+            </Label>
+
+            {/* Discussion en communauté */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <MessageSquare className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900">
+                      Discussion en communauté
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Si vous désactivez cette fonctionnalité, la messagerie
+                      sera désactivée. Cela veut dire que vos étudiants ne
+                      pourront plus interagir entre eux.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex-shrink-0 ml-4">
+                  <Switch
+                    checked={formData.settings?.communityChat || false}
+                    onCheckedChange={(checked) =>
+                      handleSettingsChange("communityChat", checked)
+                    }
+                    className="data-[state=checked]:bg-customBg"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Visibilité de la liste des étudiants */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <Users className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900">
+                      La liste de mes étudiants est visible par les membres de
+                      ma classe
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Si vous désactivez cette fonctionnalité, la liste des
+                      étudiants ne sera plus visible par les autres membres.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex-shrink-0 ml-4">
+                  <Switch
+                    checked={formData.settings?.showStudentsList || false}
+                    onCheckedChange={(checked) =>
+                      handleSettingsChange("showStudentsList", checked)
+                    }
+                    className="data-[state=checked]:bg-customBg"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Meeting de groupe */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <Video className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900">
+                      Meeting de groupe
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Activez les réunions de groupe pour permettre à vos
+                      étudiants de se connecter en visioconférence.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex-shrink-0 ml-4">
+                  <Switch
+                    checked={formData.settings?.groupMeeting || false}
+                    onCheckedChange={(checked) =>
+                      handleSettingsChange("groupMeeting", checked)
+                    }
+                    className="data-[state=checked]:bg-customBg"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Photos de couverture */}

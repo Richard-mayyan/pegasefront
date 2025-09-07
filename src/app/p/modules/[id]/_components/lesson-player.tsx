@@ -29,6 +29,8 @@ import {
   LessonEntity,
   NoteEntity,
 } from "@/logic/domain/entities";
+import { APP_ENVS } from "@/logic/infra/config/envs";
+import AppVideoPlayer from "@/components/ui/AppVideoPlayer";
 
 // interface Lesson {
 //   id: number;
@@ -118,18 +120,19 @@ export default function LessonPlayer({
 
     try {
       const response = await apiClient.get(`/lessons/${lessonId}/note`);
-      const notesData = response.data?.data || response.data || [];
+      const notesData = response.data?.data || response.data;
       setNotes(notesData);
 
+      console.log("notesData", notesData);
+
       // Si il y a des notes, prendre la première (ou la plus récente si disponible)
-      if (notesData.length > 0) {
-        const latestNote = notesData[0]; // Prendre la première note pour l'instant
-        setCurrentNote(latestNote);
+      if (notesData) {
+        setCurrentNote(notesData);
 
         // Mettre à jour l'éditeur avec le contenu de la note
-        if (latestNote.content) {
+        if (notesData.content) {
           try {
-            const content = JSON.parse(latestNote.content);
+            const content = JSON.parse(notesData.content);
             editor.replaceBlocks(editor.document, content);
           } catch (error) {
             console.error(
@@ -269,11 +272,6 @@ export default function LessonPlayer({
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-customBg"></div>
           )}
         </div>
-        {fetchedLesson && (
-          <div className="text-xs text-gray-500 mt-1">
-            Données récupérées depuis l'API
-          </div>
-        )}
       </div>
       {/* 
       <p>
@@ -286,7 +284,7 @@ export default function LessonPlayer({
       {/* Video Player */}
       {fetchedLesson.type === "video" && fetchedLesson.video?.url && (
         <div className="w-full aspect-video bg-gray-200 rounded-lg overflow-hidden mb-6">
-          <video
+          {/* <video
             src={fetchedLesson.video.url}
             controls
             className="w-full h-full object-cover"
@@ -297,7 +295,15 @@ export default function LessonPlayer({
             <source src={fetchedLesson.video.url} type="video/webm" />
             <source src={fetchedLesson.video.url} type="video/ogg" />
             Votre navigateur ne supporte pas la lecture de vidéos.
-          </video>
+          </video> */}
+          <AppVideoPlayer
+            url={fetchedLesson.video?.url!}
+            autoPlay={false}
+            onPlay={() => console.log("play")}
+            onPause={() => console.log("pause")}
+            onEnded={() => console.log("ended")}
+            onProgress={(sec, frac) => console.log({ sec, frac })}
+          />
         </div>
       )}
 
@@ -382,7 +388,7 @@ export default function LessonPlayer({
       </div>
 
       {/* Course Description */}
-      <div className="prose prose-sm max-w-none text-gray-700 mb-8 text-sm font-medium">
+      {/* <div className="prose prose-sm max-w-none text-gray-700 mb-8 text-sm font-medium">
         <p>
           {fetchedLesson.type === "video" && fetchedLesson.video?.url ? (
             <>
@@ -400,7 +406,7 @@ export default function LessonPlayer({
             "Cette leçon contient du contenu textuel et des ressources pour enrichir votre apprentissage."
           )}
         </p>
-      </div>
+      </div> */}
 
       {/* Debug API Lesson Data */}
       {/* {fetchedLesson && (
@@ -439,12 +445,20 @@ export default function LessonPlayer({
             Notes personnelles
           </h3>
           <div className="flex gap-2">
-            <Button onClick={fetchLesson} variant="outline" className="text-xs">
-              Recharger leçon
-            </Button>
-            <Button onClick={loadNotes} variant="outline" className="text-xs">
-              Recharger notes
-            </Button>
+            {!APP_ENVS.isProductionMode && (
+              <Button
+                onClick={fetchLesson}
+                variant="outline"
+                className="text-xs"
+              >
+                Recharger leçon
+              </Button>
+            )}
+            {!APP_ENVS.isProductionMode && (
+              <Button onClick={loadNotes} variant="outline" className="text-xs">
+                Recharger notes
+              </Button>
+            )}
             <Button
               onClick={saveNote}
               disabled={isSaving}

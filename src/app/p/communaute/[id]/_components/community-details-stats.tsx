@@ -171,10 +171,10 @@ CommunityDetailsStatsProps) {
         </div>
       )}
 
-      {/* Informations supplémentaires de la classe */}
+      {/* Informations supplémentaires de du module */}
       {/* <div className="mt-8 p-4 bg-teal-50 rounded-lg border border-teal-200">
         <h3 className="text-lg font-semibold text-customBg-augmented mb-4">
-          Informations de la classe
+          Informations de du module
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div>

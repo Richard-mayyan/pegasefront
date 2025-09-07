@@ -48,17 +48,17 @@ export class NodeCommunityRepo implements ICommunityRepo {
       formData.append("price", "299");
 
       // Ajouter les paramètres de configuration
-      //   if (data.settings) {
-      //     formData.append(
-      //       "communityDiscussion",
-      //       data.settings.communityDiscussion.toString()
-      //     );
-      //     formData.append(
-      //       "studentListVisibility",
-      //       data.settings.studentListVisibility.toString()
-      //     );
-      //     formData.append("groupMeeting", data.settings.groupMeeting.toString());
-      //   }
+      if (data.settings) {
+        formData.append(
+          "communityChat",
+          data.settings.communityChat.toString()
+        );
+        formData.append(
+          "showStudentsList",
+          data.settings.showStudentsList.toString()
+        );
+        formData.append("groupMeeting", data.settings.groupMeeting.toString());
+      }
 
       // Gérer le logo (convertir base64 en File si nécessaire)
       if (data.logo) {
@@ -190,6 +190,44 @@ export class NodeCommunityRepo implements ICommunityRepo {
       //     formData.append(key, String(data[key as keyof UpdateCommunityDto]));
       //   }
       // });
+
+      // formData.append("name", data.name);
+      if (data.typography) formData.append("font", data.typography);
+      if (data.name) formData.append("name", data.name);
+      if (data.description) formData.append("description", data.description);
+      if (data.color) formData.append("color", data.color);
+      //   if (data.profil) formData.append("profil", data.profil);
+      if (data.typography) formData.append("typography", data.typography);
+
+      formData.append("trial_days", "2");
+      if (data.price) {
+        formData.append("price", (data.price * 100).toString());
+      }
+
+      // Ajouter les paramètres de configuration
+      if (data.settings) {
+        formData.append(
+          "communityChat",
+          data.settings.communityChat.toString()
+        );
+        formData.append(
+          "showStudentsList",
+          data.settings.showStudentsList.toString()
+        );
+        formData.append("groupMeeting", data.settings.groupMeeting.toString());
+      }
+
+      // Gérer le logo (convertir base64 en File si nécessaire)
+      if (data.logo) {
+        if (data.logo.startsWith("data:")) {
+          // Convertir base64 en File
+          const logoFile = this.base64ToFile(data.logo, "logo.png");
+          formData.append("logo", logoFile);
+        } else {
+          // C'est déjà un fichier
+          formData.append("logo", data.logo);
+        }
+      }
 
       // Ajouter les images de couverture
       if (data.images && data.images.length > 0) {

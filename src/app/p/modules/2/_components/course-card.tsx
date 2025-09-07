@@ -28,12 +28,12 @@ export default function CourseCard({
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/p/cours/${id}`);
+    router.push(`/p/modules/${id}`);
   };
 
   return (
     <Card
-      className="w-full rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer hover:scale-105 transition-transform"
+      className="w-full rounded-xl overflow-hidden shadow-md hover:shadow-lg  duration-200 cursor-pointer hover:scale-105 transition-transform"
       onClick={handleClick}
     >
       <div className="relative w-full h-48">
@@ -44,7 +44,7 @@ export default function CourseCard({
         />
         {totalLessons > 0 && (
           <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1">
-            <BookOpen className="w-4 w-4 text-gray-600" />
+            <BookOpen className="w-4  text-gray-600" />
             <span className="text-sm font-medium text-gray-700">
               {totalLessons}
             </span>

@@ -10,9 +10,16 @@ import {
   ConfirmAccountDto,
   ResendCodeDto,
 } from "@/logic/domain/repos/AuthRepo";
-import { ROUTES } from "@/lib/constants";
+import { ACCESS_TOKEN_KEY, ROUTES } from "@/lib/constants";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
+import { RegisterProfileEnum } from "@/logic/domain/entities";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { Label } from "@/components/ui/label";
 
 export default function Form() {
   const searchParams = useSearchParams();
@@ -47,11 +54,19 @@ export default function Form() {
         code: code.trim(),
       };
 
-      await authRepo.confirmAccountWithCode(confirmData);
+      const result = await authRepo.confirmAccountWithCode(confirmData);
+      localStorage.setItem(ACCESS_TOKEN_KEY, result.access_token);
       toast.success("Compte confirmé avec succès !");
 
-      // Redirection vers la page de connexion après confirmation réussie
-      router.push(ROUTES.login);
+      if (result.user.profile === RegisterProfileEnum.Student) {
+        window.location.href = ROUTES.student.home;
+        return;
+      }
+      if (result.user.communities && result.user.communities.length > 0) {
+        window.location.href = ROUTES.modules;
+      } else {
+        window.location.href = ROUTES.onboarding0;
+      }
     } catch (error) {
       console.error("Erreur lors de la confirmation:", error);
       setError("Code invalide ou expiré. Veuillez réessayer.");
@@ -108,37 +123,45 @@ export default function Form() {
             Nous vous avons envoyé un code. Entrez-le !
           </h2>
           <p className="text-gray-600 text-base leading-relaxed">
-            Entrez le code envoyé à votre adresse email dans le champ suivant
-            pour vérifier votre compte
+            Entrez le code envoyé à votre adresse email <strong>{email}</strong>{" "}
+            dans le champ suivant pour vérifier votre compte
           </p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Input
               type="email"
               placeholder="Votre adresse email"
+              disabled
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="h-12"
               required
             />
-          </div>
+          </div> */}
 
-          <div className="space-y-2">
-            <Input
-              type="text"
-              placeholder="Entrez le code envoyé"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className="h-12 text-center text-lg font-mono tracking-widest"
+          {/* Code verification input - replaced with InputOTP */}
+          <div className="">
+            <InputOTP
               maxLength={6}
-              required
-            />
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-            {success && <p className="text-green-500 text-sm">{success}</p>}
+              value={code}
+              onChange={setCode}
+              containerClassName="justify-center"
+            >
+              <InputOTPGroup>
+                <InputOTPSlot className="h-[50px]" index={0} />
+                <InputOTPSlot className="h-[50px]" index={1} />
+                <InputOTPSlot className="h-[50px]" index={2} />
+                <InputOTPSlot className="h-[50px]" index={3} />
+                <InputOTPSlot className="h-[50px]" index={4} />
+                <InputOTPSlot className="h-[50px]" index={5} />
+              </InputOTPGroup>
+            </InputOTP>
           </div>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {success && <p className="text-green-500 text-sm">{success}</p>}
 
           <Button
             type="submit"

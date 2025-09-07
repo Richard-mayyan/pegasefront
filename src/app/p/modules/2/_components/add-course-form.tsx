@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation } from "react-query";
 import { classRepo } from "@/logic/infra/di/container";
-import { CreateClassDto } from "@/logic/infra/repos/nodeapi/dtos";
+import { CreateClassDto, LessonDto } from "@/logic/infra/repos/nodeapi/dtos";
 import { toast } from "sonner";
 import { useAppData } from "@/components/layouts/AppDataProvider";
 import {
@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getdefaultValue } from "@/lib/utils";
 
 interface Resource {
   type: "link" | "document" | "information";
@@ -33,30 +34,35 @@ interface Resource {
   title: string;
 }
 
-interface LessonData {
-  title: string;
-  type: "video" | "text";
-  videoLink?: string;
-  transcribeVideo: boolean;
-  resources: string[];
-  content: {
-    videoLink?: string;
-    transcribeVideo: boolean;
-    resources: string[];
-  };
-}
+// interface LessonData {
+//   title: string;
+//   type: "video" | "text";
+//   videoLink?: string;
+//   transcribeVideo: boolean;
+//   resources: string[];
+//   content: {
+//     videoLink?: string;
+//     transcribeVideo: boolean;
+//     resources: string[];
+//   };
+// }
 
 interface ChapterData {
   name: string;
-  lessons: LessonData[];
+  lessons: LessonDto[];
 }
 
 interface AddCourseFormProps {
   isOpen: boolean;
+  hasDialog: boolean;
   onClose: () => void;
 }
 
-export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
+export default function AddCourseForm({
+  isOpen,
+  onClose,
+  hasDialog = true,
+}: AddCourseFormProps) {
   const { addClass, currentCommunity } = useAppData();
   const [chapters, setChapters] = useState<ChapterData[]>([
     {
@@ -71,8 +77,10 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
     lessonIndex: number;
   } | null>(null);
   const [tempChapterTitle, setTempChapterTitle] = useState("");
-  const [className, setClassName] = useState("");
-  const [classDescription, setClassDescription] = useState("");
+  const [className, setClassName] = useState(getdefaultValue("nomdelaclasse"));
+  const [classDescription, setClassDescription] = useState(
+    getdefaultValue("descriptiondelaclasse")
+  );
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -101,14 +109,14 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      // Créer la classe avec ses chapitres et leçons
+      // Créer du module avec ses chapitres et leçons
       if (chapters && chapters.length > 0) {
         if (!className.trim()) {
-          toast.error("Veuillez renseigner le nom de la classe");
+          toast.error("Veuillez renseigner le nom du module");
           throw new Error("Class name required");
         }
         if (!classDescription.trim()) {
-          toast.error("Veuillez renseigner la description de la classe");
+          toast.error("Veuillez renseigner la description de du module");
           throw new Error("Class description required");
         }
         if (!currentCommunity) {
@@ -118,7 +126,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
 
         console.log("currentCommunity", currentCommunity);
 
-        // Créer la classe avec tous les chapitres et leçons
+        // Créer du module avec tous les chapitres et leçons
         const classData: CreateClassDto & {
           communityId: string;
           thumbnailFile?: File | null;
@@ -128,8 +136,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
           description: classDescription.trim(),
           cover: "",
           profil: "default",
-          color: "red",
-          content: "",
+          color: "#ff0000",
           thumbnailFile: thumbnail,
           chapters: chapters.map((chapter: any) => ({
             name: chapter.name,
@@ -140,7 +147,10 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
                 title: lesson.title,
                 type: lesson.type,
                 publishedAt: new Date().toISOString(),
-                content: lesson.content,
+                text: lesson.text,
+                link: lesson.link,
+                video: lesson.video,
+                document: lesson.document,
               })) || [],
           })),
         };
@@ -169,7 +179,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
       window.location.reload();
     },
     onError: (error: any) => {
-      toast.error("Erreur lors de la création de la classe");
+      toast.error("Erreur lors de la création de du module");
       console.error("Erreur:", error);
     },
   });
@@ -190,7 +200,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
   };
 
   const handleAddChapter = () => {
-    const newChapter = {
+    const newChapter: ChapterData = {
       name: `Chapitre ${chapters.length + 1}`,
       lessons: [],
     };
@@ -199,6 +209,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
   };
 
   const handleAddLesson = (chapterIndex: number) => {
+    console.log("handleAddLesson", chapterIndex);
     setEditingLesson({ chapterIndex, lessonIndex: -1 });
     setShowLessonForm(true);
   };
@@ -208,7 +219,7 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
     setShowLessonForm(true);
   };
 
-  const handleSaveLesson = (lessonData: LessonData) => {
+  const handleSaveLesson = (lessonData: LessonDto) => {
     if (!editingLesson) return;
 
     const { chapterIndex, lessonIndex } = editingLesson;
@@ -219,14 +230,19 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
       updatedChapters[chapterIndex].lessons.push({
         title: lessonData.title,
         type: lessonData.type,
-        videoLink: lessonData.videoLink,
-        transcribeVideo: lessonData.transcribeVideo,
-        resources: lessonData.resources,
-        content: {
-          videoLink: lessonData.videoLink,
-          transcribeVideo: lessonData.transcribeVideo,
-          resources: lessonData.resources,
-        },
+        link: lessonData.link,
+        text: lessonData.text,
+        video: lessonData.video,
+        document: lessonData.document,
+        transcribe: true,
+
+        // transcribeVideo: lessonData.transcribeVideo,
+        // resources: lessonData.resources,
+        // content: {
+        //   videoLink: lessonData.videoLink,
+        //   transcribeVideo: lessonData.transcribeVideo,
+        //   resources: lessonData.resources,
+        // },
       });
     } else {
       // Modification de leçon existante
@@ -234,16 +250,20 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
         ...updatedChapters[chapterIndex].lessons[lessonIndex],
         title: lessonData.title,
         type: lessonData.type,
-        videoLink: lessonData.videoLink,
-        transcribeVideo: lessonData.transcribeVideo,
-        resources: lessonData.resources,
-        content: {
-          videoLink: lessonData.videoLink,
-          transcribeVideo: lessonData.transcribeVideo,
-          resources: lessonData.resources,
-        },
+        link: lessonData.link,
+        text: lessonData.text,
+        video: lessonData.video,
+        document: lessonData.document,
+        // transcribeVideo: lessonData.transcribeVideo,
+        // resources: lessonData.resources,
+        // content: {
+        //   videoLink: lessonData.videoLink,
+        //   transcribeVideo: lessonData.transcribeVideo,
+        //   resources: lessonData.resources,
+        // },
       };
     }
+    console.log("updatedChapters", updatedChapters);
 
     setChapters(updatedChapters);
     setShowLessonForm(false);
@@ -295,10 +315,40 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
       return;
     }
 
+    const classData: CreateClassDto & {
+      communityId: string;
+      thumbnailFile?: File | null;
+    } = {
+      communityId: currentCommunity?.id || "",
+      name: className.trim(),
+      description: classDescription.trim(),
+      cover: "",
+      profil: "default",
+      color: "#ff0000",
+      thumbnailFile: thumbnail,
+      chapters: chapters.map((chapter) => ({
+        name: chapter.name,
+        active: true,
+        publishedAt: new Date().toISOString(),
+        lessons:
+          chapter.lessons?.map((lesson) => ({
+            transcribe: true,
+            title: lesson.title,
+            type: lesson.type,
+            publishedAt: new Date().toISOString(),
+            text: lesson.text,
+            link: lesson.link,
+          })) || [],
+      })),
+    };
+    console.log("chapters", classData.chapters);
+
+    // return;
+
     mutation.mutate();
   };
 
-  const getInitialLessonData = (): LessonData | undefined => {
+  const getInitialLessonData = (): LessonDto | undefined => {
     if (!editingLesson) return undefined;
 
     const { chapterIndex, lessonIndex } = editingLesson;
@@ -306,16 +356,14 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
 
     const lesson = chapters[chapterIndex].lessons[lessonIndex];
     return {
+      transcribe: lesson.transcribe,
+
       title: lesson.title,
       type: lesson.type as "video" | "text",
-      videoLink: (lesson.content as any)?.videoLink,
-      transcribeVideo: (lesson.content as any)?.transcribeVideo || false,
-      resources: (lesson.content as any)?.resources || [],
-      content: lesson.content || {
-        videoLink: (lesson.content as any)?.videoLink,
-        transcribeVideo: (lesson.content as any)?.transcribeVideo || false,
-        resources: (lesson.content as any)?.resources || [],
-      },
+      link: lesson.link,
+      text: lesson.text,
+      video: lesson.video,
+      document: lesson.document,
     };
   };
 
@@ -325,20 +373,22 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
     onSave,
     initialData,
     isEditing,
-  }: any) => {
+  }: {
+    onClose: () => void;
+    onSave: (lessonData: LessonDto) => void;
+    initialData: LessonDto;
+    isEditing: boolean;
+  }) => {
     const [title, setTitle] = useState(initialData?.title || "");
     const [type, setType] = useState<"video" | "text">(
       initialData?.type || "video"
     );
-    const [videoLink, setVideoLink] = useState(initialData?.videoLink || "");
-    const [transcribeVideo, setTranscribeVideo] = useState(
-      initialData?.transcribeVideo || false
-    );
-    const [textContent, setTextContent] = useState(
-      initialData?.textContent || ""
-    );
+    const [videoLink, setVideoLink] = useState(initialData?.link || "");
+    const [transcribeVideo, setTranscribeVideo] = useState(false);
+    const [textContent, setTextContent] = useState(initialData?.text || "");
     const [resources, setResources] = useState<Resource[]>(
-      initialData?.resources || []
+      // initialData?.resources || []
+      []
     );
     const [showResourceForm, setShowResourceForm] = useState(false);
     const [newResource, setNewResource] = useState<{
@@ -356,16 +406,11 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
       onSave({
         title,
         type,
-        videoLink: type === "video" ? videoLink : undefined,
-        transcribeVideo,
-        textContent: type === "text" ? textContent : undefined,
-        resources,
-        content: {
-          videoLink: type === "video" ? videoLink : undefined,
-          transcribeVideo,
-          textContent: type === "text" ? textContent : undefined,
-          resources,
-        },
+        link: type === "video" ? videoLink : undefined,
+        text: type === "text" ? textContent : undefined,
+        transcribe: true,
+
+        // resources,
       });
     };
 
@@ -650,261 +695,270 @@ export default function AddCourseForm({ isOpen, onClose }: AddCourseFormProps) {
     );
   };
 
+  const content = (
+    <div className="space-y-6">
+      {/* Class basics */}
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700">
+            Nom du module
+          </label>
+          <Input
+            placeholder="Ex: Mathématiques - Niveau 1"
+            value={className}
+            onChange={(e) => setClassName(e.target.value)}
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700">
+            Description
+          </label>
+          <Textarea
+            placeholder="Décrivez brièvement cette classe"
+            value={classDescription}
+            onChange={(e) => setClassDescription(e.target.value)}
+            className="min-h-[90px]"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700">
+            Thumbnail de du module
+          </label>
+          <div className="flex items-center space-x-4">
+            {thumbnailPreview ? (
+              <div className="relative">
+                <img
+                  src={thumbnailPreview}
+                  alt="Thumbnail preview"
+                  className="w-20 h-20 object-cover rounded-lg"
+                />
+                <button
+                  type="button"
+                  onClick={removeThumbnail}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ) : (
+              <div className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+                <Upload className="w-6 h-6 text-gray-400" />
+              </div>
+            )}
+            <div className="flex-1">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleThumbnailChange}
+                className="hidden"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full"
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                Choisir une image
+              </Button>
+              <p className="text-xs text-gray-500 mt-1">
+                Formats acceptés: JPG, PNG, GIF (max 5MB)
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Header with Add Chapter Button */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-gray-800">
+          Structure de du module
+        </h2>
+        <Button
+          className="bg-customBg hover:bg-customBg-hover text-white px-8"
+          onClick={handleAddChapter}
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Ajouter un chapitre
+        </Button>
+      </div>
+      {/* Course Structure */}
+      <div className="space-y-6">
+        {chapters.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            <p>Aucun chapitre ajouté pour le moment.</p>
+            <p className="text-sm">
+              Cliquez sur "Ajouter un chapitre" pour commencer.
+            </p>
+          </div>
+        ) : (
+          chapters.map((chapter, chapterIndex) => (
+            <div
+              key={chapterIndex}
+              className="border border-gray-200 rounded-lg p-4 space-y-4"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  {editingChapter === chapterIndex ? (
+                    <Input
+                      value={tempChapterTitle}
+                      onChange={(e) => setTempChapterTitle(e.target.value)}
+                      onBlur={() => saveChapterEdit(chapterIndex)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                          saveChapterEdit(chapterIndex);
+                        }
+                      }}
+                      className="w-48 h-8 text-sm font-semibold"
+                      autoFocus
+                    />
+                  ) : (
+                    <h3 className="font-semibold text-gray-900">
+                      {chapter.name}
+                    </h3>
+                  )}
+                  <button
+                    onClick={() => startEditingChapter(chapterIndex)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <Edit2 className="w-3 h-3" />
+                  </button>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <button
+                    className="text-customBg hover:text-customBg-hover text-sm font-medium flex items-center"
+                    onClick={() => handleAddLesson(chapterIndex)}
+                  >
+                    <Plus className="w-4 h-4 mr-1" />
+                    Nouvelle leçon
+                  </button>
+                  <Switch
+                    defaultChecked
+                    className="data-[state=checked]:bg-customBg"
+                  />
+                  <button
+                    className="text-red-500 hover:text-red-600"
+                    onClick={() => handleDeleteChapter(chapterIndex)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Lessons for Chapter */}
+              <div className="space-y-3 ml-4">
+                {chapter.lessons.length === 0 ? (
+                  <div className="text-sm text-gray-500 py-2">
+                    Aucune leçon dans ce chapitre.
+                  </div>
+                ) : (
+                  chapter.lessons.map((lesson, lessonIndex) => (
+                    <div
+                      key={lessonIndex}
+                      className="flex items-center justify-between py-2"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <span className="text-gray-700">{lesson.title}</span>
+                        <button
+                          onClick={() =>
+                            handleEditLesson(chapterIndex, lessonIndex)
+                          }
+                          className="text-gray-400 hover:text-gray-600"
+                          title="Modifier la leçon"
+                        >
+                          <Edit2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <Switch
+                          defaultChecked
+                          className="data-[state=checked]:bg-customBg"
+                        />
+                        <button
+                          className="text-red-500 hover:text-red-600"
+                          onClick={() =>
+                            handleDeleteLesson(chapterIndex, lessonIndex)
+                          }
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      {/* Bottom Add Chapter Button */}
+      {chapters.length > 0 && (
+        <div className="flex justify-center pt-4">
+          <Button
+            className="bg-black hover:bg-gray-800 text-white px-6"
+            onClick={handleAddChapter}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Ajouter un chapitre
+          </Button>
+        </div>
+      )}
+      {/* Create Button */}
+      {chapters.length > 0 && (
+        <div className="flex justify-center pt-4">
+          <Button
+            className="bg-customBg hover:bg-customBg-hover text-white px-8"
+            onClick={handleCreateLesson}
+            disabled={mutation.isLoading}
+          >
+            {mutation.isLoading ? (
+              "Création en cours..."
+            ) : (
+              <>
+                Créer module
+                <Send className="w-4 h-4 ml-2" />
+              </>
+            )}
+          </Button>
+        </div>
+      )}
+      {showLessonForm && (
+        <CompleteLessonForm
+          onClose={() => {
+            setShowLessonForm(false);
+            setEditingLesson(null);
+          }}
+          onSave={handleSaveLesson}
+          initialData={
+            getInitialLessonData() || {
+              transcribe: true,
+              title: "",
+              type: "video",
+              link: "",
+              text: "",
+            }
+          }
+          isEditing={editingLesson?.lessonIndex !== -1}
+        />
+      )}
+      ;
+    </div>
+  );
+
+  if (!hasDialog) {
+    return <div className="p-4">{content}</div>;
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto z-[200]">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">
-            5. Ajouter une classe
+            5. Ajouter un module
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Class basics */}
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Nom de la classe
-              </label>
-              <Input
-                placeholder="Ex: Mathématiques - Niveau 1"
-                value={className}
-                onChange={(e) => setClassName(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Description
-              </label>
-              <Textarea
-                placeholder="Décrivez brièvement cette classe"
-                value={classDescription}
-                onChange={(e) => setClassDescription(e.target.value)}
-                className="min-h-[90px]"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Thumbnail de la classe
-              </label>
-              <div className="flex items-center space-x-4">
-                {thumbnailPreview ? (
-                  <div className="relative">
-                    <img
-                      src={thumbnailPreview}
-                      alt="Thumbnail preview"
-                      className="w-20 h-20 object-cover rounded-lg"
-                    />
-                    <button
-                      type="button"
-                      onClick={removeThumbnail}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                    <Upload className="w-6 h-6 text-gray-400" />
-                  </div>
-                )}
-                <div className="flex-1">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleThumbnailChange}
-                    className="hidden"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-full"
-                  >
-                    <Upload className="w-4 h-4 mr-2" />
-                    Choisir une image
-                  </Button>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Formats acceptés: JPG, PNG, GIF (max 5MB)
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Header with Add Chapter Button */}
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-800">
-              Structure de la classe
-            </h2>
-            <Button
-              className="bg-customBg hover:bg-customBg-hover text-white px-8"
-              onClick={handleAddChapter}
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Ajouter un chapitre
-            </Button>
-          </div>
-
-          {/* Course Structure */}
-          <div className="space-y-6">
-            {chapters.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <p>Aucun chapitre ajouté pour le moment.</p>
-                <p className="text-sm">
-                  Cliquez sur "Ajouter un chapitre" pour commencer.
-                </p>
-              </div>
-            ) : (
-              chapters.map((chapter, chapterIndex) => (
-                <div
-                  key={chapterIndex}
-                  className="border border-gray-200 rounded-lg p-4 space-y-4"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      {editingChapter === chapterIndex ? (
-                        <Input
-                          value={tempChapterTitle}
-                          onChange={(e) => setTempChapterTitle(e.target.value)}
-                          onBlur={() => saveChapterEdit(chapterIndex)}
-                          onKeyPress={(e) => {
-                            if (e.key === "Enter") {
-                              saveChapterEdit(chapterIndex);
-                            }
-                          }}
-                          className="w-48 h-8 text-sm font-semibold"
-                          autoFocus
-                        />
-                      ) : (
-                        <h3 className="font-semibold text-gray-900">
-                          {chapter.name}
-                        </h3>
-                      )}
-                      <button
-                        onClick={() => startEditingChapter(chapterIndex)}
-                        className="text-gray-400 hover:text-gray-600"
-                      >
-                        <Edit2 className="w-3 h-3" />
-                      </button>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <button
-                        className="text-customBg hover:text-customBg-hover text-sm font-medium flex items-center"
-                        onClick={() => handleAddLesson(chapterIndex)}
-                      >
-                        <Plus className="w-4 h-4 mr-1" />
-                        Nouvelle leçon
-                      </button>
-                      <Switch
-                        defaultChecked
-                        className="data-[state=checked]:bg-customBg"
-                      />
-                      <button
-                        className="text-red-500 hover:text-red-600"
-                        onClick={() => handleDeleteChapter(chapterIndex)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Lessons for Chapter */}
-                  <div className="space-y-3 ml-4">
-                    {chapter.lessons.length === 0 ? (
-                      <div className="text-sm text-gray-500 py-2">
-                        Aucune leçon dans ce chapitre.
-                      </div>
-                    ) : (
-                      chapter.lessons.map((lesson, lessonIndex) => (
-                        <div
-                          key={lessonIndex}
-                          className="flex items-center justify-between py-2"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <span className="text-gray-700">
-                              {lesson.title}
-                            </span>
-                            <button
-                              onClick={() =>
-                                handleEditLesson(chapterIndex, lessonIndex)
-                              }
-                              className="text-gray-400 hover:text-gray-600"
-                              title="Modifier la leçon"
-                            >
-                              <Edit2 className="w-3 h-3" />
-                            </button>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <Switch
-                              defaultChecked
-                              className="data-[state=checked]:bg-customBg"
-                            />
-                            <button
-                              className="text-red-500 hover:text-red-600"
-                              onClick={() =>
-                                handleDeleteLesson(chapterIndex, lessonIndex)
-                              }
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-
-          {/* Bottom Add Chapter Button */}
-          {chapters.length > 0 && (
-            <div className="flex justify-center pt-4">
-              <Button
-                className="bg-black hover:bg-gray-800 text-white px-6"
-                onClick={handleAddChapter}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Ajouter un chapitre
-              </Button>
-            </div>
-          )}
-
-          {/* Create Button */}
-          {chapters.length > 0 && (
-            <div className="flex justify-center pt-4">
-              <Button
-                className="bg-customBg hover:bg-customBg-hover text-white px-8"
-                onClick={handleCreateLesson}
-                disabled={mutation.isLoading}
-              >
-                {mutation.isLoading ? (
-                  "Création en cours..."
-                ) : (
-                  <>
-                    Créer leçon
-                    <Send className="w-4 h-4 ml-2" />
-                  </>
-                )}
-              </Button>
-            </div>
-          )}
-        </div>
-
-        {/* Lesson Form Popup */}
-        {showLessonForm && (
-          <CompleteLessonForm
-            onClose={() => {
-              setShowLessonForm(false);
-              setEditingLesson(null);
-            }}
-            onSave={handleSaveLesson}
-            initialData={getInitialLessonData()}
-            isEditing={editingLesson?.lessonIndex !== -1}
-          />
-        )}
+        {content}
       </DialogContent>
     </Dialog>
   );

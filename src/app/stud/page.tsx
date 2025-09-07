@@ -2,14 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { apiClient } from "@/logic/infra/repos/nodeapi/axios";
-import { CommunityEntity } from "@/logic/domain/entities";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import RichDescription from "@/components/RichDescription";
+
+type Coach = {
+  id: string;
+  firstname: string;
+  lastname: string;
+  avatar?: string;
+  description?: string;
+};
 
 export default function StudHomePage() {
-  const [communities, setCommunities] = useState<CommunityEntity[]>([]);
+  const [coaches, setCoaches] = useState<Coach[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -18,10 +24,10 @@ export default function StudHomePage() {
     const load = async () => {
       try {
         setLoading(true);
-        const res = await apiClient.get("/communities");
-        setCommunities(res.data.data || []);
+        const res = await apiClient.get("/coachs");
+        setCoaches(res.data?.data || res.data || []);
       } catch (e) {
-        setError("Impossible de charger les communautés");
+        setError("Impossible de charger les coachs");
       } finally {
         setLoading(false);
       }
@@ -29,17 +35,17 @@ export default function StudHomePage() {
     load();
   }, []);
 
-  const filtered = communities.filter((c) =>
-    (c.name || "").toLowerCase().includes(query.toLowerCase())
+  const filtered = coaches.filter((c) =>
+    `${c.firstname} ${c.lastname}`.toLowerCase().includes(query.toLowerCase())
   );
 
   return (
     <div className="min-h-screen bg-white">
       <header className="py-8 text-center">
-        <h1 className="text-3xl font-bold">Communauté Pegase</h1>
+        <h1 className="text-3xl font-bold">Trouver un coach</h1>
         <div className="mt-4 w-full max-w-md mx-auto flex gap-2">
           <Input
-            placeholder="Chercher mentor ou communauté"
+            placeholder="Chercher un coach"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -55,29 +61,28 @@ export default function StudHomePage() {
       {!loading && !error && (
         <main className="max-w-6xl mx-auto px-6 pb-16">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filtered.map((c, idx) => (
+            {filtered.map((c) => (
               <Link
-                key={idx}
-                href={`/stud/commu/${c.id}`}
+                key={c.id}
+                href={`/coach/${c.id}`}
                 className="bg-white rounded-lg border p-3 hover:shadow-sm transition-shadow"
               >
                 <div className="w-full h-40 bg-gray-100 rounded-md overflow-hidden">
                   <img
-                    src={c.images?.[0]?.url || c.logo || "/placeholder.svg"}
-                    alt={c.name}
+                    src={c.avatar || "/placeholder.svg"}
+                    alt={`${c.firstname} ${c.lastname}`}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="mt-3">
                   <div className="font-semibold text-gray-900 truncate">
-                    {c.name}
+                    {c.firstname} {c.lastname}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1 line-clamp-2">
-                    {/* {c.description || "Sans description"} */}
-                    <RichDescription
-                      description={c.description || "Sans description"}
-                    />
-                  </div>
+                  {c.description && (
+                    <div className="text-xs text-gray-500 mt-1 line-clamp-2">
+                      {c.description}
+                    </div>
+                  )}
                 </div>
               </Link>
             ))}

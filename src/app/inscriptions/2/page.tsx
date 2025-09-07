@@ -11,7 +11,7 @@ function page({}: Props) {
         <div className="min-w-[450px]">
           <Signup />
         </div>
-        <img className="object-cover h-full" src={"/signupimg.png"} />
+        {/* <img className="object-cover h-full" src={"/signupimg.png"} /> */}
       </div>
     </div>
   );

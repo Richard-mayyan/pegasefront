@@ -15,6 +15,7 @@ export default function CourseHeader({
   totalLessons,
   completedLessons,
 }: CourseHeaderProps) {
+  console.log("totalLessons", totalLessons);
   return (
     <header className="flex items-center justify-between p-4 border-b bg-white">
       <div className="flex flex-col">

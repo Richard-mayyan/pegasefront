@@ -68,6 +68,7 @@ export default function CommunityDetailsPage() {
   };
 
   const handleSaveCommunity = async (updatedCommunity: Partial<any>) => {
+    console.log("updatedCommunity", updatedCommunity);
     if (!community?.id) {
       toast.error("Impossible de modifier la communauté");
       return;

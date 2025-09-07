@@ -11,14 +11,14 @@ type Props = {};
 function page({}: Props) {
   const { user } = useAuth();
   if (user?.communities && user.communities.length > 0)
-    return redirect(ROUTES.lecons);
+    return redirect(ROUTES.modules);
   return (
     <div>
       <div className="md:flex py-4 px-5 md:h-screen overflow-hidden  w-fit mx-auto">
         <div className="min-w-[450px] overflow-scroll hide-scrollbar">
           <Signup />
         </div>
-        <img className="object-cover h-full" src={"/onboarding1.png"} />
+        {/* <img className="object-cover h-full" src={"/onboarding1.png"} /> */}
       </div>
     </div>
   );
