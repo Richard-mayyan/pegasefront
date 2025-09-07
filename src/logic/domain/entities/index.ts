@@ -82,6 +82,7 @@ export interface CommunityEntity {
   updatedAt?: string;
   studentCount: number;
   plan?: PlanEntity;
+  subscribed?: boolean;
 }
 
 export interface CommunityEntityWithoutImages {

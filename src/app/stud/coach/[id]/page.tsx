@@ -126,11 +126,11 @@ export default function StudCommunityDetailsPage() {
                       {coach.followers.toLocaleString()} étudiants
                     </div>
                   )} */}
-                  <div className="mt-3">
+                  {/* <div className="mt-3">
                     <Button className="bg-customBg hover:bg-customBg-hover text-white h-8 px-3 rounded-full text-xs">
                       Rejoindre
                     </Button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -176,10 +176,14 @@ export default function StudCommunityDetailsPage() {
                               Voir la communauté
                             </Link>
                             <Button
+                              disabled={c.subscribed}
+                              variant={c.subscribed ? "outline" : "default"}
                               className="bg-customBg hover:bg-customBg-hover text-white h-8 px-3 rounded-full text-xs"
                               onClick={() => handleJoinCommunity(c)}
                             >
-                              {c.plan
+                              {c.subscribed
+                                ? "Déjà abonné"
+                                : c.plan
                                 ? `Rejoindre ${formatPrice(
                                     c.plan.price / 100
                                   )}/${
