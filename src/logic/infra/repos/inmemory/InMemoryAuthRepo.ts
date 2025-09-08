@@ -17,7 +17,7 @@ export class InMemoryAuthRepo implements IAuthRepo {
 
   private initializeDefaultData() {
     // Créer des utilisateurs par défaut pour les tests
-    const defaultUsers: uUserEntity[] = [
+    const defaultUsers: UserEntity[] = [
       {
         id: 1,
         isEmailConfirmed : true,
