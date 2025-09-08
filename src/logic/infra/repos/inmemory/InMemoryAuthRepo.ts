@@ -17,9 +17,10 @@ export class InMemoryAuthRepo implements IAuthRepo {
 
   private initializeDefaultData() {
     // Créer des utilisateurs par défaut pour les tests
-    const defaultUsers: UserEntity[] = [
+    const defaultUsers: uUserEntity[] = [
       {
         id: 1,
+        isEmailConfirmed : true,
         email: "richard.bathiebo.7@gmail.com",
         firstName: "Richard",
         lastName: "Bathiebo",
@@ -37,46 +38,7 @@ export class InMemoryAuthRepo implements IAuthRepo {
           },
         ],
       },
-      {
-        id: 2,
-        email: "jane.smith@example.com",
-        firstName: "Jane",
-        lastName: "Smith",
-        password: "password123",
-        profile: RegisterProfileEnum.Coach,
-        communities: [
-          {
-            studentCount: 0,
-
-            id: 1,
-            name: "Communauté Test",
-            description: "Une communauté de test",
-            color: "blue",
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-        ],
-      },
-      {
-        id: 3,
-        email: "admin@example.com",
-        firstName: "Admin",
-        lastName: "User",
-        password: "admin123",
-        profile: RegisterProfileEnum.Coach,
-        communities: [
-          {
-            studentCount: 0,
-
-            id: 1,
-            name: "Communauté Test",
-            description: "Une communauté de test",
-            color: "blue",
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-        ],
-      },
+     
     ];
 
     this.users = defaultUsers;
@@ -120,6 +82,7 @@ export class InMemoryAuthRepo implements IAuthRepo {
 
     // Créer un nouvel utilisateur
     const newUser: UserEntity = {
+      isEmailConfirmed : true,
       id: this.nextId++,
       email: data.email,
       firstName: data.firstName,
