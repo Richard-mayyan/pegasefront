@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_KEY, ROUTES } from "@/lib/constants";
+import { ACCESS_TOKEN_KEY, ROUTES, sendUserToCodeSent } from "@/lib/constants";
 import { UserEntity } from "@/logic/domain/entities";
 import { authRepo } from "@/logic/infra/di/container";
 import { RegisterDto } from "@/logic/infra/repos/nodeapi/dtos";
@@ -36,6 +36,13 @@ export const AuthProvider: React.FC<{
     queryKey: ["getCurrentUser"],
     queryFn: () => authRepo.getProfile(),
     onSuccess: (data) => {
+      const isCodeSentPage = pathname == ROUTES.codeSent;
+
+      if (!data.isEmailConfirmed && !isCodeSentPage) {
+        sendUserToCodeSent(data.email);
+
+        // router.replace(ROUTES.accountConfirmed);
+      }
       setUser(data);
     },
     refetchOnWindowFocus: false,

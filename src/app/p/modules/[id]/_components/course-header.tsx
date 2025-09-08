@@ -1,12 +1,16 @@
+import { useAuth } from "@/components/layouts/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { ArrowRight } from "lucide-react";
+import { RegisterProfileEnum } from "@/logic/domain/entities";
+import { ArrowRight, Edit } from "lucide-react";
+import Link from "next/link";
 
 interface CourseHeaderProps {
   courseTitle: string;
   progress: number;
   totalLessons: number;
   completedLessons: number;
+  courseId: string;
 }
 
 export default function CourseHeader({
@@ -14,8 +18,11 @@ export default function CourseHeader({
   progress,
   totalLessons,
   completedLessons,
+  courseId,
 }: CourseHeaderProps) {
   console.log("totalLessons", totalLessons);
+  const { user } = useAuth();
+
   return (
     <header className="flex items-center justify-between p-4 border-b bg-white">
       <div className="flex flex-col">
@@ -31,12 +38,16 @@ export default function CourseHeader({
           <span>{progress}%</span>
         </div>
       </div>
-      <div className="flex items-center gap-4">
-        <Button className="bg-customBg hover:bg-customBg-hover text-white px-4 py-2 rounded-lg flex items-center gap-2">
-          Valider et continuer
-          <ArrowRight className="h-4 w-4" />
-        </Button>
-      </div>
+      {/* {user?.profile === RegisterProfileEnum.Coach && (
+        <div className="flex items-center gap-4">
+          <Link href={`/p/modules/create?id=${courseId}`}>
+            <Button className="bg-customBg hover:bg-customBg-hover text-white px-4 py-2 rounded-lg flex items-center gap-2">
+              Modifier le module
+              <Edit className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      )} */}
     </header>
   );
 }

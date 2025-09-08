@@ -38,38 +38,39 @@ export class InMemoryClassRepo implements IClassRepo {
   }
 
   async create(data: CreateClassDto): Promise<ClassEntity> {
-    const newClass: ClassEntity = {
-      id: this.classes.length + 1,
-      name: data.name,
-      description: data.description,
-      cover: data.cover,
-      profil: data.profil,
-      color: data.color,
-      content: data.content,
-      chapters:
-        data.chapters?.map((chapter, index) => ({
-          id: Date.now() + index + Math.random(),
-          name: chapter.name,
-          active: chapter.active,
-          publishedAt: chapter.publishedAt,
-          lessons:
-            chapter.lessons?.map((lesson, lessonIndex) => ({
-              id: Date.now() + lessonIndex + Math.random(),
-              title: lesson.title,
-              type: lesson.type,
-              publishedAt: lesson.publishedAt,
-              content: lesson.content,
-              transcription: undefined,
-              notes: [],
-            })) || [],
-        })) || [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    throw new Error("Method not implemented.");
+    // const newClass: ClassEntity = {
+    //   id: this.classes.length + 1,
+    //   name: data.name,
+    //   description: data.description,
+    //   cover: data.cover,
+    //   profil: data.profil,
+    //   color: data.color,
+    //   content: data.content,
+    //   chapters:
+    //     data.chapters?.map((chapter, index) => ({
+    //       id: Date.now() + index + Math.random(),
+    //       name: chapter.name,
+    //       active: chapter.active,
+    //       publishedAt: chapter.publishedAt,
+    //       lessons:
+    //         chapter.lessons?.map((lesson, lessonIndex) => ({
+    //           id: Date.now() + lessonIndex + Math.random(),
+    //           title: lesson.title,
+    //           type: lesson.type,
+    //           publishedAt: lesson.publishedAt,
+    //           content: lesson.content,
+    //           transcription: undefined,
+    //           notes: [],
+    //         })) || [],
+    //     })) || [],
+    //   createdAt: new Date().toISOString(),
+    //   updatedAt: new Date().toISOString(),
+    // };
 
-    this.classes.push(newClass);
-    this.saveToStorage();
-    return newClass;
+    // this.classes.push(newClass);
+    // this.saveToStorage();
+    // return newClass;
   }
 
   async findAll(): Promise<ClassEntity[]> {
@@ -85,41 +86,42 @@ export class InMemoryClassRepo implements IClassRepo {
   }
 
   async update(id: string, data: UpdateClassDto): Promise<ClassEntity> {
-    const index = this.classes.findIndex((c) => c.id?.toString() === id);
-    if (index === -1) {
-      throw new Error(`Class with id ${id} not found`);
-    }
+    throw new Error("Method not implemented.");
+    // const index = this.classes.findIndex((c) => c.id?.toString() === id);
+    // if (index === -1) {
+    //   throw new Error(`Class with id ${id} not found`);
+    // }
 
-    // Traiter les chapitres et leçons si fournis
-    let updatedChapters = this.classes[index].chapters;
-    if (data.chapters) {
-      updatedChapters = data.chapters.map((chapter, chapterIndex) => ({
-        id: Date.now() + chapterIndex + Math.random(),
-        name: chapter.name,
-        active: chapter.active,
-        publishedAt: chapter.publishedAt,
-        lessons:
-          chapter.lessons?.map((lesson, lessonIndex) => ({
-            id: Date.now() + lessonIndex + Math.random(),
-            title: lesson.title,
-            type: lesson.type,
-            publishedAt: lesson.publishedAt,
-            content: lesson.content,
-            transcription: undefined,
-            notes: [],
-          })) || [],
-      }));
-    }
+    // // Traiter les chapitres et leçons si fournis
+    // let updatedChapters = this.classes[index].chapters;
+    // if (data.chapters) {
+    //   updatedChapters = data.chapters.map((chapter, chapterIndex) => ({
+    //     id: Date.now() + chapterIndex + Math.random(),
+    //     name: chapter.name,
+    //     active: chapter.active,
+    //     publishedAt: chapter.publishedAt,
+    //     lessons:
+    //       chapter.lessons?.map((lesson, lessonIndex) => ({
+    //         id: Date.now() + lessonIndex + Math.random(),
+    //         title: lesson.title,
+    //         type: lesson.type,
+    //         publishedAt: lesson.publishedAt,
+    //         content: lesson.content,
+    //         transcription: undefined,
+    //         notes: [],
+    //       })) || [],
+    //   }));
+    // }
 
-    this.classes[index] = {
-      ...this.classes[index],
-      ...data,
-      chapters: updatedChapters,
-      updatedAt: new Date().toISOString(),
-    };
+    // this.classes[index] = {
+    //   ...this.classes[index],
+    //   ...data,
+    //   chapters: updatedChapters,
+    //   updatedAt: new Date().toISOString(),
+    // };
 
-    this.saveToStorage();
-    return this.classes[index];
+    // this.saveToStorage();
+    // return this.classes[index];
   }
 
   async delete(id: string): Promise<void> {

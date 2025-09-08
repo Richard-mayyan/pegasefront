@@ -95,6 +95,7 @@ const ToggleGroupItem = React.forwardRef<
 >(({ className, value, ...props }, ref) => {
   return (
     <Button
+      // type="button"
       variant="outline"
       size="sm"
       className={cn("", className)}

@@ -19,7 +19,7 @@ import { authRepo } from "@/logic/infra/di/container";
 import { RegisterDto } from "@/logic/infra/repos/nodeapi/dtos";
 import { RegisterProfileEnum } from "@/logic/domain/entities";
 import { useRouter } from "next/navigation";
-import { handleApiError, ROUTES } from "@/lib/constants";
+import { handleApiError, ROUTES, sendUserToCodeSent } from "@/lib/constants";
 import { getdefaultValue } from "@/lib/utils";
 import Image from "next/image";
 import { PasswordRequirements } from "@/components/ui/password-requirements";
@@ -66,7 +66,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
     onSuccess(data, variables, context) {
       toast.success("Compte créé avec succès !");
       reset();
-      router.replace(`${ROUTES.codeSent}?email=${variables.email}`);
+      sendUserToCodeSent(variables.email);
     },
     onError(error, variables, context) {
       handleApiError(error as any);

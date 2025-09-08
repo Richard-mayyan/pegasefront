@@ -107,16 +107,17 @@ export default function CoursePlayerLayout() {
   const progress = currentClass.progression?.progress || 0;
 
   return (
-    <div className="flex">
-      <div className="flex-1">
+    <div className="flex ">
+      <div className="flex-1  w-full">
         <CourseHeader
           courseTitle={currentClass.name}
           progress={progress}
           totalLessons={totalLessons}
           completedLessons={completedLessons}
+          courseId={String(currentClass.id)}
         />
 
-        <div className="flex">
+        <div className="flex bg-white w-full">
           <div className="flex h-screen overflow-hidden">
             <CourseSidebar
               chapters={currentClass.chapters}
@@ -156,7 +157,7 @@ export default function CoursePlayerLayout() {
       </div>
 
       {/* Bouton pour ouvrir/fermer le panel AI */}
-      <button
+      {/* <button
         onClick={() => setIsAIPanelOpen(!isAIPanelOpen)}
         className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110 ${
           isAIPanelOpen
@@ -196,18 +197,20 @@ export default function CoursePlayerLayout() {
             />
           </svg>
         )}
-      </button>
+      </button> */}
 
       {/* Panel AI avec animation */}
-      <div
-        className={`transition-all duration-300 ease-in-out ${
-          isAIPanelOpen
-            ? "opacity-100 translate-x-0"
-            : "opacity-0 translate-x-full pointer-events-none"
-        }`}
-      >
-        <AIAssistantPanel />
-      </div>
+      {/* {isAIPanelOpen && (
+        <div
+          className={`transition-all duration-300 ease-in-out ${
+            isAIPanelOpen
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 translate-x-full pointer-events-none"
+          }`}
+        >
+          <AIAssistantPanel />
+        </div>
+      )} */}
     </div>
   );
 }

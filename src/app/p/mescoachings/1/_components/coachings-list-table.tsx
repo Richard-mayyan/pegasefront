@@ -90,7 +90,7 @@ export default function CoachingsListTable() {
           "Date de début": coaching.startAt
             ? formatDate(coaching.startAt)
             : "-",
-          "Date de fin": coaching.endAt ? formatDate(coaching.endAt) : "-",
+          Durée: coaching.duration ? `${coaching.duration} minutes` : "-",
           Lien: coaching.link || "-",
           Prix: coaching.price ? `${coaching.price}€` : "-",
           "Date de création": formatDate(
@@ -258,7 +258,7 @@ export default function CoachingsListTable() {
                       {coaching.name}
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700">
-                      {coaching.description || "-"}
+                      {coaching.description?.slice(0, 50) + "..." || "-"}
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700">
                       {coaching.link ? (

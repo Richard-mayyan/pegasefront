@@ -14,6 +14,8 @@ import { InMemoryCommunityRepo } from "../repos/inmemory/InMemoryCommunityRepo";
 import { InMemoryAuthRepo } from "../repos/inmemory/InMemoryAuthRepo";
 import { NodeChatRepo } from "../repos/nodeapi/NodeChatRepo";
 import { NodeCoachingsRepo } from "../repos/nodeapi/NodeCoachingsRepo";
+import { NodeChapterRepo } from "../repos/nodeapi/NodeChapterRepo";
+import { IChapterRepo } from "@/logic/domain/repos/ChapterRepo";
 
 const inMemoryDeps = {
   authRepo: new InMemoryAuthRepo(),
@@ -28,11 +30,18 @@ const nodeDeps = {
   communityRepo: new NodeCommunityRepo(),
   chatRepo: new NodeChatRepo(),
   coachingsRepo: new NodeCoachingsRepo(),
+  chapterRepo: new NodeChapterRepo(),
 };
 
 const appLocalStorage = new BrowserLocalStorage();
-const { authRepo, classRepo, communityRepo, chatRepo, coachingsRepo } =
-  nodeDeps;
+const {
+  authRepo,
+  classRepo,
+  communityRepo,
+  chatRepo,
+  coachingsRepo,
+  chapterRepo,
+} = nodeDeps;
 // const chatRepo: IChatRepo = new InMemoryChatRepo();
 // const coachingsRepo: ICoachingsRepo = new InMemoryCoachingsRepo();
 
@@ -65,6 +74,7 @@ export {
   communityRepo,
   chatRepo,
   coachingsRepo,
+  chapterRepo,
 };
 
 // export {

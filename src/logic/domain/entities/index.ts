@@ -30,6 +30,7 @@ export interface CoachEntity {
 // --- UserEntity ---
 export interface UserEntity {
   id?: number;
+  isEmailConfirmed: boolean;
   email: string;
   firstName: string;
   lastName: string;
@@ -82,6 +83,7 @@ export interface CommunityEntity {
   updatedAt?: string;
   studentCount: number;
   plan?: PlanEntity;
+  subscribed?: boolean;
 }
 
 export interface CommunityEntityWithoutImages {
@@ -133,7 +135,7 @@ export interface ChapterEntity {
 export interface LessonEntity {
   id?: number;
   title: string;
-  type: string;
+  type: "text" | "video";
   publishedAt?: string; // ISO string
   video?: {
     transcribeVideo?: boolean;

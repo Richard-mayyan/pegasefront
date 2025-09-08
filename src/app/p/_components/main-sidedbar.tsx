@@ -30,7 +30,7 @@ export default function MainSidebar() {
     <Sidebar
       side="left"
       collapsible="none"
-      className="bg-gray-100 border-r border-gray-300 w-20 h-screen"
+      className="bg-gray-100 border-r border-gray-300 w-20 h-screen sticky top-0 overflow-hidden z-30"
     >
       <SidebarHeader className="flex flex-col items-center gap-4 py-4">
         <div className="flex items-center gap-2">

@@ -142,3 +142,8 @@ export const handleApiError = (error: AxiosError<any>) => {
     (error.response?.data as any)?.message || "Erreur de connexion";
   toast.error(message);
 };
+
+export const sendUserToCodeSent = (email: string) => {
+  const encodedEmail = encodeURIComponent(email);
+  window.location.href = `${ROUTES.codeSent}?email=${encodedEmail}`;
+};

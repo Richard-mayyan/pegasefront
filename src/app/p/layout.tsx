@@ -3,12 +3,12 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Circle, Plus, Users } from "lucide-react";
-import MainSidebar from "./lecon/_components/main-sidedbar";
-import MainNavbar from "./lecon/_components/main-navbar";
 import { useAppData } from "@/components/layouts/AppDataProvider";
 import { toast } from "sonner";
 import { redirect } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
+import MainNavbar from "./_components/main-navbar";
+import MainSidebar from "./_components/main-sidedbar";
 
 export default function DashboardLayout({ children }: any) {
   const { currentCommunity, isLoadingCommunities } = useAppData();

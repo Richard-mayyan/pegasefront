@@ -18,7 +18,12 @@ import { useMutation } from "react-query";
 import { AxiosError } from "axios";
 import { authRepo } from "@/logic/infra/di/container";
 import { useRouter } from "next/navigation";
-import { ACCESS_TOKEN_KEY, handleApiError, ROUTES } from "@/lib/constants";
+import {
+  ACCESS_TOKEN_KEY,
+  handleApiError,
+  ROUTES,
+  sendUserToCodeSent,
+} from "@/lib/constants";
 import { getdefaultValue } from "@/lib/utils";
 import Image from "next/image";
 import { useAuth } from "@/components/layouts/AuthProvider";
@@ -56,6 +61,9 @@ export default function LoginForm() {
       toast.success("Connexion réussie !");
       localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
       reset();
+      if (!data.user.isEmailConfirmed) {
+        sendUserToCodeSent(data.user.email);
+      }
       if (data?.user.profile === RegisterProfileEnum.Student) {
         router.replace(ROUTES.student.home);
       } else {
