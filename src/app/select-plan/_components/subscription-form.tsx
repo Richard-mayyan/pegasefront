@@ -5,7 +5,6 @@ import { useAuth } from "@/components/layouts/AuthProvider";
 import { toast } from "sonner";
 import Image from "next/image";
 import StripePaymentForm from "./stripe-payment-form";
-import NavigationButtons from "./navigation-buttons";
 import PlanSelection from "./plan-selection";
 import ProcessInfo from "./process-info";
 import { ACCESS_TOKEN_KEY, ROUTES } from "@/lib/constants";

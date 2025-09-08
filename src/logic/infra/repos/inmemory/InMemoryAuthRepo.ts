@@ -1,4 +1,8 @@
-import { IAuthRepo, LoginResult } from "@/logic/domain/repos/AuthRepo";
+import {
+  ConfirmAccountDto,
+  IAuthRepo,
+  LoginResult,
+} from "@/logic/domain/repos/AuthRepo";
 import { RegisterProfileEnum, UserEntity } from "@/logic/domain/entities";
 import { RegisterDto } from "@/logic/infra/repos/nodeapi/dtos";
 
@@ -131,10 +135,7 @@ export class InMemoryAuthRepo implements IAuthRepo {
     return newUser;
   }
 
-  async confirmAccountWithCode(data: {
-    email: string;
-    code: string;
-  }): Promise<UserEntity> {
+  async confirmAccountWithCode(data: ConfirmAccountDto): Promise<LoginResult> {
     // Simuler un délai réseau
     await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -148,7 +149,10 @@ export class InMemoryAuthRepo implements IAuthRepo {
       throw new Error("Code de confirmation invalide");
     }
 
-    return user;
+    return {
+      access_token: `mock_token_${user.id}_${Date.now()}`,
+      user: user,
+    };
   }
 
   async resendCode(data: { email: string }): Promise<void> {

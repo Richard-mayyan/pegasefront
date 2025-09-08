@@ -90,7 +90,7 @@ export default function CoachingsListTable() {
           "Date de début": coaching.startAt
             ? formatDate(coaching.startAt)
             : "-",
-          "Date de fin": coaching.endAt ? formatDate(coaching.endAt) : "-",
+          Durée: coaching.duration ? `${coaching.duration} minutes` : "-",
           Lien: coaching.link || "-",
           Prix: coaching.price ? `${coaching.price}€` : "-",
           "Date de création": formatDate(

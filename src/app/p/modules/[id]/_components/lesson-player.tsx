@@ -308,7 +308,7 @@ export default function LessonPlayer({
       )}
 
       {/* Audio Player */}
-      {fetchedLesson.type === "audio" && (
+      {/* {fetchedLesson.type === "audio" && (
         <div className="w-full aspect-video bg-gray-100 rounded-lg flex items-center justify-center mb-6">
           <div className="w-full max-w-md">
             {fetchedLesson.content &&
@@ -337,10 +337,10 @@ export default function LessonPlayer({
             )}
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Document Player */}
-      {fetchedLesson.type === "document" && fetchedLesson.document?.url && (
+      {/* {fetchedLesson.type === "document" && fetchedLesson.document?.url && (
         <div className="w-full aspect-video bg-gray-100 rounded-lg flex items-center justify-center mb-6">
           <div className="w-full h-full">
             <iframe
@@ -352,7 +352,7 @@ export default function LessonPlayer({
             </iframe>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Resources and Transcription */}
       <div className="flex items-center justify-between mb-6">

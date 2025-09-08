@@ -1,5 +1,11 @@
 import { CommunityEntity } from "../entities";
 
+export interface CommunitySettings {
+  communityChat: boolean;
+  showStudentsList: boolean;
+  groupMeeting: boolean;
+}
+
 export interface CreateCommunityDto {
   name: string;
   trial_days: string;

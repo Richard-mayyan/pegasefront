@@ -134,7 +134,7 @@ export interface ChapterEntity {
 export interface LessonEntity {
   id?: number;
   title: string;
-  type: string;
+  type: "text" | "video";
   publishedAt?: string; // ISO string
   video?: {
     transcribeVideo?: boolean;
