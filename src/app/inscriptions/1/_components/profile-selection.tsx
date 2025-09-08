@@ -52,7 +52,7 @@ export const ProfileSelection: React.FC<ProfileSelectionProps> = ({
 
         {/* Profile Selection Cards */}
         <div className="space-y-4">
-          {/* <Card
+          <Card
             className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-teal-500"
             onClick={() => onProfileSelect(RegisterProfileEnum.Student)}
           >
@@ -77,7 +77,7 @@ export const ProfileSelection: React.FC<ProfileSelectionProps> = ({
                 <li>• Notes personnelles</li>
               </ul>
             </CardContent>
-          </Card> */}
+          </Card>
 
           <Card
             className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-teal-500"

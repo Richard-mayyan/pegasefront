@@ -258,7 +258,7 @@ export default function CoachingsListTable() {
                       {coaching.name}
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700">
-                      {coaching.description || "-"}
+                      {coaching.description?.slice(0, 50) + "..." || "-"}
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700">
                       {coaching.link ? (

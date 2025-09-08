@@ -120,15 +120,20 @@ export default function CourseGrid() {
           <div className="flex gap-2">
             <Button
               variant={"roam"}
-              onClick={() =>
-                doIfUpgradeSubscription(() => setShowAddCourseForm(true))
+              onClick={
+                () =>
+                  doIfUpgradeSubscription(() =>
+                    router.push(ROUTES.createModule)
+                  )
+
+                // doIfUpgradeSubscription(() => setShowAddCourseForm(true))
               }
             >
               <PlusIcon className="h-4 w-4 mr-2" />
               ajouter un module
             </Button>
             {/* Bouton de test pour la navigation */}
-            {courses.length > 0 && (
+            {/* {courses.length > 0 && (
               <Button
                 onClick={() =>
                   (window.location.href = `/p/modules/${courses[0].id}`)
@@ -138,7 +143,7 @@ export default function CourseGrid() {
               >
                 Test Navigation (1er cours)
               </Button>
-            )}
+            )} */}
           </div>
         </div>
         <div className="flex flex-wrap gap-4 text-sm text-gray-600">

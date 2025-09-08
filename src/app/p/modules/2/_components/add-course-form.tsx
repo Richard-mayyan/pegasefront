@@ -27,6 +27,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getdefaultValue } from "@/lib/utils";
+import { ClassEntity } from "@/logic/domain/entities";
+import { chapterRepo } from "@/logic/infra/di/container";
+import { apiClient } from "@/logic/infra/repos/nodeapi/axios";
+import { ROUTES } from "@/lib/constants";
 
 interface Resource {
   type: "link" | "document" | "information";
@@ -56,20 +60,37 @@ interface AddCourseFormProps {
   isOpen: boolean;
   hasDialog: boolean;
   onClose: () => void;
+  editId?: string;
+  initialClass?: ClassEntity | null;
 }
 
 export default function AddCourseForm({
   isOpen,
   onClose,
   hasDialog = true,
+  editId,
+  initialClass,
 }: AddCourseFormProps) {
   const { addClass, currentCommunity } = useAppData();
-  const [chapters, setChapters] = useState<ChapterData[]>([
-    {
-      name: "Chapitre 1",
-      lessons: [],
-    },
-  ]);
+  const [chapters, setChapters] = useState<ChapterData[]>(
+    initialClass?.chapters?.map((ch: any) => ({
+      name: ch.name,
+      lessons: (ch.lessons || []).map((ls: any) => ({
+        title: ls.title,
+        type: ls.type,
+        link: ls.link,
+        text: ls.text,
+        video: ls.video,
+        document: ls.document,
+        transcribe: true,
+      })),
+    })) || [
+      {
+        name: "Chapitre 1",
+        lessons: [],
+      },
+    ]
+  );
   const [editingChapter, setEditingChapter] = useState<number | null>(null);
   const [showLessonForm, setShowLessonForm] = useState(false);
   const [editingLesson, setEditingLesson] = useState<{
@@ -77,9 +98,11 @@ export default function AddCourseForm({
     lessonIndex: number;
   } | null>(null);
   const [tempChapterTitle, setTempChapterTitle] = useState("");
-  const [className, setClassName] = useState(getdefaultValue("nomdelaclasse"));
+  const [className, setClassName] = useState(
+    initialClass?.name || getdefaultValue("nomdelaclasse")
+  );
   const [classDescription, setClassDescription] = useState(
-    getdefaultValue("descriptiondelaclasse")
+    initialClass?.description || getdefaultValue("descriptiondelaclasse")
   );
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string>("");
@@ -109,7 +132,7 @@ export default function AddCourseForm({
 
   const mutation = useMutation({
     mutationFn: async () => {
-      // Créer du module avec ses chapitres et leçons
+      // Créer ou éditer du module avec ses chapitres et leçons
       if (chapters && chapters.length > 0) {
         if (!className.trim()) {
           toast.error("Veuillez renseigner le nom du module");
@@ -119,56 +142,60 @@ export default function AddCourseForm({
           toast.error("Veuillez renseigner la description de du module");
           throw new Error("Class description required");
         }
-        if (!currentCommunity) {
+        if (!currentCommunity && !editId) {
           toast.error("Veuillez sélectionner une communauté");
           throw new Error("Community not found");
         }
+        if (editId) {
+          // Mode édition: on met à jour les champs de base
+          await classRepo.update(editId, {
+            name: className.trim(),
+            description: classDescription.trim(),
+          } as any);
+          return;
+        } else {
+          console.log("currentCommunity", currentCommunity);
+          // Créer du module avec tous les chapitres et leçons
+          const classData: CreateClassDto & {
+            communityId: string;
+            thumbnailFile?: File | null;
+          } = {
+            communityId: currentCommunity?.id || "",
+            name: className.trim(),
+            description: classDescription.trim(),
+            cover: "",
+            profil: "default",
+            color: "#ff0000",
+            thumbnailFile: thumbnail,
+            chapters: chapters.map((chapter: any) => ({
+              name: chapter.name,
+              active: true,
+              publishedAt: new Date().toISOString(),
+              lessons:
+                chapter.lessons?.map((lesson: any) => ({
+                  title: lesson.title,
+                  type: lesson.type,
+                  publishedAt: new Date().toISOString(),
+                  text: lesson.text,
+                  link: lesson.link,
+                  video: lesson.video,
+                  document: lesson.document,
+                })) || [],
+            })),
+          };
+          console.log("classData dto", classData);
+          const savedClass = await classRepo.create(classData);
+          addClass(savedClass);
+          return { class: savedClass };
+        }
 
-        console.log("currentCommunity", currentCommunity);
-
-        // Créer du module avec tous les chapitres et leçons
-        const classData: CreateClassDto & {
-          communityId: string;
-          thumbnailFile?: File | null;
-        } = {
-          communityId: currentCommunity?.id || "",
-          name: className.trim(),
-          description: classDescription.trim(),
-          cover: "",
-          profil: "default",
-          color: "#ff0000",
-          thumbnailFile: thumbnail,
-          chapters: chapters.map((chapter: any) => ({
-            name: chapter.name,
-            active: true,
-            publishedAt: new Date().toISOString(),
-            lessons:
-              chapter.lessons?.map((lesson: any) => ({
-                title: lesson.title,
-                type: lesson.type,
-                publishedAt: new Date().toISOString(),
-                text: lesson.text,
-                link: lesson.link,
-                video: lesson.video,
-                document: lesson.document,
-              })) || [],
-          })),
-        };
-        console.log("classData dto", classData);
-
-        const savedClass = await classRepo.create(classData);
-        return;
-
-        // Ajouter à la liste globale des classes
-        addClass(savedClass);
-
-        return { class: savedClass };
+        // Mode sans chapitres
+        return { class: null };
       }
 
       return { class: null };
     },
-    onSuccess: (result: any) => {
-      return;
+    onSuccess: (result) => {
       toast.success("Classe créée avec succès !");
       console.log("Classe sauvegardée:", result);
 
@@ -176,7 +203,11 @@ export default function AddCourseForm({
       onClose();
       resetForm();
 
-      window.location.reload();
+      if (result?.class) {
+        window.location.href = `p/modules/${result?.class.id}`;
+      }
+
+      // window.location.reload();
     },
     onError: (error: any) => {
       toast.error("Erreur lors de la création de du module");
@@ -266,6 +297,27 @@ export default function AddCourseForm({
     console.log("updatedChapters", updatedChapters);
 
     setChapters(updatedChapters);
+
+    // Persist edit when in edit mode and lesson has an id
+    try {
+      if (editId) {
+        const chapter = (initialClass?.chapters || [])[chapterIndex];
+        const lessonId = (chapter?.lessons || [])[lessonIndex]?.id;
+        if (lessonId) {
+          const lf = new FormData();
+          lf.append("title", lessonData.title);
+          lf.append("type", lessonData.type);
+          if (lessonData.type === "video" && lessonData.link) {
+            lf.append("link", lessonData.link);
+          } else if (lessonData.type === "text" && lessonData.text) {
+            lf.append("text", lessonData.text);
+          }
+          apiClient.patch(`/lessons/${lessonId}`, lf);
+        }
+      }
+    } catch (e) {
+      console.error("Erreur lors de la mise à jour de la leçon", e);
+    }
     setShowLessonForm(false);
     setEditingLesson(null);
   };
@@ -303,6 +355,14 @@ export default function AddCourseForm({
   const saveChapterEdit = (chapterIndex: number) => {
     if (tempChapterTitle.trim()) {
       handleEditChapterTitle(chapterIndex, tempChapterTitle.trim());
+      try {
+        if (editId && initialClass?.chapters?.[chapterIndex]?.id) {
+          const chId = String(initialClass.chapters[chapterIndex].id);
+          chapterRepo.update(chId, { name: tempChapterTitle.trim() } as any);
+        }
+      } catch (e) {
+        console.error("Erreur lors de la mise à jour du chapitre", e);
+      }
     } else {
       setEditingChapter(null);
       setTempChapterTitle("");
@@ -479,6 +539,7 @@ export default function AddCourseForm({
               className="grid grid-cols-2 gap-4"
             >
               <ToggleGroupItem
+                type="button"
                 value="video"
                 aria-label="Toggle video"
                 className="h-24 w-full bg-customBg text-white flex flex-col items-center justify-center gap-2 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
@@ -487,6 +548,7 @@ export default function AddCourseForm({
                 Vidéo
               </ToggleGroupItem>
               <ToggleGroupItem
+                type="button"
                 value="text"
                 aria-label="Toggle text"
                 className="h-24 w-full flex flex-col items-center justify-center gap-2 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"

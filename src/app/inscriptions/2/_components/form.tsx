@@ -65,7 +65,7 @@ export default function Form() {
       if (result.user.communities && result.user.communities.length > 0) {
         window.location.href = ROUTES.modules;
       } else {
-        window.location.href = ROUTES.onboarding0;
+        window.location.href = ROUTES.onboarding1;
       }
     } catch (error) {
       console.error("Erreur lors de la confirmation:", error);
@@ -143,34 +143,38 @@ export default function Form() {
           </div> */}
 
           {/* Code verification input - replaced with InputOTP */}
-          <div className="">
-            <InputOTP
-              maxLength={6}
-              value={code}
-              onChange={setCode}
-              containerClassName="justify-center"
-            >
-              <InputOTPGroup>
-                <InputOTPSlot className="h-[50px]" index={0} />
-                <InputOTPSlot className="h-[50px]" index={1} />
-                <InputOTPSlot className="h-[50px]" index={2} />
-                <InputOTPSlot className="h-[50px]" index={3} />
-                <InputOTPSlot className="h-[50px]" index={4} />
-                <InputOTPSlot className="h-[50px]" index={5} />
-              </InputOTPGroup>
-            </InputOTP>
-          </div>
+          {email && (
+            <div className="">
+              <InputOTP
+                maxLength={6}
+                value={code}
+                onChange={setCode}
+                containerClassName="justify-center"
+              >
+                <InputOTPGroup>
+                  <InputOTPSlot className="h-[50px]" index={0} />
+                  <InputOTPSlot className="h-[50px]" index={1} />
+                  <InputOTPSlot className="h-[50px]" index={2} />
+                  <InputOTPSlot className="h-[50px]" index={3} />
+                  <InputOTPSlot className="h-[50px]" index={4} />
+                  <InputOTPSlot className="h-[50px]" index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+            </div>
+          )}
           {error && <p className="text-red-500 text-sm">{error}</p>}
           {success && <p className="text-green-500 text-sm">{success}</p>}
 
-          <Button
-            type="submit"
-            variant="default"
-            className="w-full rounded-lg h-12 bg-customBg hover:bg-customBg-hover"
-            disabled={isLoading}
-          >
-            {isLoading ? "Vérification..." : "Continuer"}
-          </Button>
+          {email && (
+            <Button
+              type="submit"
+              variant="default"
+              className="w-full rounded-lg h-12 bg-customBg hover:bg-customBg-hover"
+              disabled={isLoading}
+            >
+              {isLoading ? "Vérification..." : "Continuer"}
+            </Button>
+          )}
         </form>
 
         {/* Secondary Actions */}

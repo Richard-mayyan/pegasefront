@@ -160,11 +160,110 @@ export class NodeClassRepo implements IClassRepo {
 
   async update(id: string, data: UpdateClassDto): Promise<ClassEntity> {
     try {
+      // Mettre à jour les métadonnées de base du module
       const response = await apiClient.patch<ClassSingleResponseDto>(
         `/modules/${id}`,
-        data
+        {
+          name: data.name,
+          description: data.description,
+          cover: data.cover,
+          profil: data.profil,
+          color: data.color,
+        }
       );
-      return this.mapResponseToEntity(response.data.data);
+      const updated = this.mapResponseToEntity(response.data.data);
+
+      // Synchroniser les chapitres et leçons si fournis
+      if (Array.isArray(data.chapters)) {
+        // Recharger pour récupérer les ids actuels
+        const current = await this.findOne(id);
+        const currentChapters = current.chapters || [];
+
+        // 1) Supprimer les chapitres en surplus côté serveur
+        if (currentChapters.length > data.chapters.length) {
+          for (let i = data.chapters.length; i < currentChapters.length; i++) {
+            const chToRemove = currentChapters[i];
+            if (chToRemove?.id) {
+              try {
+                await apiClient.delete(`/chapters/${chToRemove.id}`);
+              } catch (e) {
+                console.warn("Suppression chapitre échouée", chToRemove.id, e);
+              }
+            }
+          }
+          currentChapters.length = data.chapters.length;
+        }
+
+        for (let chIndex = 0; chIndex < data.chapters.length; chIndex++) {
+          const ch = data.chapters[chIndex] as any;
+          const currentChapter = currentChapters[chIndex];
+
+          // Créer ou mettre à jour le chapitre à l'index
+          if (currentChapter?.id) {
+            await apiClient.patch(`/chapters/${currentChapter.id}`, {
+              name: ch.name,
+              active: ch.active,
+            });
+          } else {
+            // Créer un nouveau chapitre si plus de chapitres qu'auparavant
+            const chRes = await apiClient.post(`/modules/${id}/chapters`, {
+              name: ch.name,
+              active: true,
+            });
+            currentChapters.push({
+              id: chRes.data?.data?.id,
+              name: ch.name,
+              active: true,
+              publishedAt: new Date().toISOString(),
+              lessons: [],
+            } as any);
+          }
+
+          // Mettre à jour/Créer les leçons pour ce chapitre
+          const chapterId = (currentChapters[chIndex] as any)?.id;
+          if (chapterId && Array.isArray(ch.lessons)) {
+            const existingLessons = currentChapter?.lessons || [];
+
+            // 1) Supprimer les leçons en surplus
+            if (existingLessons.length > ch.lessons.length) {
+              for (let j = ch.lessons.length; j < existingLessons.length; j++) {
+                const lToRemove = existingLessons[j];
+                if (lToRemove?.id) {
+                  try {
+                    await apiClient.delete(`/lessons/${lToRemove.id}`);
+                  } catch (e) {
+                    console.warn("Suppression leçon échouée", lToRemove.id, e);
+                  }
+                }
+              }
+              existingLessons.length = ch.lessons.length;
+            }
+
+            for (let lsIndex = 0; lsIndex < ch.lessons.length; lsIndex++) {
+              const ls = ch.lessons[lsIndex] as any;
+              const currentLesson = existingLessons[lsIndex];
+              const lf = new FormData();
+              lf.append("title", ls.title);
+              const normalizedType = String(ls.type || "").toLowerCase();
+              if (normalizedType === "video") {
+                lf.append("type", "video");
+                lf.append("link", ls.link || "");
+              } else {
+                lf.append("type", "text");
+                lf.append("text", ls.text || "");
+              }
+
+              if (currentLesson?.id) {
+                await apiClient.patch(`/lessons/${currentLesson.id}`, lf);
+              } else {
+                await apiClient.post(`/chapters/${chapterId}/lessons`, lf);
+              }
+            }
+          }
+        }
+      }
+
+      return updated;
     } catch (error) {
       console.error(`Erreur lors de la mise à jour de du module ${id}:`, error);
       throw new Error(`Impossible de mettre à jour du module ${id}`);

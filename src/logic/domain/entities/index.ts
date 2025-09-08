@@ -30,6 +30,7 @@ export interface CoachEntity {
 // --- UserEntity ---
 export interface UserEntity {
   id?: number;
+  isEmailConfirmed: boolean;
   email: string;
   firstName: string;
   lastName: string;
