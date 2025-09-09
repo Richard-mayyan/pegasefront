@@ -16,6 +16,8 @@ import { useAppData } from "@/components/layouts/AppDataProvider";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
+import { RegisterProfileEnum } from "@/logic/domain/entities";
+import { useAuth } from "@/components/layouts/AuthProvider";
 
 interface MainSidebarProps {
   onClose?: () => void;
@@ -31,6 +33,7 @@ export default function MainSidebar({ onClose }: MainSidebarProps) {
   };
 
   const router = useRouter();
+  const { user } = useAuth();
   return (
     <div className="w-full h-full bg-gray-100 border-r border-gray-300 flex flex-col">
       <Sidebar
@@ -100,14 +103,16 @@ export default function MainSidebar({ onClose }: MainSidebarProps) {
         </SidebarContent>
 
         <SidebarFooter className="flex flex-col items-center py-4">
-          <Button
-            onClick={() => router.push(ROUTES.createCommunity)}
-            size="icon"
-            className="h-12 w-12 rounded-lg bg-gray-300 text-gray-700 shadow-sm hover:bg-gray-400"
-            title="Ajouter une communauté"
-          >
-            <Plus className="h-5 w-5" />
-          </Button>
+          {user?.profile === RegisterProfileEnum.Coach && (
+            <Button
+              onClick={() => router.push(ROUTES.createCommunity)}
+              size="icon"
+              className="h-12 w-12 rounded-lg bg-gray-300 text-gray-700 shadow-sm hover:bg-gray-400"
+              title="Ajouter une communauté"
+            >
+              <Plus className="h-5 w-5" />
+            </Button>
+          )}
         </SidebarFooter>
       </Sidebar>
     </div>

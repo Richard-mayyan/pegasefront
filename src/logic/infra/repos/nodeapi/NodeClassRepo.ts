@@ -104,7 +104,11 @@ export class NodeClassRepo implements IClassRepo {
                   //         resources: (lesson as any)?.content?.resources,
                   //       };
                   // lf.append("text", JSON.stringify(lesson.text || {}));
-                  lf.append("link", lesson.link || "");
+                  if (lesson.muxResourceId) {
+                    lf.append("muxResourceId", lesson.muxResourceId);
+                  } else {
+                    lf.append("link", lesson.link || "");
+                  }
                 } else {
                   // Par défaut, texte pur
                   lf.append("type", "text");

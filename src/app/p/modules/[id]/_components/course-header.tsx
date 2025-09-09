@@ -56,9 +56,9 @@ export default function CourseHeader({
             </Link>
           </div>
         )}
-        <Button onClick={() => setIsAIPanelOpen(!isAIPanelOpen)} variant="roam">
+        {/* <Button onClick={() => setIsAIPanelOpen(!isAIPanelOpen)} variant="roam">
           Chat{" "}
-        </Button>
+        </Button> */}
       </div>
 
       {/* <button

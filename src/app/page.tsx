@@ -1,6 +1,7 @@
 "use client";
 import { useAuth } from "@/components/layouts/AuthProvider";
 import ClientsLayout from "@/components/layouts/clientsLayout";
+import { RegisterProfileEnum } from "@/logic/domain/entities";
 import { ROUTES } from "@/lib/constants";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -19,7 +20,12 @@ function page({}: Props) {
   //   queryKey: ["getUsers"],
   //   queryFn: () => USE_CASES.members.getUsersUC.execute(),
   // });
-  return redirect(ROUTES.login);
+  if (user?.profile === RegisterProfileEnum.Coach) {
+    return redirect(ROUTES.modules);
+  }
+  if (user?.profile === RegisterProfileEnum.Student) {
+    return redirect(ROUTES.student.home);
+  }
 
   return (
     <ClientsLayout>

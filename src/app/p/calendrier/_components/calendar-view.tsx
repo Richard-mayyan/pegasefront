@@ -247,11 +247,11 @@ export default function CalendarView() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-4">
             <div className="flex items-baseline gap-2">
-              <h1 className="text-xl sm:text-2xl font-bold capitalize">
+              <h1 className="text-xl sm:text-2xl font-bold capitalize mt-2">
                 {monthLabel}
               </h1>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex flex-col sm:flex-row gap-2 my-4 space-y-4">
               {/* Navigation buttons for mobile */}
               <div className="flex gap-2 sm:hidden">
                 <Button variant="outline" size="sm" onClick={goToPreviousMonth}>

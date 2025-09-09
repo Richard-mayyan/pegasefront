@@ -7,6 +7,8 @@ import CourseHeader from "./course-header";
 import CourseSidebar from "./course-sidebar";
 import LessonPlayer from "./lesson-player";
 import { useParams } from "next/navigation";
+import { ClassEntity } from "@/logic/domain/entities";
+import { classRepo } from "@/logic/infra/di/container";
 
 export default function CoursePlayerLayout() {
   const params = useParams();
@@ -25,10 +27,20 @@ export default function CoursePlayerLayout() {
   const [selectedChapterIndex, setSelectedChapterIndex] = useState(0);
   const [selectedLessonIndex, setSelectedLessonIndex] = useState(0);
   const [isAIPanelOpen, setIsAIPanelOpen] = useState(false);
-
+  const [currentClass, setCurrentClass] = useState<ClassEntity | null>(null);
   // Trouver du module correspondant à l'ID de l'URL
-  const currentClass =
-    classes.find((cls) => cls.id?.toString() === courseId) || classes[0];
+  // const currentClass =
+  //   classes.find((cls) => cls.id?.toString() === courseId) || classes[0];
+
+  useEffect(() => {
+    const a = async () => {
+      const currentClass = await classRepo.findOne(courseId);
+      if (currentClass) {
+        setCurrentClass(currentClass);
+      }
+    };
+    a();
+  }, [courseId]);
 
   // Mettre à jour les indices quand la communauté ou classe change
   useEffect(() => {

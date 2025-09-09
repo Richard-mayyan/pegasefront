@@ -10,6 +10,8 @@ import { useAppData } from "@/components/layouts/AppDataProvider";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import SelectMembersInput from "./select-members-input";
+import { RegisterProfileEnum } from "@/logic/domain/entities";
+import { useAuth } from "@/components/layouts/AuthProvider";
 
 interface ChatSidebarProps {
   onClose?: () => void;
@@ -66,6 +68,8 @@ export default function ChatSidebar({ onClose }: ChatSidebarProps) {
     { value: "red", label: "Rouge", bgColor: "bg-red-600" },
     { value: "pink", label: "Rose", bgColor: "bg-pink-600" },
   ];
+
+  const { user } = useAuth();
 
   return (
     <>
@@ -132,16 +136,20 @@ export default function ChatSidebar({ onClose }: ChatSidebarProps) {
         </div>
 
         {/* Bouton nouveau groupe */}
-        <div className="p-4 border-t border-gray-200 w-fit mx-auto">
-          <Button
-            className="mx-auto"
-            variant={"roam"}
-            onClick={() => doIfUpgradeSubscription(() => setIsModalOpen(true))}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Nouveau groupe
-          </Button>
-        </div>
+        {user?.profile === RegisterProfileEnum.Coach && (
+          <div className="p-4 border-t border-gray-200 w-fit mx-auto">
+            <Button
+              className="mx-auto"
+              variant={"roam"}
+              onClick={() =>
+                doIfUpgradeSubscription(() => setIsModalOpen(true))
+              }
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Nouveau groupe
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Modal de création de groupe */}

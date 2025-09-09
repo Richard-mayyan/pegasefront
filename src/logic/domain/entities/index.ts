@@ -1,5 +1,16 @@
 import { CommunitySettings } from "../repos/CommunityRepo";
 
+// {
+//   "uploadUrl": "https://direct-uploads.oci-us-ashburn-1-vop1.production.mux.com/upload/649xRu0221tzLGZ6QvduE4pfVt02mjMCnQWsTh4PswcDw?token=eyJhbGciOiJSUzI1NiIsImtpZCI6Ijg5MTg4MjMwOTIyNzA1NjMwMTMiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJkdSIsImV4cCI6MTc1ODA1MDAyNCwic3ViIjoiNjQ5eFJ1MDIyMXR6TEdaNlF2ZHVFNHBmVnQwMm1qTUNuUVdzVGg0UHN3Y0R3In0.RYjqAnI4uO2Me-j-HZWuuRXZUZ1wyqo8y-lLFHo_grIvYNsw6XUPYiiYwSYP40so4mYNUvzE0uTnaF_za_XTwXFYMmLU6QVHJGaHwZdDkuCtkzQSHDqM9YmDyq-ZTArabNrju2--OT2JpkSFXqRAFwVEyZWLffn8EzYPRlbgL3rezNuI8V8MAJOMTZPVXqfkTMYnRdrfsGrbTlweNfhlcBj206x7UDmh2NMKAYnV0uc0aRiJISbEKPU8vnkpqk4H_Ke2KqZdWkrfs63Hf9qLpTvzwxUSqYYG0ZGGjZajCbHm7AENyE2LNIkXgrmHADXw24GyxJBm05rlRy0RfG1tyQ",
+//   "assetId": "649xRu0221tzLGZ6QvduE4pfVt02mjMCnQWsTh4PswcDw",
+//   "message": "Upload URL created successfully"
+// }
+
+export interface MuxUploadUrlResponse {
+  uploadUrl: string;
+  assetId: string;
+  message: string;
+}
 // models.ts
 export enum RegisterProfileEnum {
   Admin = "admin",
@@ -141,6 +152,7 @@ export interface LessonEntity {
     transcribeVideo?: boolean;
     url?: string;
     resourceId?: string;
+    muxResourceId?: string;
   };
   document?: {
     url?: string;

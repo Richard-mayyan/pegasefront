@@ -40,6 +40,7 @@ export interface LessonDto {
   publishedAt?: string;
   link?: string;
   text?: string;
+  muxResourceId?: string;
   video?: File;
   document?: File;
 }

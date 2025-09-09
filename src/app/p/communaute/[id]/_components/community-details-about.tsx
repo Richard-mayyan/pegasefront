@@ -152,7 +152,11 @@ export default function CommunityDetailsAbout({
 
         <ShareLink
           url={typeof window !== "undefined" ? window.location.href : ""}
-          label="Partager ma communauté"
+          label={
+            user?.profile === RegisterProfileEnum.Coach
+              ? "Partager ma communauté"
+              : "Partager la communauté"
+          }
           className="mt-4"
         />
       </div>

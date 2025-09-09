@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle";
 import { Upload, File, Info, X } from "lucide-react";
+import AppMuxUploader from "@/components/ui/app-mux-uploader";
 import {
   Select,
   SelectContent,
@@ -185,6 +186,7 @@ export default function AddCourseForm({
                   link: lesson.link,
                   video: lesson.video,
                   document: lesson.document,
+                  muxResourceId: lesson.muxResourceId,
                 })) || [],
             })),
           };
@@ -206,16 +208,13 @@ export default function AddCourseForm({
           ? "Classe mise à jour avec succès !"
           : "Classe créée avec succès !"
       );
-      console.log("Classe sauvegardée:", result);
-
-      // Fermer le modal et réinitialiser
-      onClose();
-      resetForm();
-
-      if (result?.class) {
-        window.location.href = `/p/modules/${result?.class.id}`;
-      }
-
+      // console.log("Classe sauvegardée:", result);
+      // // Fermer le modal et réinitialiser
+      // onClose();
+      // resetForm();
+      // if (result?.class) {
+      //   window.location.href = `/p/modules/${result?.class.id}`;
+      // }
       // window.location.reload();
     },
     onError: (error: any) => {
@@ -260,6 +259,7 @@ export default function AddCourseForm({
   };
 
   const handleSaveLesson = (lessonData: LessonDto) => {
+    console.log("handleSaveLesson", lessonData);
     if (!editingLesson) return;
 
     const { chapterIndex, lessonIndex } = editingLesson;
@@ -275,6 +275,7 @@ export default function AddCourseForm({
         video: lessonData.video,
         document: lessonData.document,
         transcribe: true,
+        muxResourceId: lessonData.muxResourceId,
 
         // transcribeVideo: lessonData.transcribeVideo,
         // resources: lessonData.resources,
@@ -294,6 +295,8 @@ export default function AddCourseForm({
         text: lessonData.text,
         video: lessonData.video,
         document: lessonData.document,
+        muxResourceId: lessonData.muxResourceId,
+
         // transcribeVideo: lessonData.transcribeVideo,
         // resources: lessonData.resources,
         // content: {
@@ -316,6 +319,11 @@ export default function AddCourseForm({
           const lf = new FormData();
           lf.append("title", lessonData.title);
           lf.append("type", lessonData.type);
+
+          if (lessonData.muxResourceId) {
+            lf.append("muxResourceId", lessonData.muxResourceId);
+          }
+
           if (lessonData.type === "video" && lessonData.link) {
             lf.append("link", lessonData.link);
           } else if (lessonData.type === "text" && lessonData.text) {
@@ -401,6 +409,7 @@ export default function AddCourseForm({
         publishedAt: new Date().toISOString(),
         lessons:
           chapter.lessons?.map((lesson) => ({
+            muxResourceId: lesson.muxResourceId,
             transcribe: true,
             title: lesson.title,
             type: lesson.type,
@@ -426,7 +435,7 @@ export default function AddCourseForm({
     const lesson = chapters[chapterIndex].lessons[lessonIndex];
     return {
       transcribe: lesson.transcribe,
-
+      // muxResourceId: lesson.muxResourceId,
       title: lesson.title,
       type: lesson.type as "video" | "text",
       link: lesson.link,
@@ -453,6 +462,11 @@ export default function AddCourseForm({
       initialData?.type || "video"
     );
     const [videoLink, setVideoLink] = useState(initialData?.link || "");
+    const [muxResourceId, setMuxResourceId] = useState<string | null>(
+      null
+      // "Rw8YqX9Jvl01EKI6fFjiKjkIT00S4oKUZS2t97jOc138M"
+    );
+    const [useMuxUpload, setUseMuxUpload] = useState(true);
     const [transcribeVideo, setTranscribeVideo] = useState(false);
     const [textContent, setTextContent] = useState(initialData?.text || "");
     const [resources, setResources] = useState<Resource[]>(
@@ -471,11 +485,16 @@ export default function AddCourseForm({
     });
 
     const handleSubmit = (e: React.FormEvent) => {
+      console.log("handleSubmit", { muxResourceId, type });
       e.preventDefault();
       onSave({
         title,
         type,
-        link: type === "video" ? videoLink : undefined,
+        link: type === "video" && !useMuxUpload ? videoLink : undefined,
+        muxResourceId:
+          type === "video" && useMuxUpload
+            ? muxResourceId || undefined
+            : undefined,
         text: type === "text" ? textContent : undefined,
         transcribe: true,
 
@@ -568,15 +587,68 @@ export default function AddCourseForm({
             </ToggleGroup>
 
             {type === "video" && (
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Lien vidéo
-                </label>
-                <Input
-                  value={videoLink}
-                  onChange={(e) => setVideoLink(e.target.value)}
-                  placeholder="URL de la vidéo"
-                />
+              <div className="space-y-4">
+                {/* Toggle pour choisir entre URL directe ou upload Mux */}
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="use-mux-upload"
+                    checked={useMuxUpload}
+                    onCheckedChange={setUseMuxUpload}
+                  />
+                  <label
+                    htmlFor="use-mux-upload"
+                    className="text-sm font-medium"
+                  >
+                    Uploader une vidéo
+                  </label>
+                </div>
+
+                {!useMuxUpload ? (
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Lien vidéo
+                    </label>
+                    <Input
+                      value={videoLink}
+                      onChange={(e) => setVideoLink(e.target.value)}
+                      placeholder="URL de la vidéo"
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Upload vidéo avec Mux
+                    </label>
+                    <AppMuxUploader
+                      type="bar"
+                      onSuccess={(event, assetId) => {
+                        // console.log("event ", event);
+                        console.log(JSON.stringify(event, null, 2));
+
+                        // Récupérer l'assetId depuis la réponse de l'upload
+                        // const assetId = gotAssetId;
+                        if (assetId) {
+                          setMuxResourceId(assetId);
+                          toast.success("Vidéo uploadée avec succès !");
+                        } else {
+                          toast.error(
+                            "Erreur lors de la récupération de l'ID de la vidéo"
+                          );
+                        }
+                      }}
+                      onError={(error) => {
+                        console.error("Erreur upload Mux:", error);
+                        toast.error("Erreur lors de l'upload de la vidéo");
+                      }}
+                      className="w-full"
+                    />
+                    {muxResourceId && (
+                      <p className="text-sm text-green-600 mt-2">
+                        ✓ Vidéo uploadée (ID: {muxResourceId})
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 

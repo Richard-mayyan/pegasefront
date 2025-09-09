@@ -64,7 +64,7 @@ export default function StudHomePage() {
             {filtered.map((c) => (
               <Link
                 key={c.id}
-                href={`/coach/${c.id}`}
+                href={`/stud/coach/${c.id}`}
                 className="bg-white rounded-lg border p-3 hover:shadow-sm transition-shadow"
               >
                 <div className="w-full h-40 bg-gray-100 rounded-md overflow-hidden">

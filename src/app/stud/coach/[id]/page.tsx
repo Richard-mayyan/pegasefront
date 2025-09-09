@@ -170,7 +170,7 @@ export default function StudCommunityDetailsPage() {
                           )}
                           <div className="mt-3 flex items-center justify-between">
                             <Link
-                              href={`/stud/commu/${c.id}`}
+                              href={`/p/communaute/${c.id}`}
                               className="text-xs underline text-customBg"
                             >
                               Voir la communauté

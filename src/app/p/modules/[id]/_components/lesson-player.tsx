@@ -78,6 +78,8 @@ export default function LessonPlayer({
   const [fetchedLesson, setFetchedLesson] = useState<LessonEntity | null>(null);
   const [isLoadingLesson, setIsLoadingLesson] = useState(false);
 
+  console.log("fetchedLesson", fetchedLesson);
+
   // console.log("lessonId", lessonId);
 
   const editor = useCreateBlockNote({
@@ -276,13 +278,12 @@ export default function LessonPlayer({
           )}
         </div>
       </div>
-      {/* 
       <p>
         {JSON.stringify({
           type: fetchedLesson.type,
           video: fetchedLesson.video?.url,
         })}
-      </p> */}
+      </p>
 
       {/* Video Player */}
       {fetchedLesson.type === "video" && fetchedLesson.video?.url && (

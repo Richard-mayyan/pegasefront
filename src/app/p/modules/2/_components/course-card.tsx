@@ -64,9 +64,10 @@ export default function CourseCard({
     <Card className="w-full rounded-xl overflow-hidden shadow-md hover:shadow-lg  duration-200">
       <div className="relative w-full h-48">
         <img
+          onClick={handleClick}
           src={imageUrl || "/placeholder.svg"}
           alt={title}
-          className="rounded-t-xl w-full h-full object-cover"
+          className="rounded-t-xl w-full h-full object-cover cursor-pointer"
         />
         {totalLessons > 0 && (
           <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1">

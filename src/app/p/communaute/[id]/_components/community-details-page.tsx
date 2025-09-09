@@ -131,13 +131,14 @@ export default function CommunityDetailsPage() {
     <div className="min-h-screen bg-gray-100 p-1 md:p-8 hide-scrollbar">
       <div className="max-w-4xl mx-auto ">
         {/* Tab Navigation */}
-        {user?.profile === RegisterProfileEnum.Coach && (
-          <div className="mb-8 w-full mx-auto">
-            <Tabs
-              value={activeTab}
-              onValueChange={setActiveTab}
-              className="w-full"
-            >
+
+        <div className="mb-8 w-full mx-auto">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
+            {user?.profile === RegisterProfileEnum.Coach && (
               <TabsList className="grid w-fit mx-auto grid-cols-3 bg-gray-200 rounded-full p-1">
                 <TabsTrigger
                   value="about"
@@ -158,31 +159,31 @@ export default function CommunityDetailsPage() {
                   Métriques
                 </TabsTrigger>
               </TabsList>
+            )}
 
-              {/* Content based on active tab */}
-              <TabsContent value="about" className="mt-6 w-full">
-                <CommunityDetailsAbout
-                  community={community}
-                  // classData={currentClass}
-                  onEdit={handleEditCommunity}
-                  onDelete={handleDeleteCommunity}
-                />
-              </TabsContent>
-              <TabsContent value="stats" className="mt-6 bg-yellow-500 w-full">
-                <CommunityDetailsStats
-                  community={community}
-                  // classData={currentClass}
-                />
-              </TabsContent>
-              <TabsContent value="metrics" className="mt-6">
-                <MembersMetrics
-                  community={community}
-                  //  classData={currentClass}
-                />
-              </TabsContent>
-            </Tabs>
-          </div>
-        )}
+            {/* Content based on active tab */}
+            <TabsContent value="about" className="mt-6 w-full">
+              <CommunityDetailsAbout
+                community={community}
+                // classData={currentClass}
+                onEdit={handleEditCommunity}
+                onDelete={handleDeleteCommunity}
+              />
+            </TabsContent>
+            <TabsContent value="stats" className="mt-6 bg-yellow-500 w-full">
+              <CommunityDetailsStats
+                community={community}
+                // classData={currentClass}
+              />
+            </TabsContent>
+            <TabsContent value="metrics" className="mt-6">
+              <MembersMetrics
+                community={community}
+                //  classData={currentClass}
+              />
+            </TabsContent>
+          </Tabs>
+        </div>
         {/* Header avec informations de la communauté */}
         {/* <div className="mb-8 p-6 bg-white rounded-lg shadow-sm">
           <div className="flex items-center justify-between mb-4">

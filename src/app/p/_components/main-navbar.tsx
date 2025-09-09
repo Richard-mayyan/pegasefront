@@ -119,15 +119,17 @@ export default function MainNavbar({ onSidebarToggle }: MainNavbarProps) {
 
       {/* Desktop User Actions - Right side */}
       <div className="hidden sm:flex items-center gap-4">
-        <Link
-          href="/p/profile"
-          className={cn(
-            buttonVariants({ variant: "ghost", size: "icon" }),
-            "h-8 w-8 rounded-full border border-gray-300"
-          )}
-        >
-          <User className="h-4 w-4 text-gray-500" />
-        </Link>
+        {user.profile === RegisterProfileEnum.Coach && (
+          <Link
+            href="/p/profile"
+            className={cn(
+              buttonVariants({ variant: "ghost", size: "icon" }),
+              "h-8 w-8 rounded-full border border-gray-300"
+            )}
+          >
+            <User className="h-4 w-4 text-gray-500" />
+          </Link>
+        )}
         <Button variant="ghost" size="sm" onClick={() => logout()}>
           <LogOut className="h-4 w-4 mr-2" /> Déconnexion
         </Button>
@@ -169,14 +171,16 @@ export default function MainNavbar({ onSidebarToggle }: MainNavbarProps) {
               </Link>
             ))}
             <div className="border-t border-gray-200 pt-2 mt-2">
-              <Link
-                href="/p/profile"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md"
-              >
-                <User className="h-4 w-4 mr-2" />
-                Profil
-              </Link>
+              {user.profile === RegisterProfileEnum.Coach && (
+                <Link
+                  href="/p/profile"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Profil
+                </Link>
+              )}
               <button
                 onClick={() => {
                   logout();

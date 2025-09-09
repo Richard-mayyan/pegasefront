@@ -59,6 +59,19 @@ export default function CourseGrid() {
           Créez votre premier module
         </h3>
 
+        <Button
+          variant={"roam"}
+          onClick={
+            () =>
+              doIfUpgradeSubscription(() => router.push(ROUTES.createModule))
+
+            // doIfUpgradeSubscription(() => setShowAddCourseForm(true))
+          }
+        >
+          <PlusIcon className="h-4 w-4 mr-2" />
+          ajouter un module
+        </Button>
+
         {/* Formulaire d'ajout de cours */}
         <AddCourseForm
           hasDialog={true}
@@ -145,7 +158,7 @@ export default function CourseGrid() {
             )} */}
           </div>
         </div>
-        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+        {/* <div className="flex flex-wrap gap-4 text-sm text-gray-600">
           <div className="flex items-center gap-2">
             <span className="font-medium">{filtered.length}</span>
             <span>chapitre{filtered.length > 1 ? "s" : ""}</span>
@@ -177,7 +190,7 @@ export default function CourseGrid() {
             </span>
             <span>progression moyenne</span>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Grille des cours */}
