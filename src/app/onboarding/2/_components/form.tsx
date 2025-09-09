@@ -14,6 +14,7 @@ import "@blocknote/shadcn/style.css";
 import { fr as frLocale } from "@blocknote/core/locales";
 import { redirect } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
+import AppLogo from "@/components/ui/app-logo";
 
 export default function Component() {
   const { data, updateData } = useOnboarding();
@@ -75,18 +76,7 @@ export default function Component() {
     <div className="min-h-screen bg-white p-8">
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Logo and Brand */}
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
-            <Image
-              src="/logo.svg"
-              alt="Pegasus Logo"
-              width={24}
-              height={19}
-              className="w-6 h-5"
-            />
-          </div>
-          <h1 className="text-2xl font-bold text-black">Pegase</h1>
-        </div>
+        <AppLogo size="lg" showText={false} />
 
         {/* Header */}
         <div>

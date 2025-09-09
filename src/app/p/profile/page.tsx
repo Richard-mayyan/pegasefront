@@ -10,6 +10,7 @@ import { apiClient } from "@/logic/infra/repos/nodeapi/axios";
 import { toast } from "sonner";
 import { useAppData } from "@/components/layouts/AppDataProvider";
 import { useAuth } from "@/components/layouts/AuthProvider";
+import AppLogo from "@/components/ui/app-logo";
 
 export default function Page() {
   const { user } = useAuth();
@@ -83,12 +84,7 @@ export default function Page() {
     <div className="min-h-screen bg-white p-6">
       <div className="max-w-md mx-auto space-y-6">
         {/* Brand */}
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-customBg rounded-lg flex items-center justify-center">
-            <Image src="/logo.svg" alt="Pegase" width={20} height={16} />
-          </div>
-          <h1 className="text-xl font-bold text-black">Pegase</h1>
-        </div>
+        <AppLogo size="lg" showText={false} />
 
         <h2 className="text-2xl font-bold text-black">
           Configurez votre profile

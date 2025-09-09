@@ -21,7 +21,7 @@ import { RegisterProfileEnum } from "@/logic/domain/entities";
 import { useRouter } from "next/navigation";
 import { handleApiError, ROUTES, sendUserToCodeSent } from "@/lib/constants";
 import { getdefaultValue } from "@/lib/utils";
-import Image from "next/image";
+import AppLogo from "@/components/ui/app-logo";
 import { PasswordRequirements } from "@/components/ui/password-requirements";
 
 interface SignupFormProps {
@@ -88,18 +88,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
     <div className="min-h-screen bg-white flex items-center justify-center p-8">
       <div className="w-full max-w-md space-y-8">
         {/* Logo */}
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
-            <Image
-              src="/logo.svg"
-              alt="Pegasus Logo"
-              width={24}
-              height={19}
-              className="w-6 h-5"
-            />
-          </div>
-          <h1 className="text-2xl font-bold text-black">Pegase</h1>
-        </div>
+        <AppLogo size="md" />
 
         {/* Back Button */}
         {onBack && (

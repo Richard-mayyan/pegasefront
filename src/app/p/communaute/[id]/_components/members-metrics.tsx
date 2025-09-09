@@ -99,9 +99,9 @@ MembersMetricsProps) {
   // Afficher un message de chargement ou d'erreur si nécessaire
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 p-8 flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8 flex flex-col items-center justify-center">
         <div className="text-center">
-          <div className="text-gray-500 text-lg">
+          <div className="text-gray-500 text-base sm:text-lg">
             Chargement des métriques des membres...
           </div>
         </div>
@@ -111,10 +111,10 @@ MembersMetricsProps) {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-100 p-8 flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8 flex flex-col items-center justify-center">
         <div className="text-center">
-          <div className="text-red-500 text-lg mb-4">{error}</div>
-          <div className="text-gray-600">
+          <div className="text-red-500 text-base sm:text-lg mb-4">{error}</div>
+          <div className="text-gray-600 text-sm sm:text-base">
             Impossible de charger les données des graphiques
           </div>
         </div>
@@ -123,7 +123,7 @@ MembersMetricsProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8 flex flex-col items-center gap-8">
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8 flex flex-col items-center gap-4 sm:gap-6 lg:gap-8">
       {/* Statistiques de la communauté */}
       {/* <div className="w-full max-w-4xl">
         <div className="p-6 bg-white rounded-lg shadow-sm mb-6">
@@ -173,8 +173,8 @@ MembersMetricsProps) {
         activeMembersData.length === 0 &&
         !loading &&
         !error && (
-          <div className="w-full max-w-4xl text-center py-8">
-            <div className="text-gray-500">
+          <div className="w-full max-w-4xl text-center py-6 sm:py-8">
+            <div className="text-gray-500 text-sm sm:text-base">
               Aucune donnée de métriques disponible
             </div>
           </div>

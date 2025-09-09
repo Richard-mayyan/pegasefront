@@ -19,7 +19,7 @@ import { authRepo } from "@/logic/infra/di/container";
 import { useRouter } from "next/navigation";
 import { ACCESS_TOKEN_KEY, ROUTES } from "@/lib/constants";
 import { getdefaultValue } from "@/lib/utils";
-import Image from "next/image";
+import AppLogo from "@/components/ui/app-logo";
 import { RegisterProfileEnum } from "@/logic/domain/entities";
 
 export const LoginForm = () => {
@@ -67,18 +67,7 @@ export const LoginForm = () => {
     <div className="min-h-screen bg-white flex items-center justify-center p-8">
       <div className="w-full max-w-md space-y-8">
         {/* Logo */}
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
-            <Image
-              src="/logo.svg"
-              alt="Pegasus Logo"
-              width={24}
-              height={19}
-              className="w-6 h-5"
-            />
-          </div>
-          <h1 className="text-2xl font-bold text-black">Pegase</h1>
-        </div>
+        <AppLogo size="md" />
 
         {/* Header */}
         <div className="space-y-4">

@@ -44,12 +44,11 @@ export default function ChatInterface() {
 
       {/* Zone principale du chat */}
       {currentChatGroup ? (
-        <div className="flex-1 flex flex-col bg-yellow-400 h-full">
+        <div className="flex-1 flex flex-col  h-full">
           {/* Zone des messages */}
-          <div className="flex-1 overflow-y-auto   space-y-4 bg-green-400">
+          <div className="flex-1 overflow-y-auto   space-y-4 ">
             {messages.length === 0 ? (
-              <div className="text-center text-gray-500  bg-red-900 h-full flex flex-col justify-center items-center">
-                hellooo
+              <div className="text-center text-gray-500   h-full flex flex-col justify-center items-center">
                 <p className="text-lg">Aucun message encore</p>
                 <p className="text-sm">
                   Soyez le premier à envoyer un message !

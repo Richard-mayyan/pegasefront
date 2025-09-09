@@ -128,7 +128,7 @@ export default function CommunityDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-100 p-1 md:p-8 hide-scrollbar">
       <div className="max-w-4xl mx-auto ">
         {/* Tab Navigation */}
         {user?.profile === RegisterProfileEnum.Coach && (

@@ -10,7 +10,11 @@ import { useAuth } from "@/components/layouts/AuthProvider";
 import { RegisterProfileEnum } from "@/logic/domain/entities";
 import { useState } from "react";
 
-export default function MainNavbar() {
+interface MainNavbarProps {
+  onSidebarToggle?: () => void;
+}
+
+export default function MainNavbar({ onSidebarToggle }: MainNavbarProps) {
   const pathname = usePathname();
   const { currentCommunity } = useAppData();
   const { logout, user } = useAuth();
@@ -65,11 +69,11 @@ export default function MainNavbar() {
       href: ROUTES.goToMyCommunity(currentCommunity.id),
       isActive: pathname?.startsWith("/p/myCommunity"),
     },
-    {
-      label: "Profil",
-      href: ROUTES.coachProfile,
-      isActive: pathname?.startsWith("/p/profile"),
-    },
+    // {
+    //   label: "Profil",
+    //   href: ROUTES.coachProfile,
+    //   isActive: pathname?.startsWith("/p/profile"),
+    // },
   ];
 
   let navItems = [];
@@ -82,6 +86,15 @@ export default function MainNavbar() {
     <nav className="flex items-center justify-between h-16 px-4 sm:px-6 border-b border-gray-200 bg-white relative">
       {/* Logo/Brand - Left side */}
       <div className="flex items-center gap-4">
+        {/* Mobile Sidebar Toggle Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onSidebarToggle}
+          className="lg:hidden h-8 w-8"
+        >
+          <Menu className="h-4 w-4" />
+        </Button>
         <div className="text-lg font-bold text-customBg">Pegase</div>
       </div>
 

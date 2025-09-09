@@ -30,9 +30,13 @@ export default function AreaChartComponent({
   };
 
   return (
-    <div className="w-full bg-white p-6 rounded-lg shadow-sm">
-      <h2 className="text-xl font-bold mb-4">{title}</h2>
-      <ResponsiveContainer width="100%" height={200}>
+    <div className="w-full bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+      <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">{title}</h2>
+      <ResponsiveContainer
+        width="100%"
+        height={180}
+        className="sm:h-[200px] lg:h-[250px]"
+      >
         <AreaChart
           data={data}
           margin={{
@@ -44,12 +48,8 @@ export default function AreaChartComponent({
         >
           <defs>
             <linearGradient id={`colorUv-${id}`} x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="5%"
-                stopColor="hsl(174 80% 31%)"
-                stopOpacity={0.8}
-              />
-              <stop offset="95%" stopColor="hsl(174 80% 31%)" stopOpacity={0} />
+              <stop offset="5%" stopColor="#6001DA" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#6001DA" stopOpacity={0} />
             </linearGradient>
           </defs>
           <XAxis
@@ -58,8 +58,9 @@ export default function AreaChartComponent({
             tickLine={false}
             tickFormatter={(value) => value.substring(0, 3)}
             interval={0}
-            padding={{ left: 20, right: 20 }}
+            padding={{ left: 10, right: 10 }}
             className="text-xs text-gray-600"
+            fontSize={12}
           />
           <YAxis
             axisLine={false}
@@ -67,6 +68,7 @@ export default function AreaChartComponent({
             tickFormatter={formatYAxisTick}
             domain={[0, maxValue]}
             className="text-xs text-gray-600"
+            fontSize={12}
           />
           <CartesianGrid
             strokeDasharray="3 3"
@@ -77,7 +79,7 @@ export default function AreaChartComponent({
           <Area
             type="monotone"
             dataKey="value"
-            stroke="hsl(174 80% 31%)"
+            stroke="#6001DA"
             fillOpacity={1}
             fill={`url(#colorUv-${id})`}
             strokeWidth={2}

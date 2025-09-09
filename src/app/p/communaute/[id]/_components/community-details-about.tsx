@@ -13,6 +13,7 @@ import { BlockNoteView } from "@blocknote/shadcn";
 import { useAuth } from "@/components/layouts/AuthProvider";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import ShareLink from "@/components/ui/share-link";
 
 interface CommunityDetailsAboutProps {
   community: CommunityEntity;
@@ -106,12 +107,12 @@ export default function CommunityDetailsAbout({
         )}
 
         {/* Bouton d'ajout d'image */}
-        {user!.profile === RegisterProfileEnum.Coach && (
+        {/* {user!.profile === RegisterProfileEnum.Coach && (
           <Button className="w-full h-24 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 hover:bg-gray-100">
             <Plus className="h-6 w-6 text-gray-500" />
             <span className="sr-only">Add image</span>
           </Button>
-        )}
+        )} */}
       </div>
 
       {/* Description */}
@@ -149,13 +150,11 @@ export default function CommunityDetailsAbout({
           </div>
         </div>
 
-        <div
-          className="mt-4
-        "
-        >
-          <Label>Partager ma communauté</Label>
-          <Input disabled type="text" value={window.location.href} />
-        </div>
+        <ShareLink
+          url={typeof window !== "undefined" ? window.location.href : ""}
+          label="Partager ma communauté"
+          className="mt-4"
+        />
       </div>
 
       {/* Modal de confirmation de suppression */}

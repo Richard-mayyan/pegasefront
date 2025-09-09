@@ -190,9 +190,9 @@ export default function CoachingsListTable() {
 
   return (
     <>
-      <div className="p-6 bg-white rounded-lg shadow-sm w-full max-w-6xl mx-auto">
+      <div className="p-4 sm:p-6 bg-white rounded-lg shadow-sm w-full max-w-6xl mx-auto">
         {/* Top Tabs */}
-        <div className="flex justify-center gap-2 mb-8">
+        <div className="flex justify-center gap-2 mb-6 sm:mb-8">
           <Button
             variant="outline"
             onClick={() => setActiveTab("coaching")}
@@ -209,29 +209,91 @@ export default function CoachingsListTable() {
         </div>
 
         {/* Header with actions */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold">Coachings</h2>
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+          <h2 className="text-lg sm:text-xl font-bold">Coachings</h2>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <Button
               variant="outline"
               onClick={() => doIfUpgradeSubscription(handleExportData)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-transparent"
+              className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-transparent w-full sm:w-auto"
             >
               <Download className="h-4 w-4" />
-              Exporter
+              <span className="hidden sm:inline">Exporter</span>
+              <span className="sm:hidden">Export</span>
             </Button>
             <Button
               onClick={() => doIfUpgradeSubscription(handleOpenAddForm)}
-              className="bg-customBg hover:bg-customBg-hover text-white px-4 py-2 rounded-lg flex items-center gap-2"
+              className="bg-customBg hover:bg-customBg-hover text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 w-full sm:w-auto"
             >
               <Plus className="h-4 w-4" />
-              Ajouter coaching
+              <span className="hidden sm:inline">Ajouter coaching</span>
+              <span className="sm:hidden">Ajouter</span>
             </Button>
           </div>
         </div>
 
-        {/* Coachings Table */}
-        <div className="overflow-x-auto">
+        {/* Mobile Cards View */}
+        <div className="block lg:hidden space-y-4">
+          {coachings.length === 0 ? (
+            <div className="py-8 text-center text-gray-500">
+              Aucun coaching trouvé. Créez votre premier coaching !
+            </div>
+          ) : (
+            coachings.map((coaching) => (
+              <div
+                key={coaching.id}
+                className="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <h3 className="font-medium text-gray-900 text-sm mb-1">
+                      {coaching.name}
+                    </h3>
+                    <p className="text-xs text-gray-600 mb-2">
+                      {coaching.description?.slice(0, 80) + "..." ||
+                        "Aucune description"}
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleViewCoaching(coaching)}
+                    className="flex items-center gap-1 px-2 py-1 h-7 text-xs"
+                  >
+                    <Eye className="h-3 w-3" />
+                    Voir
+                  </Button>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  {coaching.link && (
+                    <div className="flex items-center gap-2">
+                      <Link className="h-3 w-3 text-gray-400" />
+                      <a
+                        href={coaching.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 underline truncate"
+                      >
+                        Voir le lien
+                      </a>
+                    </div>
+                  )}
+
+                  {coaching.price && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-400">💰</span>
+                      <span className="text-gray-700">{coaching.price}€</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-left table-auto">
             <thead>
               <tr className="text-sm text-gray-500 border-b border-gray-200">
@@ -299,37 +361,37 @@ export default function CoachingsListTable() {
 
       {/* Modal de détail du coaching */}
       {isModalOpen && selectedCoaching && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             {/* Header du modal */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-800">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-800 truncate pr-4">
                 {selectedCoaching.name}
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 flex-shrink-0"
               >
-                <X className="h-6 w-6" />
+                <X className="h-5 w-5 sm:h-6 sm:w-6" />
               </button>
             </div>
 
             {/* Image du coaching */}
-            <div className="mb-6">
-              <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+            <div className="mb-4 sm:mb-6">
+              <div className="w-full h-32 sm:h-48 bg-gray-200 rounded-lg flex items-center justify-center">
                 <div className="text-gray-500 text-center">
-                  <div className="text-4xl mb-2">📚</div>
-                  <p>Image du coaching</p>
+                  <div className="text-2xl sm:text-4xl mb-2">📚</div>
+                  <p className="text-sm">Image du coaching</p>
                 </div>
               </div>
             </div>
 
             {/* Informations du coaching */}
-            <div className="space-y-4 mb-6">
+            <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
               {selectedCoaching.link && (
-                <div className="flex items-center gap-3">
-                  <Link className="h-5 w-5 text-gray-500" />
-                  <span className="text-gray-700 break-all">
+                <div className="flex items-start gap-3">
+                  <Link className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700 break-all text-sm">
                     <a
                       href={selectedCoaching.link}
                       target="_blank"
@@ -343,15 +405,15 @@ export default function CoachingsListTable() {
               )}
 
               <div className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-gray-500 rounded-full flex items-center justify-center">
+                <div className="w-4 h-4 sm:w-5 sm:h-5 bg-gray-500 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-white text-xs">👤</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-6 w-6">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Avatar className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0">
                     <AvatarImage src={IMG_URL} alt="Coach" />
-                    <AvatarFallback>A</AvatarFallback>
+                    <AvatarFallback className="text-xs">A</AvatarFallback>
                   </Avatar>
-                  <span className="text-gray-700">
+                  <span className="text-gray-700 text-sm truncate">
                     {user?.firstName} {user?.lastName}
                   </span>
                 </div>
@@ -359,7 +421,7 @@ export default function CoachingsListTable() {
             </div>
 
             {/* Boutons d'action */}
-            <div className="flex gap-3 pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
               <Button
                 variant="outline"
                 onClick={() => {
@@ -368,13 +430,13 @@ export default function CoachingsListTable() {
                     setIsModalOpen(false);
                   }
                 }}
-                className="flex-1 border-red-200 text-red-600 hover:bg-red-50"
+                className="w-full sm:flex-1 border-red-200 text-red-600 hover:bg-red-50"
               >
                 Supprimer
               </Button>
               <Button
                 onClick={handleOpenEditForm}
-                className="flex-1 bg-customBg hover:bg-customBg-hover text-white"
+                className="w-full sm:flex-1 bg-customBg hover:bg-customBg-hover text-white"
               >
                 Modifier coaching
               </Button>
@@ -386,21 +448,16 @@ export default function CoachingsListTable() {
       {/* Modal d'ajout de coaching */}
       {isAddFormOpen && (
         <Dialog open={isAddFormOpen} onOpenChange={setIsAddFormOpen}>
-          <DialogContent className="max-h-[80vh] overflow-y-scroll p-0">
+          <DialogContent className="max-h-[90vh] sm:max-h-[80vh] overflow-y-scroll p-0 w-[95vw] sm:w-full max-w-2xl">
             <AddCoachingForm onClose={handleCloseAddForm} />
           </DialogContent>
         </Dialog>
-        // <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        //   <div className="bg-white rounded-lg   w-fit mx-4 max-h-[90vh] overflow-y-auto">
-        //     <AddCoachingForm onClose={handleCloseAddForm} />
-        //   </div>
-        // </div>
       )}
 
       {/* Modal d'édition de coaching */}
       {isEditFormOpen && selectedCoaching && (
         <Dialog open={isEditFormOpen} onOpenChange={setIsEditFormOpen}>
-          <DialogContent className="max-h-[80vh] overflow-y-scroll p-0">
+          <DialogContent className="max-h-[90vh] sm:max-h-[80vh] overflow-y-scroll p-0 w-[95vw] sm:w-full max-w-2xl">
             <AddCoachingForm
               onClose={handleCloseEditForm}
               editingCoaching={selectedCoaching}
@@ -408,15 +465,6 @@ export default function CoachingsListTable() {
             />
           </DialogContent>
         </Dialog>
-        // <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        // <div className="bg-white rounded-lg w-fit mx-4 max-h-[90vh] overflow-y-auto">
-        //   <AddCoachingForm
-        //     onClose={handleCloseEditForm}
-        //     editingCoaching={selectedCoaching}
-        //     isEditing={true}
-        //   />
-        // </div>
-        // </div>
       )}
     </>
   );

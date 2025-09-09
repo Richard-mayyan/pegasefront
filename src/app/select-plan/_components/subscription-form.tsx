@@ -9,6 +9,7 @@ import PlanSelection from "./plan-selection";
 import ProcessInfo from "./process-info";
 import { ACCESS_TOKEN_KEY, ROUTES } from "@/lib/constants";
 import { usePaymentIntent } from "@/hooks/use-payment-intent";
+import AppLogo from "@/components/ui/app-logo";
 
 export default function SubscriptionForm() {
   const { user } = useAuth();
@@ -57,10 +58,7 @@ export default function SubscriptionForm() {
     <div className="min-h-screen bg-white p-8">
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Logo and Brand */}
-        <div className="flex items-center space-x-3 absolute top-4 left-10">
-          <img src="/logo.svg" alt="Pegasus Logo" className="w-8 h-8" />
-          <h1 className="text-2xl font-bold text-black">Pegase</h1>
-        </div>
+        <AppLogo size="lg" showText={false} />
 
         {/* Header Section */}
 
