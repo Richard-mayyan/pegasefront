@@ -10,9 +10,14 @@ import {
   User,
   PinIcon,
   FilterIcon,
+  Menu,
 } from "lucide-react";
 
-export default function ChatNavbar() {
+interface ChatNavbarProps {
+  onMenuClick?: () => void;
+}
+
+export default function ChatNavbar({ onMenuClick }: ChatNavbarProps) {
   const {
     currentChatGroup,
     chatGroups,
@@ -25,9 +30,19 @@ export default function ChatNavbar() {
 
   if (!currentChatGroup) return null;
   return (
-    <div className="bg-white border-b border-gray-200 p-4 absolute top-0 left-0 right-0 z-50">
+    <div className="bg-white border-b border-gray-200 p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onMenuClick}
+            className="lg:hidden h-8 w-8"
+          >
+            <Menu className="h-4 w-4" />
+          </Button>
+
           <div
             className={`w-10 h-10 rounded-lg flex items-center justify-center ${
               currentChatGroup.color === "blue"
@@ -47,7 +62,7 @@ export default function ChatNavbar() {
             <h1 className="text-xl font-bold text-gray-800">
               {currentChatGroup.name}
             </h1>
-            <p className="text-gray-600">{currentChatGroup.description}</p>
+            {/* <p className="text-gray-600">{currentChatGroup.description}</p> */}
           </div>
         </div>
         {/* 

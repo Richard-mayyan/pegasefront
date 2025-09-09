@@ -17,67 +17,7 @@ export class InMemoryAuthRepo implements IAuthRepo {
 
   private initializeDefaultData() {
     // Créer des utilisateurs par défaut pour les tests
-    const defaultUsers: UserEntity[] = [
-      {
-        id: 1,
-        email: "richard.bathiebo.7@gmail.com",
-        firstName: "Richard",
-        lastName: "Bathiebo",
-        password: "Password123@?", // En production, ceci devrait être hashé
-        profile: RegisterProfileEnum.Student,
-        communities: [
-          {
-            studentCount: 0,
-            id: 1,
-            name: "Communauté Test",
-            description: "Une communauté de test",
-            color: "blue",
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-        ],
-      },
-      {
-        id: 2,
-        email: "jane.smith@example.com",
-        firstName: "Jane",
-        lastName: "Smith",
-        password: "password123",
-        profile: RegisterProfileEnum.Coach,
-        communities: [
-          {
-            studentCount: 0,
-
-            id: 1,
-            name: "Communauté Test",
-            description: "Une communauté de test",
-            color: "blue",
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-        ],
-      },
-      {
-        id: 3,
-        email: "admin@example.com",
-        firstName: "Admin",
-        lastName: "User",
-        password: "admin123",
-        profile: RegisterProfileEnum.Coach,
-        communities: [
-          {
-            studentCount: 0,
-
-            id: 1,
-            name: "Communauté Test",
-            description: "Une communauté de test",
-            color: "blue",
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-        ],
-      },
-    ];
+    const defaultUsers: UserEntity[] = [];
 
     this.users = defaultUsers;
   }
@@ -109,50 +49,55 @@ export class InMemoryAuthRepo implements IAuthRepo {
   }
 
   async register(data: RegisterDto): Promise<UserEntity> {
-    // Simuler un délai réseau
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    throw new Error("Method not implemented.");
+    // // Simuler un délai réseau
+    // await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Vérifier si l'email existe déjà
-    const existingUser = this.users.find((u) => u.email === data.email);
-    if (existingUser) {
-      throw new Error("Un utilisateur avec cet email existe déjà");
-    }
+    // // Vérifier si l'email existe déjà
+    // const existingUser = this.users.find((u) => u.email === data.email);
+    // if (existingUser) {
+    //   throw new Error("Un utilisateur avec cet email existe déjà");
+    // }
 
-    // Créer un nouvel utilisateur
-    const newUser: UserEntity = {
-      id: this.nextId++,
-      email: data.email,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      password: data.password, // En production, ceci devrait être hashé
-      profile: data.profile as any, // Cast vers RegisterProfileEnum
-      communities: [],
-    };
+    // // Créer un nouvel utilisateur
+    // const newUser: UserEntity = {
+    //   id: this.nextId++,
+    //   email: data.email,
+    //   firstName: data.firstName,
+    //   lastName: data.lastName,
+    //   password: data.password, // En production, ceci devrait être hashé
+    //   profile: data.profile as any, // Cast vers RegisterProfileEnum
+    //   communities: [],
+    // };
 
-    this.users.push(newUser);
-    this.currentUser = newUser;
+    // this.users.push(newUser);
+    // this.currentUser = newUser;
 
-    return newUser;
+    // return newUser;
   }
 
-  async confirmAccountWithCode(data: ConfirmAccountDto): Promise<LoginResult> {
-    // Simuler un délai réseau
-    await new Promise((resolve) => setTimeout(resolve, 300));
+  async confirmAccountWithCode(data: {
+    email: string;
+    code: string;
+  }): Promise<LoginResult> {
+    throw new Error("Method not implemented.");
+    // // Simuler un délai réseau
+    // await new Promise((resolve) => setTimeout(resolve, 300));
 
-    const user = this.users.find((u) => u.email === data.email);
-    if (!user) {
-      throw new Error("Utilisateur non trouvé");
-    }
+    // const user = this.users.find((u) => u.email === data.email);
+    // if (!user) {
+    //   throw new Error("Utilisateur non trouvé");
+    // }
 
-    // En mode simulation, on accepte n'importe quel code
-    if (data.code !== "123456") {
-      throw new Error("Code de confirmation invalide");
-    }
+    // // En mode simulation, on accepte n'importe quel code
+    // if (data.code !== "123456") {
+    //   throw new Error("Code de confirmation invalide");
+    // }
 
-    return {
-      access_token: `mock_token_${user.id}_${Date.now()}`,
-      user: user,
-    };
+    // return {
+    //   access_token: `mock_token_${user.id}_${Date.now()}`,
+    //   user: user,
+    // };
   }
 
   async resendCode(data: { email: string }): Promise<void> {

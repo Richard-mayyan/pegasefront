@@ -35,15 +35,7 @@ export default function MainSidebar() {
       <SidebarHeader className="flex flex-col items-center gap-4 py-4">
         <div className="flex items-center gap-2">
           {/* Logo Pegasus - cheval ailé */}
-          <div className="w-10 h-10 bg-customBg rounded-lg flex items-center justify-center">
-            <Image
-              src="/logo.svg"
-              alt="Pegasus Logo"
-              width={20}
-              height={16}
-              className="w-5 h-4"
-            />
-          </div>
+          <img src="/logo.svg" alt="Pegasus Logo" className="w-12 h-12" />
         </div>
       </SidebarHeader>
 

@@ -9,6 +9,7 @@ import { getPlaceholderImage, IMG_URL, ROUTES } from "@/lib/constants";
 import { RegisterProfileEnum } from "@/logic/domain/entities";
 import { useAuth } from "@/components/layouts/AuthProvider";
 import { useRouter } from "next/navigation";
+import SearchInput from "@/app/p/_components/searchInput";
 
 export default function CourseGrid() {
   const { user } = useAuth();
@@ -57,18 +58,6 @@ export default function CourseGrid() {
         <h3 className="text-2xl font-bold text-gray-800 mb-4">
           Créez votre premier module
         </h3>
-        {user?.profile === RegisterProfileEnum.Coach && (
-          <Button
-            onClick={() =>
-              doIfUpgradeSubscription(() => router.push(ROUTES.createModule))
-            }
-            variant={"roam"}
-            className="gap-2"
-          >
-            <PlusIcon className="h-4 w-4" />
-            ajouter un module
-          </Button>
-        )}
 
         {/* Formulaire d'ajout de cours */}
         <AddCourseForm
@@ -80,6 +69,8 @@ export default function CourseGrid() {
       </div>
     );
   }
+
+  const [query, setQuery] = useState("");
 
   // Afficher directement les classes
   const courses = classes.map((cls) => {
@@ -111,14 +102,21 @@ export default function CourseGrid() {
     };
   });
 
+  const filtered = courses.filter((c) =>
+    c.title.toLowerCase().includes(query.toLowerCase())
+  );
+
   return (
     <div className="flex flex-col flex-1 bg-white p-6">
       {/* Header avec statistiques */}
+
+      <SearchInput value={query} onChange={setQuery} />
+
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold text-gray-800">Mes Cours</h1>
           <div className="flex gap-2">
-            <Button
+            {/* <Button
               variant={"roam"}
               onClick={
                 () =>
@@ -131,7 +129,8 @@ export default function CourseGrid() {
             >
               <PlusIcon className="h-4 w-4 mr-2" />
               ajouter un module
-            </Button>
+            </Button> */}
+
             {/* Bouton de test pour la navigation */}
             {/* {courses.length > 0 && (
               <Button
@@ -148,19 +147,19 @@ export default function CourseGrid() {
         </div>
         <div className="flex flex-wrap gap-4 text-sm text-gray-600">
           <div className="flex items-center gap-2">
-            <span className="font-medium">{courses.length}</span>
-            <span>chapitre{courses.length > 1 ? "s" : ""}</span>
+            <span className="font-medium">{filtered.length}</span>
+            <span>chapitre{filtered.length > 1 ? "s" : ""}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-medium">
-              {courses.reduce(
+              {filtered.reduce(
                 (total, course) => total + course.totalLessons,
                 0
               )}
             </span>
             <span>
               leçon
-              {courses.reduce(
+              {filtered.reduce(
                 (total, course) => total + course.totalLessons,
                 0
               ) > 1
@@ -171,8 +170,8 @@ export default function CourseGrid() {
           <div className="flex items-center gap-2">
             <span className="font-medium">
               {Math.round(
-                courses.reduce((total, course) => total + course.progress, 0) /
-                  Math.max(courses.length, 1)
+                filtered.reduce((total, course) => total + course.progress, 0) /
+                  Math.max(filtered.length, 1)
               )}
               %
             </span>
@@ -183,7 +182,7 @@ export default function CourseGrid() {
 
       {/* Grille des cours */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses.map((course) => (
+        {filtered.map((course) => (
           <CourseCard
             key={course.id}
             id={course.id}

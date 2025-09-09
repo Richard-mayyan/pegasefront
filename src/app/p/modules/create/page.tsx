@@ -29,14 +29,16 @@ function page({}: Props) {
 
   return (
     <div className="p-4">
-      <AddCourseForm
-        hasDialog={false}
-        key={`add-course-${editId || "new"}`}
-        isOpen={true}
-        onClose={() => {}}
-        editId={editId || undefined}
-        initialClass={initialData}
-      />
+      {!loading && (
+        <AddCourseForm
+          hasDialog={false}
+          key={`add-course-${editId || "new"}`}
+          isOpen={true}
+          onClose={() => {}}
+          editId={editId || undefined}
+          initialClass={initialData}
+        />
+      )}
     </div>
   );
 }

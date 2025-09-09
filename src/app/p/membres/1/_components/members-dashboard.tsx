@@ -9,32 +9,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Hexagon,
-  Sun,
-  Star,
-  Shield,
-  Plus,
-  MessageCircle,
-  Settings,
-} from "lucide-react";
+import { Plus, MessageCircle, Settings } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { membersIcons } from "@/lib/constants";
 
 export default function MembersDashboard() {
   const [activeTab, setActiveTab] = useState("all"); // 'all', 'students', 'admins'
 
   const achievementCards = [
     {
-      icon: Hexagon,
+      icon: membersIcons.explorateurs,
       title: "Explorateurs",
       count: 304,
       color: "text-green-500",
     },
-    { icon: Sun, title: "Aventuriers", count: 304, color: "text-orange-500" },
-    { icon: Star, title: "Champions", count: 304, color: "text-lime-500" },
     {
-      icon: Shield,
+      icon: membersIcons.aventuries,
+      title: "Aventuriers",
+      count: 304,
+      color: "text-orange-500",
+    },
+    {
+      icon: membersIcons.champions,
+      title: "Champions",
+      count: 304,
+      color: "text-lime-500",
+    },
+    {
+      icon: membersIcons.maitres,
       title: "Maîtres avancés",
       count: 304,
       color: "text-purple-500",
@@ -101,59 +104,68 @@ export default function MembersDashboard() {
     );
 
   return (
-    <div className="min-h-screen bg-white p-8">
+    <div className="min-h-screen bg-white p-4 sm:p-6 lg:p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
             Ravis de te revoir, Alex
           </h1>
-          <p className="text-gray-500 mt-1">
+          <p className="text-gray-500 mt-1 text-sm sm:text-base">
             Vois comment performe la communauté
           </p>
         </div>
 
         {/* Achievement Cards */}
-        <div className="grid grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {achievementCards.map((card, index) => (
             <div
               key={index}
-              className="bg-gray-50 p-4 rounded-lg border border-gray-200 flex flex-col items-center"
+              className="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-200 flex flex-col items-center"
             >
-              <div className="bg-white p-3 rounded-full mb-3">
-                <card.icon className={cn("h-8 w-8", card.color)} />
+              <div className="bg-white p-2 sm:p-3 rounded-full mb-2 sm:mb-3">
+                <img
+                  src={card.icon}
+                  alt={card.title}
+                  className="h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20"
+                />
               </div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-1">
+              <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-gray-800 mb-1 text-center">
                 {card.title}
               </h3>
-              <p className="text-3xl font-bold text-gray-800">{card.count}</p>
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">
+                {card.count}
+              </p>
             </div>
           ))}
         </div>
 
         {/* Member Management Bar */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex gap-2">
-            <Button
-              onClick={() => setActiveTab("all")}
-              className={getTabClass("all")}
-            >
-              Tous
-            </Button>
-            <Button
-              onClick={() => setActiveTab("students")}
-              className={getTabClass("students")}
-            >
-              Étudiants
-            </Button>
-            <Button
-              onClick={() => setActiveTab("admins")}
-              className={getTabClass("admins")}
-            >
-              Admins
-            </Button>
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 gap-4">
+          {/* Tabs and Filter */}
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+            <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+              <Button
+                onClick={() => setActiveTab("all")}
+                className={cn(getTabClass("all"), "whitespace-nowrap")}
+              >
+                Tous
+              </Button>
+              <Button
+                onClick={() => setActiveTab("students")}
+                className={cn(getTabClass("students"), "whitespace-nowrap")}
+              >
+                Étudiants
+              </Button>
+              <Button
+                onClick={() => setActiveTab("admins")}
+                className={cn(getTabClass("admins"), "whitespace-nowrap")}
+              >
+                Admins
+              </Button>
+            </div>
             <Select>
-              <SelectTrigger className="w-[150px]">
+              <SelectTrigger className="w-full sm:w-[150px]">
                 <SelectValue placeholder="Aventuriers" />
               </SelectTrigger>
               <SelectContent>
@@ -164,13 +176,16 @@ export default function MembersDashboard() {
               </SelectContent>
             </Select>
           </div>
-          <div className="flex items-center gap-2">
-            <Button className="bg-customBg hover:bg-customBg-hover text-white px-4 py-2 rounded-lg flex items-center gap-2">
+
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <Button className="bg-customBg hover:bg-customBg-hover text-white px-3 sm:px-4 py-2 rounded-lg flex items-center gap-2 text-sm sm:text-base">
               <Plus className="h-4 w-4" />
-              Ajouter un Étudiants
+              <span className="hidden sm:inline">Ajouter un Étudiant</span>
+              <span className="sm:hidden">Ajouter</span>
             </Button>
             <Select>
-              <SelectTrigger className="w-[120px]">
+              <SelectTrigger className="w-full sm:w-[120px]">
                 <SelectValue placeholder="Exporter" />
               </SelectTrigger>
               <SelectContent>
@@ -181,8 +196,56 @@ export default function MembersDashboard() {
           </div>
         </div>
 
-        {/* Members Table */}
-        <div className="overflow-x-auto">
+        {/* Members Table - Mobile Cards */}
+        <div className="block lg:hidden space-y-4">
+          {members.map((member, index) => (
+            <div
+              key={index}
+              className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage
+                      src={member.avatar || "/placeholder.svg"}
+                      alt={member.name}
+                    />
+                    <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h3 className="font-medium text-gray-900">{member.name}</h3>
+                    <p className="text-sm text-gray-500">{member.handle}</p>
+                  </div>
+                </div>
+                <div className="flex gap-1">
+                  <Button variant="outline" size="sm" className="p-2 h-8 w-8">
+                    <MessageCircle className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" className="p-2 h-8 w-8">
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <span className="text-gray-500">Email: </span>
+                  <span className="text-gray-700">{member.email}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Rejoint: </span>
+                  <span className="text-gray-700">{member.joinDate}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Status: </span>
+                  <span className="text-gray-700">{member.status}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Members Table - Desktop */}
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-left table-auto">
             <thead>
               <tr className="text-sm text-gray-500 border-b border-gray-200">

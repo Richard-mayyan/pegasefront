@@ -147,3 +147,12 @@ export const sendUserToCodeSent = (email: string) => {
   const encodedEmail = encodeURIComponent(email);
   window.location.href = `${ROUTES.codeSent}?email=${encodedEmail}`;
 };
+
+const membersIcons = {
+  aventuries: "/membersimg/aventuries.svg",
+  champions: "/membersimg/champions.svg",
+  maitres: "/membersimg/maitres.svg",
+  explorateurs: "/membersimg/explorateurs.svg",
+};
+
+export { membersIcons };

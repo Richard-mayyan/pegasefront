@@ -21,6 +21,7 @@ import AddCoachingForm from "./add-coaching-form";
 import { toast } from "sonner";
 import { useAuth } from "@/components/layouts/AuthProvider";
 import { useAppData } from "@/components/layouts/AppDataProvider";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 export default function CoachingsListTable() {
   const { user } = useAuth();
@@ -384,24 +385,38 @@ export default function CoachingsListTable() {
 
       {/* Modal d'ajout de coaching */}
       {isAddFormOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg   w-fit mx-4 max-h-[90vh] overflow-y-auto">
+        <Dialog open={isAddFormOpen} onOpenChange={setIsAddFormOpen}>
+          <DialogContent className="max-h-[80vh] overflow-y-scroll p-0">
             <AddCoachingForm onClose={handleCloseAddForm} />
-          </div>
-        </div>
+          </DialogContent>
+        </Dialog>
+        // <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        //   <div className="bg-white rounded-lg   w-fit mx-4 max-h-[90vh] overflow-y-auto">
+        //     <AddCoachingForm onClose={handleCloseAddForm} />
+        //   </div>
+        // </div>
       )}
 
       {/* Modal d'édition de coaching */}
       {isEditFormOpen && selectedCoaching && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg w-fit mx-4 max-h-[90vh] overflow-y-auto">
+        <Dialog open={isEditFormOpen} onOpenChange={setIsEditFormOpen}>
+          <DialogContent className="max-h-[80vh] overflow-y-scroll p-0">
             <AddCoachingForm
               onClose={handleCloseEditForm}
               editingCoaching={selectedCoaching}
               isEditing={true}
             />
-          </div>
-        </div>
+          </DialogContent>
+        </Dialog>
+        // <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        // <div className="bg-white rounded-lg w-fit mx-4 max-h-[90vh] overflow-y-auto">
+        //   <AddCoachingForm
+        //     onClose={handleCloseEditForm}
+        //     editingCoaching={selectedCoaching}
+        //     isEditing={true}
+        //   />
+        // </div>
+        // </div>
       )}
     </>
   );

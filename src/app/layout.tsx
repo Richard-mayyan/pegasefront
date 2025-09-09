@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import { cookies } from "next/headers";
 import Link from "next/link";
@@ -11,7 +11,7 @@ import { Toaster } from "sonner";
 
 import "../../i18n";
 
-const inter = Inter({ subsets: ["latin"] });
+const outfit = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "PEGASE",
@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={outfit.className}>
         <AppQueryProvider>
           <DepsLayout>{children}</DepsLayout>
         </AppQueryProvider>

@@ -25,9 +25,13 @@ export default function DashboardLayout({ children }: any) {
     <SidebarProvider>
       <MainSidebar />
       <div className="w-full h-screen  overflow-scroll relative ">
-        <SidebarInset className="bg-white">
-          <MainNavbar />
-          <div className="w-full  overflow-scroll pt-[70px]">{children}</div>
+        <SidebarInset className=" h-full">
+          <div className="w-full h-full  flex flex-col">
+            <MainNavbar />
+            <div className="flex-1  overflow-scroll">{children}</div>
+          </div>
+          {/* <MainNavbar /> */}
+          {/* <div className="w-full  ">{children}</div> */}
         </SidebarInset>
       </div>
     </SidebarProvider>

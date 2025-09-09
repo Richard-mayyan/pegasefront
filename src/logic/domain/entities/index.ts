@@ -109,7 +109,7 @@ export interface CommunityEntityWithoutImages {
 export interface ClassEntity {
   id?: any;
   name: string;
-  description?: string;
+  // description?: string;
   cover?: string;
   profil?: string;
   color?: string;

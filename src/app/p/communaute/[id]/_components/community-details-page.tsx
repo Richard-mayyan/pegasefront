@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { communityRepo } from "@/logic/infra/di/container";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/components/layouts/AuthProvider";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export default function CommunityDetailsPage() {
   const { user } = useAuth();
@@ -54,14 +55,6 @@ export default function CommunityDetailsPage() {
   //     setCurrentClass(null);
   //   }
   // }, [classes]);
-
-  const getTabClass = (tabName: string) =>
-    cn(
-      "px-4 py-2 rounded-lg text-base font-medium",
-      activeTab === tabName
-        ? "bg-customBg text-white"
-        : "bg-transparent text-gray-700 hover:bg-gray-100"
-    );
 
   const handleEditCommunity = () => {
     setIsEditModalOpen(true);
@@ -136,32 +129,62 @@ export default function CommunityDetailsPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto ">
         {/* Tab Navigation */}
         {user?.profile === RegisterProfileEnum.Coach && (
-          <div className="flex gap-2 mb-8 w-fit mx-auto">
-            <Button
-              onClick={() => setActiveTab("about")}
-              className={getTabClass("about")}
+          <div className="mb-8 w-full mx-auto">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
             >
-              À propos
-            </Button>
-            <Button
-              onClick={() => setActiveTab("stats")}
-              className={getTabClass("stats")}
-            >
-              Statistiques
-            </Button>
-            <Button
-              onClick={() => setActiveTab("metrics")}
-              className={getTabClass("metrics")}
-            >
-              Métriques
-            </Button>
+              <TabsList className="grid w-fit mx-auto grid-cols-3 bg-gray-200 rounded-full p-1">
+                <TabsTrigger
+                  value="about"
+                  className="rounded-full data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm font-medium"
+                >
+                  À propos
+                </TabsTrigger>
+                <TabsTrigger
+                  value="stats"
+                  className="rounded-full data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm font-medium"
+                >
+                  Statistiques
+                </TabsTrigger>
+                <TabsTrigger
+                  value="metrics"
+                  className="rounded-full data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm font-medium"
+                >
+                  Métriques
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Content based on active tab */}
+              <TabsContent value="about" className="mt-6 w-full">
+                <CommunityDetailsAbout
+                  community={community}
+                  // classData={currentClass}
+                  onEdit={handleEditCommunity}
+                  onDelete={handleDeleteCommunity}
+                />
+              </TabsContent>
+              <TabsContent value="stats" className="mt-6 bg-yellow-500 w-full">
+                <CommunityDetailsStats
+                  community={community}
+                  // classData={currentClass}
+                />
+              </TabsContent>
+              <TabsContent value="metrics" className="mt-6">
+                <MembersMetrics
+                  community={community}
+                  //  classData={currentClass}
+                />
+              </TabsContent>
+            </Tabs>
           </div>
         )}
         {/* Header avec informations de la communauté */}
-        <div className="mb-8 p-6 bg-white rounded-lg shadow-sm">
+        {/* <div className="mb-8 p-6 bg-white rounded-lg shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-800">
@@ -181,29 +204,7 @@ export default function CommunityDetailsPage() {
               </p>
             </div>
           </div>
-        </div>
-
-        {/* Content based on active tab */}
-        {activeTab === "about" && (
-          <CommunityDetailsAbout
-            community={community}
-            // classData={currentClass}
-            onEdit={handleEditCommunity}
-            onDelete={handleDeleteCommunity}
-          />
-        )}
-        {activeTab === "stats" && (
-          <CommunityDetailsStats
-            community={community}
-            // classData={currentClass}
-          />
-        )}
-        {activeTab === "metrics" && (
-          <MembersMetrics
-            community={community}
-            //  classData={currentClass}
-          />
-        )}
+        </div> */}
       </div>
 
       {/* Modal d'édition de la communauté */}

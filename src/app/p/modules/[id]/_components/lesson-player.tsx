@@ -28,9 +28,11 @@ import {
   ChapterEntity,
   LessonEntity,
   NoteEntity,
+  RegisterProfileEnum,
 } from "@/logic/domain/entities";
 import { APP_ENVS } from "@/logic/infra/config/envs";
 import AppVideoPlayer from "@/components/ui/AppVideoPlayer";
+import { useAuth } from "@/components/layouts/AuthProvider";
 
 // interface Lesson {
 //   id: number;
@@ -69,6 +71,7 @@ export default function LessonPlayer({
   chapterIndex,
   lessonIndex,
 }: LessonPlayerProps) {
+  const { user } = useAuth();
   const [notes, setNotes] = useState<NoteEntity[]>([]);
   const [currentNote, setCurrentNote] = useState<NoteEntity | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -259,8 +262,8 @@ export default function LessonPlayer({
   };
 
   return (
-    <main className="flex-1 p-6 overflow-y-auto bg-white">
-      <div className="mb-6">
+    <main className="flex-1 p-6 overflow-y-auto bg-white w-full ">
+      <div className="mb-6 ">
         <span className="text-sm text-gray-500">
           Chapitre {chapterIndex + 1}: {chapter.name}
         </span>
@@ -439,43 +442,48 @@ export default function LessonPlayer({
       )} */}
 
       {/* Personal Notes */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-gray-800">
-            Notes personnelles
-          </h3>
-          <div className="flex gap-2">
-            {!APP_ENVS.isProductionMode && (
+      {user?.profile === RegisterProfileEnum.Student && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-gray-800">
+              Notes personnelles
+            </h3>
+            <div className="flex gap-2">
+              {!APP_ENVS.isProductionMode && (
+                <Button
+                  onClick={fetchLesson}
+                  variant="outline"
+                  className="text-xs"
+                >
+                  Recharger leçon
+                </Button>
+              )}
+              {!APP_ENVS.isProductionMode && (
+                <Button
+                  onClick={loadNotes}
+                  variant="outline"
+                  className="text-xs"
+                >
+                  Recharger notes
+                </Button>
+              )}
               <Button
-                onClick={fetchLesson}
-                variant="outline"
-                className="text-xs"
+                onClick={saveNote}
+                disabled={isSaving}
+                className="flex items-center gap-2 bg-customBg hover:bg-customBg-hover text-white"
               >
-                Recharger leçon
+                <Save className="h-4 w-4" />
+                {isSaving
+                  ? "Sauvegarde..."
+                  : currentNote
+                  ? "Mettre à jour"
+                  : "Sauvegarder"}
               </Button>
-            )}
-            {!APP_ENVS.isProductionMode && (
-              <Button onClick={loadNotes} variant="outline" className="text-xs">
-                Recharger notes
-              </Button>
-            )}
-            <Button
-              onClick={saveNote}
-              disabled={isSaving}
-              className="flex items-center gap-2 bg-customBg hover:bg-customBg-hover text-white"
-            >
-              <Save className="h-4 w-4" />
-              {isSaving
-                ? "Sauvegarde..."
-                : currentNote
-                ? "Mettre à jour"
-                : "Sauvegarder"}
-            </Button>
+            </div>
           </div>
-        </div>
 
-        {/* Debug info */}
-        {/* <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
+          {/* Debug info */}
+          {/* <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
           <p>Lesson ID: {fetchedLesson.id}</p>
           <p>Notes count: {notes.length}</p>
           <p>
@@ -483,13 +491,14 @@ export default function LessonPlayer({
           </p>
         </div> */}
 
-        {/* Test API Notes */}
-        {/* <NotesTest lessonId={lesson.id} /> */}
+          {/* Test API Notes */}
+          {/* <NotesTest lessonId={lesson.id} /> */}
 
-        <div className="border border-gray-200 rounded-lg overflow-hidden">
-          <BlockNoteView editor={editor} theme="light" />
+          <div className="border border-gray-200 rounded-lg overflow-hidden">
+            <BlockNoteView editor={editor} theme="light" />
+          </div>
         </div>
-      </div>
+      )}
     </main>
   );
 }

@@ -7,8 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Building, Plus, SearchIcon, X } from "lucide-react";
 import { useAppData } from "@/components/layouts/AppDataProvider";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import SelectMembersInput from "./select-members-input";
 
-export default function ChatSidebar() {
+interface ChatSidebarProps {
+  onClose?: () => void;
+}
+
+export default function ChatSidebar({ onClose }: ChatSidebarProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -62,7 +69,7 @@ export default function ChatSidebar() {
 
   return (
     <>
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+      <div className="w-full h-full bg-white border-r border-gray-200 flex flex-col">
         {/* Header de la sidebar */}
         <div className="p-4 border-b border-gray-200">
           {/* Barre de recherche */}
@@ -81,7 +88,10 @@ export default function ChatSidebar() {
             {chatGroups.map((group) => (
               <button
                 key={group.id}
-                onClick={() => setCurrentChatGroup(group)}
+                onClick={() => {
+                  setCurrentChatGroup(group);
+                  onClose?.(); // Close sidebar on mobile when group is selected
+                }}
                 className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${
                   currentChatGroup?.id === group.id
                     ? "bg-blue-50 border border-blue-200"
@@ -106,7 +116,7 @@ export default function ChatSidebar() {
                   </div>
                   <div>
                     <p className="font-medium text-gray-800">{group.name}</p>
-                    <p className="text-sm text-gray-500">{group.description}</p>
+                    {/* <p className="text-sm text-gray-500">{group.description}</p> */}
                   </div>
                 </div>
                 {group.unreadCount > 0 && (
@@ -122,9 +132,9 @@ export default function ChatSidebar() {
         </div>
 
         {/* Bouton nouveau groupe */}
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-gray-200 w-fit mx-auto">
           <Button
-            className="w-full rounded-lg h-12"
+            className="mx-auto"
             variant={"roam"}
             onClick={() => doIfUpgradeSubscription(() => setIsModalOpen(true))}
           >
@@ -138,7 +148,6 @@ export default function ChatSidebar() {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-            {/* Header du modal */}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-800">
                 Créer un nouveau groupe
@@ -197,6 +206,16 @@ export default function ChatSidebar() {
                 />
               </div>
 
+              <div className="flex items-center justify-between">
+                <Label
+                  htmlFor="all-members-can-write"
+                  className="text-base font-medium"
+                >
+                  Tous les membres peuvent écrire
+                </Label>
+                <Switch id="all-members-can-write" defaultChecked />
+              </div>
+
               {/* Couleur */}
               {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -226,6 +245,8 @@ export default function ChatSidebar() {
                   ))}
                 </div>
               </div> */}
+
+              <SelectMembersInput />
 
               {/* Boutons d'action */}
               <div className="flex gap-3 pt-4">

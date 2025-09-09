@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/components/layouts/AuthProvider";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -17,11 +17,25 @@ export default function SubscriptionForm() {
   // const [paymentIntent, setPaymentIntent] =
   //   useState<PaymentIntentResponse | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
+  const paymentFormRef = useRef<HTMLDivElement>(null);
 
   // Récupérer le payment intent au chargement
   useEffect(() => {
     fetchPaymentIntent();
   }, []);
+
+  // Scroll automatique vers le formulaire de paiement quand un plan est sélectionné
+  useEffect(() => {
+    if (selectedPlan && paymentFormRef.current) {
+      // Petit délai pour permettre au formulaire de se rendre
+      setTimeout(() => {
+        paymentFormRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+    }
+  }, [selectedPlan]);
 
   const handleSuccess = () => {
     // if (selectedPlan) {
@@ -43,28 +57,12 @@ export default function SubscriptionForm() {
     <div className="min-h-screen bg-white p-8">
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Logo and Brand */}
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-customBg rounded-lg flex items-center justify-center">
-            <Image
-              src="/logo.svg"
-              alt="Pegasus Logo"
-              width={24}
-              height={19}
-              className="w-6 h-5"
-            />
-          </div>
+        <div className="flex items-center space-x-3 absolute top-4 left-10">
+          <img src="/logo.svg" alt="Pegasus Logo" className="w-8 h-8" />
           <h1 className="text-2xl font-bold text-black">Pegase</h1>
         </div>
 
         {/* Header Section */}
-        <div className="space-y-4">
-          <h2 className="text-3xl font-bold text-black">
-            Souscrivez à un plan
-          </h2>
-          {/* <p className="text-gray-600 text-base leading-relaxed">
-            Profitez de 15 Jours gratuits, puis payez 50€/mois sans engagement
-          </p> */}
-        </div>
 
         {/* Process Information */}
         {/* <ProcessInfo /> */}
@@ -76,26 +74,28 @@ export default function SubscriptionForm() {
         />
 
         {/* Stripe Payment Form */}
-        {paymentIntent && selectedPlan ? (
-          <StripePaymentForm
-            publishableKey={paymentIntent.publishableKey}
-            clientSecret={paymentIntent.clientSecret}
-            onSuccess={handleSuccess}
-            onError={handleError}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-            selectedPlan={selectedPlan}
-          />
-        ) : (
-          selectedPlan && (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-customBg mx-auto"></div>
-              <p className="text-gray-600 mt-2">
-                Chargement du formulaire de paiement...
-              </p>
-            </div>
-          )
-        )}
+        <div ref={paymentFormRef}>
+          {paymentIntent && selectedPlan ? (
+            <StripePaymentForm
+              publishableKey={paymentIntent.publishableKey}
+              clientSecret={paymentIntent.clientSecret}
+              onSuccess={handleSuccess}
+              onError={handleError}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+              selectedPlan={selectedPlan}
+            />
+          ) : (
+            selectedPlan && (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-customBg mx-auto"></div>
+                <p className="text-gray-600 mt-2">
+                  Chargement du formulaire de paiement...
+                </p>
+              </div>
+            )
+          )}
+        </div>
 
         {/* Navigation Buttons */}
         {/* <NavigationButtons /> */}

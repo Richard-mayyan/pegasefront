@@ -71,26 +71,31 @@ export default function AddCourseForm({
   editId,
   initialClass,
 }: AddCourseFormProps) {
+  // console.log("initialClass", initialClass);
   const { addClass, currentCommunity } = useAppData();
   const [chapters, setChapters] = useState<ChapterData[]>(
     initialClass?.chapters?.map((ch: any) => ({
       name: ch.name,
-      lessons: (ch.lessons || []).map((ls: any) => ({
-        title: ls.title,
-        type: ls.type,
-        link: ls.link,
-        text: ls.text,
-        video: ls.video,
-        document: ls.document,
-        transcribe: true,
-      })),
+      lessons: (ch.lessons || []).map((ls: any) => {
+        console.log("ch", ch.lessons);
+        return {
+          title: ls.title,
+          type: ls.type,
+          link: ls.link,
+          text: ls.text,
+          video: ls.video,
+          document: ls.document,
+          transcribe: true,
+        };
+      }),
     })) || [
       {
-        name: "Chapitre 1",
+        name: "Chapitre 12323",
         lessons: [],
       },
     ]
   );
+  console.log("chapters", chapters);
   const [editingChapter, setEditingChapter] = useState<number | null>(null);
   const [showLessonForm, setShowLessonForm] = useState(false);
   const [editingLesson, setEditingLesson] = useState<{
@@ -101,9 +106,9 @@ export default function AddCourseForm({
   const [className, setClassName] = useState(
     initialClass?.name || getdefaultValue("nomdelaclasse")
   );
-  const [classDescription, setClassDescription] = useState(
-    initialClass?.description || getdefaultValue("descriptiondelaclasse")
-  );
+  // const [classDescription, setClassDescription] = useState(
+  //   initialClass?.description || getdefaultValue("descriptiondelaclasse")
+  // );
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -138,10 +143,10 @@ export default function AddCourseForm({
           toast.error("Veuillez renseigner le nom du module");
           throw new Error("Class name required");
         }
-        if (!classDescription.trim()) {
-          toast.error("Veuillez renseigner la description de du module");
-          throw new Error("Class description required");
-        }
+        // if (!classDescription.trim()) {
+        //   toast.error("Veuillez renseigner la description de du module");
+        //   throw new Error("Class description required");
+        // }
         if (!currentCommunity && !editId) {
           toast.error("Veuillez sélectionner une communauté");
           throw new Error("Community not found");
@@ -150,7 +155,7 @@ export default function AddCourseForm({
           // Mode édition: on met à jour les champs de base
           await classRepo.update(editId, {
             name: className.trim(),
-            description: classDescription.trim(),
+            // description: classDescription.trim(),
           } as any);
           return;
         } else {
@@ -162,7 +167,7 @@ export default function AddCourseForm({
           } = {
             communityId: currentCommunity?.id || "",
             name: className.trim(),
-            description: classDescription.trim(),
+            // description: classDescription.trim(),
             cover: "",
             profil: "default",
             color: "#ff0000",
@@ -196,7 +201,11 @@ export default function AddCourseForm({
       return { class: null };
     },
     onSuccess: (result) => {
-      toast.success("Classe créée avec succès !");
+      toast.success(
+        editId
+          ? "Classe mise à jour avec succès !"
+          : "Classe créée avec succès !"
+      );
       console.log("Classe sauvegardée:", result);
 
       // Fermer le modal et réinitialiser
@@ -204,7 +213,7 @@ export default function AddCourseForm({
       resetForm();
 
       if (result?.class) {
-        window.location.href = `p/modules/${result?.class.id}`;
+        window.location.href = `/p/modules/${result?.class.id}`;
       }
 
       // window.location.reload();
@@ -381,7 +390,7 @@ export default function AddCourseForm({
     } = {
       communityId: currentCommunity?.id || "",
       name: className.trim(),
-      description: classDescription.trim(),
+      // description: classDescription.trim(),
       cover: "",
       profil: "default",
       color: "#ff0000",
@@ -771,7 +780,7 @@ export default function AddCourseForm({
             onChange={(e) => setClassName(e.target.value)}
           />
         </div>
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">
             Description
           </label>
@@ -781,7 +790,7 @@ export default function AddCourseForm({
             onChange={(e) => setClassDescription(e.target.value)}
             className="min-h-[90px]"
           />
-        </div>
+        </div> */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">
             Thumbnail de du module
@@ -836,13 +845,13 @@ export default function AddCourseForm({
         <h2 className="text-xl font-semibold text-gray-800">
           Structure de du module
         </h2>
-        <Button
+        {/* <Button
           className="bg-customBg hover:bg-customBg-hover text-white px-8"
           onClick={handleAddChapter}
         >
           <Plus className="w-4 h-4 mr-2" />
           Ajouter un chapitre
-        </Button>
+        </Button> */}
       </div>
       {/* Course Structure */}
       <div className="space-y-6">
@@ -974,7 +983,16 @@ export default function AddCourseForm({
             disabled={mutation.isLoading}
           >
             {mutation.isLoading ? (
-              "Création en cours..."
+              editId ? (
+                "Mise à jour en cours..."
+              ) : (
+                "Création en cours..."
+              )
+            ) : editId ? (
+              <>
+                Éditer le module
+                <Send className="w-4 h-4 ml-2" />
+              </>
             ) : (
               <>
                 Créer module

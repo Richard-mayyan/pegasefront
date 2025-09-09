@@ -4,12 +4,12 @@ import NoCoachingEmptyState from "../_components/no-coaching-empty-state";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center gap-8 p-4">
+    <div className="h-screen bg-white overflow-hidden">
       <CalendarView />
-      <div className="flex flex-wrap items-start justify-center gap-8">
+      {/* <div className="flex flex-wrap items-start justify-center gap-8">
         <AddEventForm />
         <NoCoachingEmptyState />
-      </div>
+      </div> */}
     </div>
   );
 }

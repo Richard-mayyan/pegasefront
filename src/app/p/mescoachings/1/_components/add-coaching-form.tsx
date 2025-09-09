@@ -123,7 +123,7 @@ export default function AddCoachingForm({
   if (!isOpen) {
     return (
       <Card
-        className="w-full max-w-md rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-shadow"
+        className="w-full max-w-lg rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-shadow"
         onClick={() => setIsOpen(true)}
       >
         <div className="text-center">
@@ -142,19 +142,19 @@ export default function AddCoachingForm({
   }
 
   return (
-    <Card className="w-full max-w-lg rounded-xl shadow-lg p-6">
+    <Card className="w-full rounded-xl shadow-lg p-6 ">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
         <CardTitle className="text-xl font-bold">
           {isEditing ? "Modifier le coaching" : "Ajouter un coaching"}
         </CardTitle>
-        <Button
+        {/* <Button
           variant="ghost"
           size="icon"
           className="h-6 w-6"
           onClick={handleClose}
         >
           <X className="h-4 w-4" />
-        </Button>
+        </Button> */}
       </CardHeader>
 
       <form onSubmit={handleSubmit}>
@@ -182,7 +182,9 @@ export default function AddCoachingForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="coaching-link">Lien</Label>
+            <Label htmlFor="coaching-link">
+              Lien (google meet, zoom, etc.)
+            </Label>
             <Input
               id="coaching-link"
               type="url"

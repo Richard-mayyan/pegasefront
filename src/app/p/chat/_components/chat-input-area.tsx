@@ -80,7 +80,7 @@ export default function ChatInputArea() {
   const isDisabled = !currentChatGroup || isLoading || isSubmitting;
 
   return (
-    <div className="absolute bottom-[10px] left-0 right-0 border-t-2  border-gray-300 bg-gray-50 p-4 shadow-lg z-50">
+    <div className=" border-t-2  border-gray-300 bg-gray-50 p-4 shadow-lg ">
       {/* Aperçu de la réponse */}
       {replyToMessage && (
         <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">

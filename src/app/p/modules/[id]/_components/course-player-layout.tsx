@@ -110,6 +110,8 @@ export default function CoursePlayerLayout() {
     <div className="flex ">
       <div className="flex-1  w-full">
         <CourseHeader
+          isAIPanelOpen={isAIPanelOpen}
+          setIsAIPanelOpen={setIsAIPanelOpen}
           courseTitle={currentClass.name}
           progress={progress}
           totalLessons={totalLessons}
@@ -117,8 +119,8 @@ export default function CoursePlayerLayout() {
           courseId={String(currentClass.id)}
         />
 
-        <div className="flex bg-white w-full">
-          <div className="flex h-screen overflow-hidden">
+        <div className="flex  w-full">
+          <div className="flex h-screen overflow-hidden w-full">
             <CourseSidebar
               chapters={currentClass.chapters}
               selectedChapterIndex={selectedChapterIndex}
@@ -130,7 +132,7 @@ export default function CoursePlayerLayout() {
               onCommunitySelect={() => {}}
               onClassSelect={() => {}}
             />
-            <div className="flex flex-col flex-1">
+            <div className="flex flex-col flex-1 p-2 w-full  max-w-4xl ">
               <div className="flex flex-1 overflow-hidden">
                 {selectedChapter &&
                 selectedChapter.id !== undefined &&
@@ -157,50 +159,52 @@ export default function CoursePlayerLayout() {
       </div>
 
       {/* Bouton pour ouvrir/fermer le panel AI */}
-      {/* <button
-        onClick={() => setIsAIPanelOpen(!isAIPanelOpen)}
-        className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110 ${
-          isAIPanelOpen
-            ? "bg-red-500 hover:bg-red-600 text-white"
-            : "bg-teal-500 hover:bg-customBg text-white"
-        }`}
-        title={
-          isAIPanelOpen ? "Fermer l'assistant AI" : "Ouvrir l'assistant AI"
-        }
-      >
-        {isAIPanelOpen ? (
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        ) : (
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-            />
-          </svg>
-        )}
-      </button> */}
+      {/* {isAIPanelOpen ? null : (
+        <button
+          onClick={() => setIsAIPanelOpen(!isAIPanelOpen)}
+          className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110 ${
+            isAIPanelOpen
+              ? "bg-red-500 hover:bg-red-600 text-white"
+              : "bg-teal-500 hover:bg-customBg text-white"
+          }`}
+          title={
+            isAIPanelOpen ? "Fermer l'assistant AI" : "Ouvrir l'assistant AI"
+          }
+        >
+          {isAIPanelOpen ? (
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          ) : (
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+              />
+            </svg>
+          )}
+        </button>
+      )} */}
 
       {/* Panel AI avec animation */}
-      {/* {isAIPanelOpen && (
+      {isAIPanelOpen && (
         <div
           className={`transition-all duration-300 ease-in-out ${
             isAIPanelOpen
@@ -208,9 +212,9 @@ export default function CoursePlayerLayout() {
               : "opacity-0 translate-x-full pointer-events-none"
           }`}
         >
-          <AIAssistantPanel />
+          <AIAssistantPanel onClose={() => setIsAIPanelOpen(false)} />
         </div>
-      )} */}
+      )}
     </div>
   );
 }

@@ -11,6 +11,8 @@ import { useState } from "react";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
 import { useAuth } from "@/components/layouts/AuthProvider";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 interface CommunityDetailsAboutProps {
   community: CommunityEntity;
@@ -145,6 +147,14 @@ export default function CommunityDetailsAbout({
               {community.typography || "Par défaut"}
             </span>
           </div>
+        </div>
+
+        <div
+          className="mt-4
+        "
+        >
+          <Label>Partager ma communauté</Label>
+          <Input disabled type="text" value={window.location.href} />
         </div>
       </div>
 
