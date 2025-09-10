@@ -252,10 +252,13 @@ export class NodeClassRepo implements IClassRepo {
               const currentLesson = existingLessons[lsIndex];
               const lf = new FormData();
               lf.append("title", ls.title);
+
+              console.log("ls value", ls);
               const normalizedType = String(ls.type || "").toLowerCase();
               if (normalizedType === "video") {
                 lf.append("type", "video");
                 lf.append("link", ls.link || "");
+                lf.append("muxResourceId", ls.muxResourceId || "");
               } else {
                 lf.append("type", "text");
                 lf.append("text", ls.text || "");

@@ -70,7 +70,7 @@ export default function LoginForm() {
         if (data.user.communities && data.user.communities.length > 0) {
           window.location.href = ROUTES.modules;
         } else {
-          window.location.href = ROUTES.createCommunity;
+          window.location.href = ROUTES.createCommunityOnboarding;
         }
       }
     },

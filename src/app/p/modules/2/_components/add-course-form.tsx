@@ -87,6 +87,7 @@ export default function AddCourseForm({
           video: ls.video,
           document: ls.document,
           transcribe: true,
+          muxResourceId: ls.muxResourceId,
         };
       }),
     })) || [
@@ -153,10 +154,28 @@ export default function AddCourseForm({
           throw new Error("Community not found");
         }
         if (editId) {
-          // Mode édition: on met à jour les champs de base
+          console.log("editId", editId);
+          console.log("chapter.lessons?.map", chapters);
+          // Mode édition: on met à jour le module ET on synchronise chapitres/leçons
           await classRepo.update(editId, {
             name: className.trim(),
             // description: classDescription.trim(),
+            // chapters: chapters.map((chapter: any) => ({
+            //   name: chapter.name,
+            //   active: true,
+            //   publishedAt: new Date().toISOString(),
+            //   lessons:
+            //     chapter.lessons?.map((lesson: any) => ({
+            //       title: lesson.title,
+            //       type: lesson.type,
+            //       publishedAt: new Date().toISOString(),
+            //       text: lesson.text,
+            //       link: lesson.link,
+            //       video: lesson.video,
+            //       document: lesson.document,
+            //       muxResourceId: lesson.muxResourceId,
+            //     })) || [],
+            // })),
           } as any);
           return;
         } else {
@@ -208,14 +227,14 @@ export default function AddCourseForm({
           ? "Classe mise à jour avec succès !"
           : "Classe créée avec succès !"
       );
-      console.log("Classe sauvegardée:", result);
-      // Fermer le modal et réinitialiser
-      onClose();
-      resetForm();
-      if (result?.class) {
-        window.location.href = `/p/modules/${result?.class.id}`;
-      }
-      window.location.reload();
+      // console.log("Classe sauvegardée:", result);
+      // // Fermer le modal et réinitialiser
+      // onClose();
+      // resetForm();
+      // if (result?.class) {
+      //   window.location.href = `/p/modules/${result?.class.id}`;
+      // }
+      // window.location.reload();
     },
     onError: (error: any) => {
       toast.error("Erreur lors de la création de du module");
@@ -339,21 +358,49 @@ export default function AddCourseForm({
     setEditingLesson(null);
   };
 
-  const handleDeleteChapter = (chapterIndex: number) => {
-    if (chapters.length > 1) {
-      const updatedChapters = chapters.filter(
-        (_, index) => index !== chapterIndex
-      );
-      setChapters(updatedChapters);
-    } else {
+  const handleDeleteChapter = async (chapterIndex: number) => {
+    if (chapters.length <= 1) {
       toast.error("Vous devez avoir au moins un chapitre");
+      return;
+    }
+
+    const updatedChapters = chapters.filter(
+      (_, index) => index !== chapterIndex
+    );
+    setChapters(updatedChapters);
+
+    try {
+      if (editId && initialClass?.chapters?.[chapterIndex]?.id) {
+        const chId = String(initialClass.chapters[chapterIndex].id);
+        await chapterRepo.delete(chId);
+      }
+    } catch (e) {
+      console.error("Erreur lors de la suppression du chapitre", e);
+      toast.error("Suppression du chapitre échouée");
     }
   };
 
-  const handleDeleteLesson = (chapterIndex: number, lessonIndex: number) => {
+  const handleDeleteLesson = async (
+    chapterIndex: number,
+    lessonIndex: number
+  ) => {
     const updatedChapters = [...chapters];
+
+    // Conserver l'id à supprimer côté serveur si on est en édition
+    const lessonId =
+      initialClass?.chapters?.[chapterIndex]?.lessons?.[lessonIndex]?.id;
+
     updatedChapters[chapterIndex].lessons.splice(lessonIndex, 1);
     setChapters(updatedChapters);
+
+    try {
+      if (editId && lessonId) {
+        await apiClient.delete(`/lessons/${lessonId}`);
+      }
+    } catch (e) {
+      console.error("Erreur lors de la suppression de la leçon", e);
+      toast.error("Suppression de la leçon échouée");
+    }
   };
 
   const handleEditChapterTitle = (chapterIndex: number, newTitle: string) => {
@@ -433,9 +480,10 @@ export default function AddCourseForm({
     if (lessonIndex === -1) return undefined;
 
     const lesson = chapters[chapterIndex].lessons[lessonIndex];
+    console.log("initial lesson", lesson);
     return {
       transcribe: lesson.transcribe,
-      // muxResourceId: lesson.muxResourceId,
+      muxResourceId: lesson.muxResourceId,
       title: lesson.title,
       type: lesson.type as "video" | "text",
       link: lesson.link,

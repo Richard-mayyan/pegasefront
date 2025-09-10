@@ -24,6 +24,7 @@ export default function CourseGrid() {
   const [showAddCourseForm, setShowAddCourseForm] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(0);
   const router = useRouter();
+  const [query, setQuery] = useState("");
 
   if (!currentCommunity) {
     return <div>Aucune communauté sélectionnée</div>;
@@ -86,8 +87,6 @@ export default function CourseGrid() {
       </div>
     );
   }
-
-  const [query, setQuery] = useState("");
 
   // Afficher directement les classes
   const courses = classes.map((cls) => {
