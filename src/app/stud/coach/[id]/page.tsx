@@ -169,12 +169,20 @@ export default function StudCommunityDetailsPage() {
                             </div>
                           )}
                           <div className="mt-3 flex items-center justify-between">
-                            <Link
+                            <Button
+                              onClick={() =>
+                                (window.location.href = `/p/communaute/${c.id}`)
+                              }
+                              variant="roam"
+                            >
+                              Voir
+                            </Button>
+                            {/* <Link
                               href={`/p/communaute/${c.id}`}
                               className="text-xs underline text-customBg"
                             >
                               Voir la communauté
-                            </Link>
+                            </Link> */}
                             <Button
                               disabled={c.subscribed}
                               variant={c.subscribed ? "outline" : "default"}

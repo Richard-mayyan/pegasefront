@@ -56,21 +56,25 @@ export default function CourseGrid() {
           <UsersIcon className="h-16 w-16 text-customBg" />
         </div>
         <h3 className="text-2xl font-bold text-gray-800 mb-4">
-          Créez votre premier module
+          {user?.profile === RegisterProfileEnum.Coach
+            ? "Créez votre premier module"
+            : "Pas encore de module disponible"}
         </h3>
 
-        <Button
-          variant={"roam"}
-          onClick={
-            () =>
-              doIfUpgradeSubscription(() => router.push(ROUTES.createModule))
+        {user?.profile === RegisterProfileEnum.Coach && (
+          <Button
+            variant={"roam"}
+            onClick={
+              () =>
+                doIfUpgradeSubscription(() => router.push(ROUTES.createModule))
 
-            // doIfUpgradeSubscription(() => setShowAddCourseForm(true))
-          }
-        >
-          <PlusIcon className="h-4 w-4 mr-2" />
-          ajouter un module
-        </Button>
+              // doIfUpgradeSubscription(() => setShowAddCourseForm(true))
+            }
+          >
+            <PlusIcon className="h-4 w-4 mr-2" />
+            ajouter un module
+          </Button>
+        )}
 
         {/* Formulaire d'ajout de cours */}
         <AddCourseForm

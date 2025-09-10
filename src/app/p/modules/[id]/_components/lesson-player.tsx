@@ -33,6 +33,7 @@ import {
 import { APP_ENVS } from "@/logic/infra/config/envs";
 import AppVideoPlayer from "@/components/ui/AppVideoPlayer";
 import { useAuth } from "@/components/layouts/AuthProvider";
+import AppMuxVideo from "@/components/ui/app-mux-video";
 
 // interface Lesson {
 //   id: number;
@@ -278,15 +279,22 @@ export default function LessonPlayer({
           )}
         </div>
       </div>
-      <p>
+      {/* <p>
         {JSON.stringify({
           type: fetchedLesson.type,
-          video: fetchedLesson.video?.url,
+          video: fetchedLesson.video,
+        })}
+      </p> */}
+
+      <p className="text-xs text-white">
+        {" "}
+        {JSON.stringify({
+          playbackId: fetchedLesson.video?.mux?.playbackId,
         })}
       </p>
 
       {/* Video Player */}
-      {fetchedLesson.type === "video" && fetchedLesson.video?.url && (
+      {fetchedLesson.type === "video" && (
         <div className="w-full aspect-video bg-gray-200 rounded-lg overflow-hidden mb-6">
           {/* <video
             src={fetchedLesson.video.url}
@@ -300,14 +308,27 @@ export default function LessonPlayer({
             <source src={fetchedLesson.video.url} type="video/ogg" />
             Votre navigateur ne supporte pas la lecture de vidéos.
           </video> */}
-          <AppVideoPlayer
-            url={fetchedLesson.video?.url!}
-            autoPlay={false}
-            onPlay={() => console.log("play")}
-            onPause={() => console.log("pause")}
-            onEnded={() => console.log("ended")}
-            onProgress={(sec, frac) => console.log({ sec, frac })}
-          />
+
+          {fetchedLesson.video?.mux?.playbackId && (
+            <AppMuxVideo
+              playbackId={fetchedLesson.video?.mux?.playbackId}
+              playbackToken={fetchedLesson.video?.mux?.playback}
+              thumbnailToken={fetchedLesson.video?.mux?.thumbnail}
+              title={fetchedLesson.title}
+              viewerUserId={user?.email || ""}
+            />
+          )}
+          {!fetchedLesson.video?.mux?.playbackId &&
+            fetchedLesson.video?.url && (
+              <AppVideoPlayer
+                url={fetchedLesson.video?.url!}
+                autoPlay={false}
+                onPlay={() => console.log("play")}
+                onPause={() => console.log("pause")}
+                onEnded={() => console.log("ended")}
+                onProgress={(sec, frac) => console.log({ sec, frac })}
+              />
+            )}
         </div>
       )}
 

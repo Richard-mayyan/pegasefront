@@ -208,14 +208,14 @@ export default function AddCourseForm({
           ? "Classe mise à jour avec succès !"
           : "Classe créée avec succès !"
       );
-      // console.log("Classe sauvegardée:", result);
-      // // Fermer le modal et réinitialiser
-      // onClose();
-      // resetForm();
-      // if (result?.class) {
-      //   window.location.href = `/p/modules/${result?.class.id}`;
-      // }
-      // window.location.reload();
+      console.log("Classe sauvegardée:", result);
+      // Fermer le modal et réinitialiser
+      onClose();
+      resetForm();
+      if (result?.class) {
+        window.location.href = `/p/modules/${result?.class.id}`;
+      }
+      window.location.reload();
     },
     onError: (error: any) => {
       toast.error("Erreur lors de la création de du module");

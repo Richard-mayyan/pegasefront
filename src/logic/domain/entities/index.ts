@@ -153,6 +153,12 @@ export interface LessonEntity {
     url?: string;
     resourceId?: string;
     muxResourceId?: string;
+    mux: {
+      playbackId?: string;
+      playback?: string;
+      thumbnail?: string;
+      preview?: string;
+    };
   };
   document?: {
     url?: string;
